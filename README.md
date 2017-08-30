@@ -4,4 +4,4 @@ This will be a PHP package that implements a client to interact with DeepL.com o
 
 ## Disclaimer
 
-This is not an official package. It will be 100% open source and non-commercial. DeepL is a product from DeepL GmbH.
+This is not an official package. It will be 100% open source and non-commercial. DeepL is a product from DeepL GmbH. More info: https://www.deepl.com/publisher.html
