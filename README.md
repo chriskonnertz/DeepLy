@@ -31,7 +31,7 @@ $deepLy = new ChrisKonnertz\DeepLy\DeepLy();
 
 $translatedText = $deepLy->translate('Hello world!', 'DE', 'EN');
 
-echo $translatedText; // "Hallo Welt!"
+echo $translatedText; // Prints "Hallo Welt!"
 ```
 
 > There is a PHP demo script included. It is located at `dev/demo.php`.
