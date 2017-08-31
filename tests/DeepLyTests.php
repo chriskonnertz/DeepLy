@@ -22,8 +22,29 @@ class DeepLyTests extends \PHPUnit\Framework\TestCase
         return new ChrisKonnertz\DeepLy\DeepLy();
     }
 
-    public function testCreation()
+    public function testInstancing()
     {
         $deepLy = $this->getInstance();
+
+        $this->assertNotNull($deepLy);
     }
+
+    public function testGetConnector()
+    {
+        $deepLy = $this->getInstance();
+
+        $connector = $deepLy->getConnector();
+
+        $this->assertNotNull($connector);
+    }
+
+    public function testTranslation()
+    {
+        $deepLy = $this->getInstance();
+
+        $translatedText = $deepLy->translate('Hello world!', 'DE', 'EN');
+
+        $this->assertEquals($translatedText, 'Hallo Welt!');
+    }
+
 }

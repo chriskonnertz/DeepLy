@@ -1,5 +1,8 @@
 # DeepLy
 
+[![Build Status](https://travis-ci.org/chriskonnertz/deeply.png)](https://travis-ci.org/chriskonnertz/deeply)
+[![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://raw.githubusercontent.com/chriskonnertz/deeply/master/LICENSE)
+
 [DeepL.com](https://www.deepl.com/) is a great, new translation service. 
 It provides better translations compared to other popular translation engines.
 DeepLy is a PHP package that implements a client to interact with DeepL via their _undocumented_ API. 
