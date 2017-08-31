@@ -12,7 +12,7 @@ class DeepLy
 {
 
     /**
-     * All available language code constants
+     * All supported language code constants
      */
     const LANG_DE = 'DE'; // German
     const LANG_EN = 'EN'; // English
@@ -33,16 +33,31 @@ class DeepLy
     const VERSION = '0.1';
 
     /**
-     * Array with all available language codes
+     * Array with all supported language codes
      *
      * @var string[]
      */
-    protected $langCodes = [self::LANG_EN, self::LANG_DE];
+    protected $langCodes = [
+        self::LANG_DE,
+        self::LANG_EN,
+        self::LANG_FR,
+        self::LANG_ES,
+        self::LANG_IT,
+        self::LANG_NL,
+        self::LANG_PL,
+    ];
 
     /**
      * @var ConnectorInterface
      */
     protected $connector = null;
+
+    /**
+     * This property stored the result bag of the last translation
+     *
+     * @var \stdClass|null
+     */
+    protected $resultBag = null;
 
     /**
      * DeepLy object constructor.
@@ -101,17 +116,21 @@ class DeepLy
             'priority' => -1
         ];
 
-        // The api call might throw an exception but we do not want to catch it,
+        // The API call might throw an exception but we do not want to catch it,
         // the caller of this method should catch it instead.
         $resultBag = $connector->apiCall(self::API_BASE_URL, $params);
 
         // The result might contain multiple translations but we simply choose the first
         $translatedText = $resultBag->result->translations[0]->beams[0]->postprocessed_sentence;
 
+        $this->resultBag = $resultBag;
+
         return $translatedText;
     }
 
     /**
+     * Getter for the connector object
+     *
      * @return ConnectorInterface
      */
     public function getConnector()
@@ -120,11 +139,33 @@ class DeepLy
     }
 
     /**
+     * Setter for the connector object
+     *
      * @param ConnectorInterface $connector
      */
     public function setConnector(ConnectorInterface $connector)
     {
         $this->connector = $connector;
+    }
+
+    /**
+     * Getter for the array with all supported language codes
+     *
+     * @return string[]
+     */
+    public function getLangCodes()
+    {
+        return $this->langCodes;
+    }
+
+    /**
+     * Getter for the result bag object. Might return null!
+     *
+     * @return \stdClass|null
+     */
+    public function getResultBag()
+    {
+        return $this->resultBag;
     }
 
 }
