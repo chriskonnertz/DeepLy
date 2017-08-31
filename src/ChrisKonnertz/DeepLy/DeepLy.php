@@ -50,7 +50,7 @@ class DeepLy
     public function __construct()
     {
         // Create a default connector. You can call setConnector() to set another connector.
-        $this->apiClient = new CurlConnector();
+        $this->connector = new CurlConnector();
     }
 
     /**
@@ -80,7 +80,7 @@ class DeepLy
             throw new \InvalidArgumentException('The $from argument has to be null or a valid language code');
         }
 
-        $apiClient = $this->apiClient;
+        $connector = $this->connector;
 
         // Note that this array will be converted to a data structure of arrays AND objects later on
         $params = [
@@ -103,7 +103,7 @@ class DeepLy
 
         // The api call might throw an exception but we do not want to catch it,
         // the caller of this method should catch it instead.
-        $resultBag = $apiClient->apiCall(self::API_BASE_URL, $params);
+        $resultBag = $connector->apiCall(self::API_BASE_URL, $params);
 
         // The result might contain multiple translations but we simply choose the first
         $translatedText = $resultBag->result->translations[0]->beams[0]->postprocessed_sentence;
