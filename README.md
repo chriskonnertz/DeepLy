@@ -1,6 +1,6 @@
 # DeepLy
 
-[![Build Status](https://travis-ci.org/chriskonnertz/deeply.png)](https://travis-ci.org/chriskonnertz/deeply)
+[![Build Status](https://travis-ci.org/chriskonnertz/DeepLy.png)](https://travis-ci.org/chriskonnertz/DeepLy)
 [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://raw.githubusercontent.com/chriskonnertz/deeply/master/LICENSE)
 
 [DeepL.com](https://www.deepl.com/) is a great, new translation service. 
