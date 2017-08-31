@@ -1,0 +1,29 @@
+<?php
+
+// Ensure backward compatibility
+// @see http://stackoverflow.com/questions/42811164/class-phpunit-framework-testcase-not-found#answer-42828632
+if (!class_exists('\PHPUnit\Framework\TestCase')) {
+    class_alias('\PHPUnit_Framework_TestCase', '\PHPUnit\Framework\TestCase');
+}
+
+/**
+ * Class DeepLyTests for tests with PHPUnit.
+ */
+class DeepLyTests extends \PHPUnit\Framework\TestCase
+{
+
+    /**
+     * Creates and returns an instance of the main class
+     *
+     * @return \ChrisKonnertz\DeepLy\DeepLy
+     */
+    protected function getInstance()
+    {
+        return new ChrisKonnertz\DeepLy\DeepLy();
+    }
+
+    public function testCreation()
+    {
+        $deepLy = $this->getInstance();
+    }
+}
