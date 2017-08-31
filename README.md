@@ -44,6 +44,7 @@ This is not an official package. It will be 100% open source and non-commercial.
 DeepL is a product from DeepL GmbH. More info: https://www.deepl.com/publisher.html
 
 This package has been heavily inspired by [node-deepls](https://www.npmjs.com/package/node-deepl).
+Thank you for your great work!
 
 ## General Notes
 
