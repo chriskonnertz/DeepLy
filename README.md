@@ -1,4 +1,4 @@
-# DeepL-PHP
+# DeepLy
 
 [DeepL.com](https://www.deepl.com/) is a great, new translation service. 
 This is a PHP package that implements a client to interact with Deepl via their _undocumented_ API. 
