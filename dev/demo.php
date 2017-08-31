@@ -3,7 +3,7 @@
     /**
      * Minimal class autoloader
      *
-     * @param string $class
+     * @param string $class Full qualified name of the class
      */
     function miniAutoloader($class)
     {
