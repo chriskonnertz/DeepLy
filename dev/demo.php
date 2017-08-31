@@ -85,8 +85,6 @@
     <div class="block result">
         <?php
 
-
-
             if ($text !== null and $to !== null) {
                 try {
                     $result = $deepLy->translate($text, $to, $from);
