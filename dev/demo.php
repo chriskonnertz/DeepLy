@@ -13,8 +13,29 @@
     spl_autoload_register('miniAutoloader');
 
     $text = isset($_POST['text']) ? $_POST['text'] : null;
-    $to = isset($_POST['to']) ? $_POST['to'] : null;
-    $from = isset($_POST['from']) ? $_POST['from'] : null;
+    $to = isset($_POST['to']) ? $_POST['to'] : 'DE';
+    $from = isset($_POST['from']) ? $_POST['from'] : 'EN';
+
+    $deepLy = new ChrisKonnertz\DeepLy\DeepLy();
+
+    /**
+     * Creates HTML code for a select element. Does not use htmlspecialchars() or whatever.
+     *
+     * @param string $name
+     * @param array  $options The options - key => option value, value => option name
+     * @param null   $default
+     */
+    function createSelect($name, array $options, $default = null)
+    {
+        echo '<select class="form-field" name="'.$name.'">';
+
+        foreach ($options as $optionValue => $optionName) {
+            $defaultAttr = ($default !== $optionValue) ? '' : 'selected="selected"';
+            echo '<option value="'.$optionValue.'" '.$defaultAttr.'>'.$optionName.'</option>';
+        }
+
+        echo '</select>';
+    }
 
 ?>
 <!DOCTYPE html>
@@ -28,9 +49,9 @@
         h1 { margin-bottom: 40px }
         h4 { margin-top: 40px }
         form { margin-bottom: 20px }
-        label { margin-top: 10px }
         div.success { border: 1px solid #4ce276; padding: 10px; border-top-width: 10px }
         div.error { border: 1px solid #f36362; padding: 10px; border-top-width: 10px }
+        .form-select { max-width: 100px }
         .info { margin-top: 20px }
     </style>
 </head>
@@ -42,12 +63,20 @@
         <div class="form-element">
             <label for="text">Text:</label>
             <input id="text" class="form-field" name="text" type="text" value="<?php echo $text !== null ? $text : 'Hello world!' ?>">
+        </div>
 
-            <label for="to">To:</label>
-            <input id="to" class="form-field" name="to" type="text" value="<?php echo $to !== null ? $to : 'DE' ?>">
-
+        <div class="form-element">
             <label for="from">From:</label>
-            <input id="from" class="form-field" name="from" type="text" value="<?php echo $from !== null ? $from : 'EN' ?>">
+            <div class="form-select">
+                <?php createSelect('from', array_combine($deepLy->getLangCodes(), $deepLy->getLangCodes()), $from) ?>
+            </div>
+        </div>
+
+        <div class="form-element">
+            <label for="to">To:</label>
+            <div class="form-select">
+                <?php createSelect('to', array_combine($deepLy->getLangCodes(), $deepLy->getLangCodes()), $to) ?>
+            </div>
         </div>
 
         <input type="submit" value="Translate" class="button">
@@ -56,7 +85,7 @@
     <div class="block result">
         <?php
 
-            $deepLy = new ChrisKonnertz\DeepLy\DeepLy();
+
 
             if ($text !== null and $to !== null) {
                 try {
