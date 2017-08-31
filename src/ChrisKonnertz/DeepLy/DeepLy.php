@@ -5,6 +5,9 @@ namespace ChrisKonnertz\DeepLy;
 use ChrisKonnertz\DeepLy\Connector\ConnectorInterface;
 use ChrisKonnertz\DeepLy\Connector\CurlConnector;
 
+/**
+ * This is the main class. Call its translate() method to translate text.
+ */
 class DeepLy
 {
 
