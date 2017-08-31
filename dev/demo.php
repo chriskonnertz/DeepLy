@@ -19,7 +19,7 @@
     $deepLy = new ChrisKonnertz\DeepLy\DeepLy();
 
     /**
-     * Creates HTML code for a select element. Does not use htmlspecialchars() or whatsoever.
+     * Prints HTML code for a select element. Does not use htmlspecialchars() or whatsoever.
      *
      * @param string $name
      * @param array  $options The options - key => option value, value => option name
