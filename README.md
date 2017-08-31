@@ -1,7 +1,7 @@
 # DeepLy
 
 [DeepL.com](https://www.deepl.com/) is a great, new translation service. 
-This is a PHP package that implements a client to interact with Deepl via their _undocumented_ API. 
+This is a PHP package that implements a client to interact with DeepL via their _undocumented_ API. 
 I do not know if or when they will officially publish there API but I expect them to do it. 
 Meanwhile you may use this PHP client implementation to prepare your project for the official API release.
 
@@ -35,7 +35,8 @@ echo $translatedText; // "Hallo Welt!"
 ## Current State
 
 I tried to rush for a first release. It works and I hope that I do not have to change the main method `translate()`
-in a way that makes it incompatible with the current release. However, I cannot guarantee that.
+in a way that makes it incompatible with the current release. However, I cannot guarantee that. 
+More commits will come soon. There is a lot to refactor and improve.
 
 ## Disclaimer
 
