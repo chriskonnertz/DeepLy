@@ -21,7 +21,7 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <title>StringCalc Demo</title>
+    <title>DeepLy Demo</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/framy/latest/css/framy.min.css">
     <style>
         body { padding: 20px }
