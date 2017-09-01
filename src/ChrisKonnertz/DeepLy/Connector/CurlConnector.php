@@ -32,8 +32,6 @@ class CurlConnector implements ConnectorInterface
             'params' => $params // Set the parameters
         ];
 
-        $data['method'] = 'asdsd';
-
         $jsonData = json_encode($data);
 
         curl_setopt($curl, CURLOPT_CUSTOMREQUEST, "POST");
