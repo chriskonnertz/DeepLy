@@ -1,11 +1,11 @@
 <?php
 
-namespace ChrisKonnertz\DeepLy\Connector;
+namespace ChrisKonnertz\DeepLy\TranslationBag;
 
 /*
  * This exception might be thrown when something is wrong in the TranslationBag class
  */
-class ResultException extends \Exception
+class TranslationBagException extends \Exception
 {
 
 }

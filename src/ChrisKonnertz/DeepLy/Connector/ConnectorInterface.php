@@ -4,6 +4,8 @@ namespace ChrisKonnertz\DeepLy\Connector;
 
 /**
  * A class that implements the ConnectorInterface connects the DeepLy library with the API server.
+ * Basically it is responsible for API calls from the client to the API server.
+ * It does not have to do anything with the result except returning it.
  */
 interface ConnectorInterface
 {

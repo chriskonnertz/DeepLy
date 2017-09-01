@@ -21,7 +21,7 @@ class CurlConnector implements ConnectorInterface
     {
         if (! $this->isCurlAvailable()) {
             throw new \LogicException(
-                'Cannot use DeepLy\'s CurlConnector class, because the cURL PHP extension is not available.'
+                'Cannot use DeepLy\'s CurlConnector class, because the cURL PHP extension is not available'
             );
         }
     }

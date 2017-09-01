@@ -4,7 +4,7 @@ namespace ChrisKonnertz\DeepLy;
 
 use ChrisKonnertz\DeepLy\Connector\ConnectorInterface;
 use ChrisKonnertz\DeepLy\Connector\CurlConnector;
-use ChrisKonnertz\DeepLy\Connector\TranslationBag;
+use ChrisKonnertz\DeepLy\TranslationBag\TranslationBag;
 
 /**
  * This is the main class. Call its translate() method to translate text.
@@ -15,7 +15,7 @@ class DeepLy
     /**
      * All supported language code constants
      */
-    const LANG_AUTO = 'auto'; // Let DeepL decide which language it is
+    const LANG_AUTO = 'auto'; // Let DeepL decide which language it is (only works for the source language)
     const LANG_DE = 'DE'; // German
     const LANG_EN = 'EN'; // English
     const LANG_FR = 'FR'; // French
@@ -32,7 +32,7 @@ class DeepLy
     /**
      * Current version number
      */
-    const VERSION = '0.4';
+    const VERSION = '0.5';
 
     /**
      * Array with all supported language codes

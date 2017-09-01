@@ -1,6 +1,6 @@
 <?php
 
-namespace ChrisKonnertz\DeepLy\Connector;
+namespace ChrisKonnertz\DeepLy\TranslationBag;
 
 /**
  * This class handles the result of a successful API call.
@@ -23,7 +23,7 @@ class TranslationBag
      * CurlConnector constructor.
      *
      * @param string $rawResult The raw result of an API call as string (usually contains stringified JSON)
-     * @throws ResultException
+     * @throws TranslationBagException
      */
     public function __construct($rawResult)
     {
@@ -34,31 +34,39 @@ class TranslationBag
         $resultBag = json_decode($rawResult);
 
         if (! $resultBag instanceof \stdClass) {
-            throw new ResultException('DeepLy API call did not return JSON that describes a \stdClass object');
+            throw new TranslationBagException('DeepLy API call did not return JSON that describes a \stdClass object');
         }
 
         if (property_exists($resultBag, 'error')) {
             if ($resultBag->error instanceof \stdClass and property_exists($resultBag->error, 'message')) {
-                throw new ResultException('DeepLy API call resulted in this error: '.$resultBag->error->message);
+                throw new TranslationBagException(
+                    'DeepLy API call resulted in this error: '.$resultBag->error->message
+                );
             } else {
-                throw new ResultException('DeepLy API call resulted in an unknown error');
+                throw new TranslationBagException('DeepLy API call resulted in an unknown error');
             }
         }
 
         if (! property_exists($resultBag, 'result')) {
-            throw new ResultException('DeepLy API call resulted in a malformed result - inner result is missing');
+            throw new TranslationBagException(
+                'DeepLy API call resulted in a malformed result - inner result is missing'
+            );
         }
         if (! $resultBag->result instanceof \stdClass) {
-            throw new ResultException(
+            throw new TranslationBagException(
                 'DeepLy API call resulted in a malformed result - inner result is not a \stdClass'
             );
         }
 
         if (! property_exists($resultBag->result, 'translations')) {
-            throw new ResultException('DeepLy API call resulted in a malformed result - translations are missing');
+            throw new TranslationBagException(
+                'DeepLy API call resulted in a malformed result - translations are missing'
+            );
         }
         if (! is_array($resultBag->result->translations)) {
-            throw new ResultException('DeepLy API call resulted in a malformed result - translations are not an array');
+            throw new TranslationBagException(
+                'DeepLy API call resulted in a malformed result - translations are not an array'
+            );
         }
 
         // We only keep the inner result object, the other properties are no longer important
@@ -94,7 +102,7 @@ class TranslationBag
      * that contains the actual text of the translation.
      *
      * @return \stdClass[]
-     * @throws ResultException
+     * @throws TranslationBagException
      */
     public function getAllTranslations()
     {
@@ -111,10 +119,10 @@ class TranslationBag
 
         // TODO Move these exceptions to a better place?
         if (! property_exists($translation, 'beams')) {
-            throw new ResultException('DeepLy API call resulted in a malformed result - beams are missing');
+            throw new TranslationBagException('DeepLy API call resulted in a malformed result - beams are missing');
         }
         if (! is_array($translation->beams)) {
-            throw new ResultException('DeepLy API call resulted in a malformed result - beams are not an array');
+            throw new TranslationBagException('DeepLy API call resulted in a malformed result - beams are not an array');
         }
 
         return $this->result->translations[0]->beams;
