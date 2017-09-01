@@ -7,6 +7,12 @@ namespace ChrisKonnertz\DeepLy\Connector;
  */
 class CurlConnector implements ConnectorInterface
 {
+    
+    /*
+     * Set this to 0 if you do not want cURL to 
+     * try to verify the SSL certificate - it could fail
+     */
+    const CURLOPT_SSL_VERIFYPEER = 0;
 
     /**
      * Makes the API call
@@ -31,7 +37,7 @@ class CurlConnector implements ConnectorInterface
         curl_setopt($curl, CURLOPT_CUSTOMREQUEST, "POST");
         curl_setopt($curl, CURLOPT_POSTFIELDS, $jsonData);
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-        //curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, 0); // TODO Do not try to verify the SSL certificate - it could fail
+        //curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, self::CURLOPT_SSL_VERIFYPEER); 
         curl_setopt($curl, CURLOPT_HTTPHEADER, array(
                 'Content-Type: application/json',
                 'Content-Length: ' . strlen($jsonData)) // TODO use mb strlen?
