@@ -3,7 +3,7 @@
 namespace ChrisKonnertz\DeepLy\Connector;
 
 /**
- * A class that implements the ConnectorInterface connects the Deeply library with the API server.
+ * A class that implements the ConnectorInterface connects the DeepLy library with the API server.
  */
 interface ConnectorInterface
 {
