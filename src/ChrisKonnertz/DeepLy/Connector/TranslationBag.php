@@ -110,7 +110,7 @@ class TranslationBag
         $translation = $this->result->translations[0];
 
         // TODO Move these exceptions to a better place?
-        if (! in_array('beams', $translation)) {
+        if (! property_exists($translation, 'beams')) {
             throw new ResultException('DeepLy API call resulted in a malformed result - beams are missing');
         }
         if (! is_array($translation->beams)) {
