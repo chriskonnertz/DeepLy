@@ -27,12 +27,12 @@ class CurlConnector implements ConnectorInterface
     }
 
     /**
-     * Makes the API call
+     * Executes an API call
      *
      * @param  string $url The URL of the API endpoint
      * @param  array  $params The data. Will be encoded as JSON
-     * @return \stdClass Returns the decoded JSON result
-     * @throws CallException
+     * @return string The raw result as string (usually contains stringified JSON)
+     * @throws CallException Throws a call exception if the call could not be executed
      */
     public function apiCall($url, array $params)
     {
@@ -55,23 +55,13 @@ class CurlConnector implements ConnectorInterface
             'Content-Length: ' . strlen($jsonData)) // Note: We do not need mb_strlen here since JSON encodes Unicode
         );
 
-        $result = curl_exec($curl);
+        $rawResult = curl_exec($curl);
 
-        if ($result === false) {
+        if ($rawResult === false) {
             throw new CallException('cURL error during DeepLy API call: '.curl_error($curl));
         }
 
-        $result = json_decode($result);
-
-        if (property_exists($result, 'error')) {
-            if (property_exists($result->error, 'message')) {
-                throw new CallException('DeepLy API call resulted in this error: '.$result->error->message);
-            } else {
-                throw new CallException('DeepLy API call resulted in an unknown error.');
-            }
-        }
-
-        return $result;
+        return $rawResult;
     }
 
     /**

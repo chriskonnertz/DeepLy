@@ -9,12 +9,12 @@ interface ConnectorInterface
 {
 
     /**
-     * Makes the API call
+     * Executes an API call
      *
      * @param  string $url The URL of the API endpoint
      * @param  array  $params The data. Will be encoded as JSON
-     * @return \stdClass Returns the decoded JSON result
-     * @throws CallException
+     * @return string The raw result as string (usually contains stringified JSON)
+     * @throws CallException Throws a call exception if the call could not be executed
      */
     public function apiCall($url, array $params);
 
