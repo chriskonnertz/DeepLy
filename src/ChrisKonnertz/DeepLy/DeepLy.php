@@ -157,11 +157,17 @@ class DeepLy
     /**
      * Getter for the array with all supported language codes
      *
-     * @return string[]
+     * @param bool $withAuto
+     * @return \string[]
      */
-    public function getLangCodes()
+    public function getLangCodes($withAuto = true)
     {
-        return self::LANG_CODES;
+        if ($withAuto) {
+            return self::LANG_CODES;
+        }
+
+        // Attention! This only works as long as self::LANG_AUTO is the first item!
+        return array_slice(self::LANG_CODES, 1);
     }
 
     /**
