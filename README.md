@@ -41,14 +41,14 @@ echo $translatedText; // Prints "Hallo Welt!"
 DeepL(y) supports these languages:
 
 | Code | Language |
-|----|----|
-| DE | German |
-| EN | English |
-| FR | French |
-| ES | Spanish |
-| IT | Italian |
-| NL | Dutch |
-| PL | Polish|
+|------|----------|
+| DE   | German   |
+| EN   | English  |
+| FR   | French   |
+| ES   | Spanish  |
+| IT   | Italian  |
+| NL   | Dutch    |
+| PL   | Polish   |
 
 ## Current State
 
