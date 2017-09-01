@@ -6,7 +6,7 @@
 [DeepL.com](https://www.deepl.com/) is a great, new translation service. 
 It provides better translations compared to other popular translation engines.
 DeepLy is a PHP package that implements a client to interact with DeepL via their _undocumented_ API. 
-I do not know if or when they will officially publish there API but I expect them to do it. 
+I do not know if or when they will officially publish their API but I expect them to do it. 
 Meanwhile you may use this PHP client implementation to prepare your project for the official API release.
 
 ## Installation
