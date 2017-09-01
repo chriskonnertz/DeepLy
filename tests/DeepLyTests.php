@@ -29,13 +29,15 @@ class DeepLyTests extends \PHPUnit\Framework\TestCase
         $this->assertNotNull($deepLy);
     }
 
-    public function testGetConnector()
+    public function testGetAndSetConnector()
     {
         $deepLy = $this->getInstance();
 
         $connector = $deepLy->getConnector();
 
         $this->assertNotNull($connector);
+
+        $deepLy->setConnector($connector);
     }
 
     public function testTranslation()
@@ -45,6 +47,24 @@ class DeepLyTests extends \PHPUnit\Framework\TestCase
         $translatedText = $deepLy->translate('Hello world!', 'DE', 'EN');
 
         $this->assertEquals($translatedText, 'Hallo Welt!');
+    }
+
+    public function testGetResultBag()
+    {
+        $deepLy = $this->getInstance();
+
+        $resultBag = $deepLy->getResultBag();
+
+        $this->assertNull($resultBag);
+    }
+
+    public function testGetLang()
+    {
+        $deepLy = $this->getInstance();
+
+        $langCodes = $deepLy->getLangCodes();
+
+        $this->assertNotNull($langCodes);
     }
 
 }
