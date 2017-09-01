@@ -40,15 +40,18 @@ echo $translatedText; // Prints "Hallo Welt!"
 
 DeepL(y) supports these languages:
 
-| Code | Language |
-|------|----------|
-| DE   | German   |
-| EN   | English  |
-| FR   | French   |
-| ES   | Spanish  |
-| IT   | Italian  |
-| NL   | Dutch    |
-| PL   | Polish   |
+| Code | Language      |
+|------|---------------|
+| auto | _Auto detect_ |
+| DE   | German        |
+| EN   | English       |
+| FR   | French        |
+| ES   | Spanish       |
+| IT   | Italian       |
+| NL   | Dutch         |
+| PL   | Polish        |
+
+> Note that auto detection only is possible for the source language.
 
 ## Current State
 
