@@ -36,6 +36,20 @@ echo $translatedText; // Prints "Hallo Welt!"
 
 > There is a PHP demo script included. It is located at `dev/demo.php`.
 
+## Supported Languages
+
+DeepL(y) supports these languages:
+
+| Code | Language |
+|----|----|
+| DE | German |
+| EN | English |
+| FR | French |
+| ES | Spanish |
+| IT | Italian |
+| NL | Dutch |
+| PL | Polish|
+
 ## Current State
 
 I tried to rush for a first release. It works and I hope that I do not have to change the main method `translate()`
