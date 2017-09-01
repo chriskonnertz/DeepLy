@@ -79,6 +79,8 @@ class DeepLy
      */
     public function translate($text, $to = self::LANG_EN, $from = null)
     {
+        $this->resultBag = null;
+        
         if (! is_string($text)) {
             throw new \InvalidArgumentException('The $text argument has to be a string');
         }
@@ -139,7 +141,8 @@ class DeepLy
     }
 
     /**
-     * Setter for the connector object
+     * Setter for the connector object. This allows you to use another connector
+     * than the default cURL based connector.
      *
      * @param ConnectorInterface $connector
      */
@@ -160,6 +163,7 @@ class DeepLy
 
     /**
      * Getter for the result bag object. Might return null!
+     * The result bag is the raw result of the API call.
      *
      * @return \stdClass|null
      */
