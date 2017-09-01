@@ -32,24 +32,34 @@ class CurlConnector implements ConnectorInterface
             'params' => $params // Set the parameters
         ];
 
+        $data['method'] = 'asdsd';
+
         $jsonData = json_encode($data);
 
         curl_setopt($curl, CURLOPT_CUSTOMREQUEST, "POST");
         curl_setopt($curl, CURLOPT_POSTFIELDS, $jsonData);
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-        //curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, self::CURLOPT_SSL_VERIFYPEER); 
+        //curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, self::CURLOPT_SSL_VERIFYPEER);
         curl_setopt($curl, CURLOPT_HTTPHEADER, array(
-                'Content-Type: application/json',
-                'Content-Length: ' . strlen($jsonData)) // TODO use mb strlen?
+            'Content-Type: application/json',
+            'Content-Length: ' . strlen($jsonData)) // Note: We do not need mb_strlen here since JSON encodes Unicode
         );
 
         $result = curl_exec($curl);
 
         if ($result === false) {
-            throw new CallException('cURL error in DeepLy API client: '.curl_error($curl));
+            throw new CallException('cURL error during DeepLy API call: '.curl_error($curl));
         }
 
         $result = json_decode($result);
+
+        if (property_exists($result, 'error')) {
+            if (property_exists($result->error, 'message')) {
+                throw new CallException('DeepLy API call resulted in this error: '.$result->error->message);
+            } else {
+                throw new CallException('DeepLy API call resulted in an unknown error.');
+            }
+        }
 
         return $result;
     }
