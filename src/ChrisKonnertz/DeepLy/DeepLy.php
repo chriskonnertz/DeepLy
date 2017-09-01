@@ -14,6 +14,7 @@ class DeepLy
     /**
      * All supported language code constants
      */
+    const LANG_AUTO = 'auto'; // Let DeepL decide which language it is
     const LANG_DE = 'DE'; // German
     const LANG_EN = 'EN'; // English
     const LANG_FR = 'FR'; // French
@@ -38,6 +39,7 @@ class DeepLy
      * @var string[]
      */
     protected $langCodes = [
+        self::LANG_AUTO,
         self::LANG_DE,
         self::LANG_EN,
         self::LANG_FR,
@@ -73,11 +75,11 @@ class DeepLy
      *
      * @param string      $text The text you want to translate
      * @param string      $to   A self::LANG_<code> constant
-     * @param string|null $from A self::LANG_<code> constant or null for auto detect
+     * @param string|null $from A self::LANG_<code> constant
      * @return string           Returns the translated text
      * @throws \Exception
      */
-    public function translate($text, $to = self::LANG_EN, $from = null)
+    public function translate($text, $to = self::LANG_EN, $from = self::LANG_AUTO)
     {
         $this->resultBag = null;
         
@@ -90,11 +92,14 @@ class DeepLy
         if (! in_array($to, $this->langCodes)) {
             throw new \InvalidArgumentException('The $to argument has to be a valid language code');
         }
-        if (! ($from === null or is_string($from))) {
-            throw new \InvalidArgumentException('The $from argument has to be a string or null');
+        if ($to === self::LANG_AUTO) {
+            throw new \InvalidArgumentException('The $to argument cannot be "'.self::LANG_AUTO.'"');
         }
-        if (is_string($from) and ! in_array($from, $this->langCodes)) {
-            throw new \InvalidArgumentException('The $from argument has to be null or a valid language code');
+        if (! is_string($from)) {
+            throw new \InvalidArgumentException('The $from argument has to be a string ');
+        }
+        if (! in_array($from, $this->langCodes)) {
+            throw new \InvalidArgumentException('The $from argument has to a valid language code');
         }
 
         $connector = $this->connector;

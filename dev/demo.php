@@ -14,7 +14,7 @@
 
     $text = isset($_POST['text']) ? $_POST['text'] : null;
     $to = isset($_POST['to']) ? $_POST['to'] : 'DE';
-    $from = isset($_POST['from']) ? $_POST['from'] : 'EN';
+    $from = isset($_POST['from']) ? $_POST['from'] : 'auto';
 
     $deepLy = new ChrisKonnertz\DeepLy\DeepLy();
 
