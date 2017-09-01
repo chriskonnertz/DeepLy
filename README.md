@@ -61,7 +61,7 @@ More commits will come soon. There is a lot to refactor and improve.
 This is not an official package. It will be 100% open source and non-commercial. 
 DeepL is a product from DeepL GmbH. More info: [deepl.com/publisher.html](https://www.deepl.com/publisher.html)
 
-This package has been heavily inspired by [node-deepls](https://www.npmjs.com/package/node-deepl).
+This package has been heavily inspired by [node-deepls](https://github.com/pbrln/node-deepl).
 Thank you for your great work!
 
 ## General Notes
