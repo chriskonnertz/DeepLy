@@ -49,6 +49,7 @@
         h1 { margin-bottom: 40px }
         h4 { margin-top: 40px }
         form { margin-bottom: 20px }
+        textarea { resize: vertical; }
         div.success { border: 1px solid #4ce276; padding: 10px; border-top-width: 10px }
         div.error { border: 1px solid #f36362; padding: 10px; border-top-width: 10px }
         .form-select { max-width: 100px }
@@ -62,7 +63,7 @@
 
         <div class="form-element">
             <label for="text">Text:</label>
-            <input id="text" class="form-field" name="text" type="text" value="<?php echo $text !== null ? $text : 'Hello world!' ?>">
+            <textarea id="text" class="form-field" name="text" rows="4"><?php echo $text !== null ? $text : 'Hello world!' ?></textarea>
         </div>
 
         <div class="form-element">
