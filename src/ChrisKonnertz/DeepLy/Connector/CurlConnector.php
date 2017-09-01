@@ -15,6 +15,18 @@ class CurlConnector implements ConnectorInterface
     const CURLOPT_SSL_VERIFYPEER = 0;
 
     /**
+     * CurlConnector constructor.
+     */
+    public function __construct()
+    {
+        if (! $this->isCurlAvailable()) {
+            throw new \LogicException(
+                'Cannot use DeepLy\'s CurlConnector class, because the cURL PHP extension is not available.'
+            );
+        }
+    }
+
+    /**
      * Makes the API call
      *
      * @param  string $url The URL of the API endpoint
@@ -60,6 +72,16 @@ class CurlConnector implements ConnectorInterface
         }
 
         return $result;
+    }
+
+    /**
+     * Returns true if the cURL extension is available, otherwise false
+     *
+     * @return bool
+     */
+    protected function isCurlAvailable()
+    {
+        return (in_array('curl', get_loaded_extensions()));
     }
 
 }
