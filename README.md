@@ -52,7 +52,7 @@ DeepL(y) supports these languages:
 
 ## Current State
 
-I tried to rush for a first release. It works and I hope that I do not have to change the main method `translate()`
+I tried to rush towards a first release. It works and I hope that I do not have to change the main method `translate()`
 in a way that makes it incompatible with the current release. However, I cannot guarantee that. 
 More commits will come soon. There is a lot to refactor and improve.
 
