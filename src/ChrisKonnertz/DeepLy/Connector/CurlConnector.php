@@ -30,21 +30,15 @@ class CurlConnector implements ConnectorInterface
      * Executes an API call
      *
      * @param  string $url The URL of the API endpoint
-     * @param  array  $params The data. Will be encoded as JSON
+     * @param  array  $params The payload of the request. Will be encoded as JSON
      * @return string The raw result as string (usually contains stringified JSON)
      * @throws CallException Throws a call exception if the call could not be executed
      */
     public function apiCall($url, array $params)
     {
+        $jsonData = $this->createJsonData($params);
+
         $curl = curl_init($url);
-
-        $data = [
-            'jsonrpc' => '2.0', // Set the protocol version. @see https://en.wikipedia.org/wiki/JSON-RPC
-            'method' => 'LMT_handle_jobs', // Set the method of the API call
-            'params' => $params // Set the parameters
-        ];
-
-        $jsonData = json_encode($data);
 
         curl_setopt($curl, CURLOPT_CUSTOMREQUEST, "POST");
         curl_setopt($curl, CURLOPT_POSTFIELDS, $jsonData);
@@ -62,6 +56,26 @@ class CurlConnector implements ConnectorInterface
         }
 
         return $rawResult;
+    }
+
+    /**
+     * Creates a data array that the API will understand,
+     * encodes it as a JSON string and returns it.
+     *
+     * @param array $params The payload of the request. Will be encoded as JSON
+     * @return string
+     */
+    protected function createJsonData(array $params)
+    {
+        $data = [
+            'jsonrpc' => '2.0', // Set the protocol version. @see https://en.wikipedia.org/wiki/JSON-RPC
+            'method' => 'LMT_handle_jobs', // Set the method of the API call
+            'params' => $params // Set the parameters
+        ];
+
+        $jsonData = json_encode($data);
+
+        return $jsonData;
     }
 
     /**
