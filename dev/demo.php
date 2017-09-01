@@ -50,6 +50,7 @@
         h4 { margin-top: 40px }
         form { margin-bottom: 20px }
         textarea { resize: vertical; }
+        blockquote { margin-left: 0; margin-right: 0; }
         div.success { border: 1px solid #4ce276; padding: 10px; border-top-width: 10px }
         div.error { border: 1px solid #f36362; padding: 10px; border-top-width: 10px }
         .form-select { max-width: 100px }
@@ -90,7 +91,7 @@
                 try {
                     $result = $deepLy->translate($text, $to, $from);
 
-                    echo '<div class="success">Result: <code><b>' . $result . '</b></code></div>';
+                    echo '<div class="success">Result: <blockquote><b>' . $result . '</b></blockquote></div>';
                 } catch (\Exception $exception) {
                     echo '<div class="error">'.$exception->getMessage().'</div>';
                 }
@@ -100,9 +101,12 @@
     </div>
 
     <div class="block info">
-        This is not an official package.
-        It will be 100% open source and non-commercial.
-        DeepL is a product from DeepL GmbH. More info: <a href="https://www.deepl.com/publisher.html">www.deepl.com/publisher.html</a>
+        <small>
+            This is not an official package.
+            It will be 100% open source and non-commercial.
+            DeepL is a product from DeepL GmbH. More info:
+            <a href="https://www.deepl.com/publisher.html">www.deepl.com/publisher.html</a>
+        </small>
     </div>
 </body>
 </html>
