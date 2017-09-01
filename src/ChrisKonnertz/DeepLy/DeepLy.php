@@ -32,7 +32,7 @@ class DeepLy
     /**
      * Current version number
      */
-    const VERSION = '0.3';
+    const VERSION = '0.4';
 
     /**
      * Array with all supported language codes
