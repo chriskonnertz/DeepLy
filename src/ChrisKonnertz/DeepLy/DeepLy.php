@@ -60,7 +60,7 @@ class DeepLy
      *
      * @var TranslationBag|null
      */
-    protected $translationMessage = null;
+    protected $translationBag = null;
 
     /**
      * DeepLy object constructor.
@@ -128,11 +128,11 @@ class DeepLy
         // the caller of this method should catch it instead.
         $rawResult = $connector->apiCall(self::API_BASE_URL, $params);
 
-        $translationMessage = new TranslationBag($rawResult);
+        $translationBag = new TranslationBag($rawResult);
 
-        $this->translationMessage = $translationMessage;
+        $this->translationBag = $translationBag;
 
-        return $translationMessage->getBestTranslatedText();
+        return $translationBag->getBestTranslatedText();
     }
 
     /**
@@ -168,13 +168,13 @@ class DeepLy
 
     /**
      * Getter for the TranslationBag object. Might return null!
-     * The translation Message contains the raw result of the API call.
+     * The translation bag contains the raw result of the API call.
      *
      * @return TranslationBag|null
      */
-    public function getTranslationMessage()
+    public function getTranslationBag()
     {
-        return $this->translationMessage;
+        return $this->translationBag;
     }
 
 }
