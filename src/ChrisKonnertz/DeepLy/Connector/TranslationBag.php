@@ -6,6 +6,8 @@ namespace ChrisKonnertz\DeepLy\Connector;
  * This class handles the result of a successful API call.
  * It decodes the JSON result, checks its validity
  * and offers method to access the contents of the result.
+ * It implements an abstraction layer above the original
+ * result of the API call.
  */
 class TranslationBag
 {
@@ -86,9 +88,13 @@ class TranslationBag
     }
 
     /**
-     * Returns an array with all translations
+     * Returns an array with all translations.
+     * They are returned as an array of \stdClass objects.
+     * These objects have a property called "postprocessed_sentence"
+     * that contains the actual text of the translation.
      *
      * @return \stdClass[]
+     * @throws ResultException
      */
     public function getAllTranslations()
     {
@@ -96,7 +102,20 @@ class TranslationBag
             return [];
         }
 
-        // TODO Also check if beams exists and its type?
+        // Unfortunately - without an API documentation - we do not exactly know the meaning of
+        // "translations" and "beams". We assume that the style of our API call always will result
+        // in exactly one item in the translations array.
+        // Wording definition: When we speak of "translations" we actually mean beams.
+        // For now we simply ignore the existence of the translations array in the result object.
+        $translation = $this->result->translations[0];
+
+        // TODO Move these exceptions to a better place?
+        if (! in_array('beams', $translation)) {
+            throw new ResultException('DeepLy API call resulted in a malformed result - beams are missing');
+        }
+        if (! is_array($translation->beams)) {
+            throw new ResultException('DeepLy API call resulted in a malformed result - beams are not an array');
+        }
 
         return $this->result->translations[0]->beams;
     }
