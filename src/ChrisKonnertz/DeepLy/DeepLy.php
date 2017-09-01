@@ -82,7 +82,7 @@ class DeepLy
      */
     public function translate($text, $to = self::LANG_EN, $from = self::LANG_AUTO)
     {
-        $this->translationMessage = null;
+        $this->translationBag = null;
         
         if (! is_string($text)) {
             throw new \InvalidArgumentException('The $text argument has to be a string');
