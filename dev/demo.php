@@ -77,7 +77,7 @@
         <div class="form-element">
             <label for="to">To:</label>
             <div class="form-select">
-                <?php createSelect('to', array_combine($deepLy->getLangCodes(), $deepLy->getLangCodes()), $to) ?>
+                <?php createSelect('to', array_combine($deepLy->getLangCodes(false), $deepLy->getLangCodes(false)), $to) ?>
             </div>
         </div>
 
