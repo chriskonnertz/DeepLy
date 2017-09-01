@@ -25,21 +25,9 @@ class DeepLy
     const LANG_PL = 'PL'; // Polish
 
     /**
-     * The base URL of the API endpoint
-     */
-    const API_BASE_URL = 'https://www.deepl.com/jsonrpc/';
-
-    /**
-     * Current version number
-     */
-    const VERSION = '0.5';
-
-    /**
      * Array with all supported language codes
-     *
-     * @var string[]
      */
-    protected $langCodes = [
+    const LANG_CODES = [
         self::LANG_AUTO,
         self::LANG_DE,
         self::LANG_EN,
@@ -49,6 +37,16 @@ class DeepLy
         self::LANG_NL,
         self::LANG_PL,
     ];
+
+    /**
+     * The base URL of the API endpoint
+     */
+    const API_BASE_URL = 'https://www.deepl.com/jsonrpc/';
+
+    /**
+     * Current version number
+     */
+    const VERSION = '0.5';
 
     /**
      * @var ConnectorInterface
@@ -90,7 +88,7 @@ class DeepLy
         if (! is_string($to)) {
             throw new \InvalidArgumentException('The $to argument has to be a string');
         }
-        if (! in_array($to, $this->langCodes)) {
+        if (! in_array($to, self::LANG_CODES)) {
             throw new \InvalidArgumentException('The $to argument has to be a valid language code');
         }
         if ($to === self::LANG_AUTO) {
@@ -99,7 +97,7 @@ class DeepLy
         if (! is_string($from)) {
             throw new \InvalidArgumentException('The $from argument has to be a string');
         }
-        if (! in_array($from, $this->langCodes)) {
+        if (! in_array($from, self::LANG_CODES)) {
             throw new \InvalidArgumentException('The $from argument has to a valid language code');
         }
 
@@ -163,7 +161,7 @@ class DeepLy
      */
     public function getLangCodes()
     {
-        return $this->langCodes;
+        return self::LANG_CODES;
     }
 
     /**
