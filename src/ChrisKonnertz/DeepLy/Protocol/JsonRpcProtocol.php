@@ -41,15 +41,12 @@ class JsonRpcProtocol implements ProtocolInterface
      * The API will be able to understand it.
      * The result is encoded as a JSON string.
      *
-     * @param array        $payload The payload / parameters of the request. Will be encoded as JSON
-     * @param null|string  $method  The method of the API call. Null = default
+     * @param array  $payload The payload / parameters of the request. Will be encoded as JSON
+     * @param string $method  The method of the API call.
      * @return string
      */
-    public function createRequestData(array $payload, $method = null)
+    public function createRequestData(array $payload, $method)
     {
-        if (is_null($method)) {
-            $method = 'LMT_handle_jobs';
-        }
         if (! is_string($method)) {
             throw new \InvalidArgumentException('The $method argument has to be null or of type string');
         }

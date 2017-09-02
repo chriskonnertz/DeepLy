@@ -98,82 +98,69 @@ class TranslationBag
      *
      * @return string|null
      */
-    public function getBestTranslatedText()
-    {
-        // The result might contain multiple translations...
-        $rawTranslations = $this->getRawTranslations();
-
-        // ...but we simply choose the first
-        if (sizeof($rawTranslations) > 0) {
-            $firstTranslation = $rawTranslations[0]->postprocessed_sentence;
-        } else {
-            $firstTranslation = null;
-        }
-
-        return $firstTranslation;
-    }
-
-    /**
-     * Returns an array with all raw translation objects.
-     * They are returned as an array of \stdClass objects.
-     * These objects have a property called "postprocessed_sentence"
-     * that contains the actual text of the translation.
-     *
-     * @return \stdClass[]
-     * @throws TranslationBagException
-     */
-    public function getRawTranslations()
+    public function getTranslation()
     {
         if (sizeof($this->responseContent->translations) === 0) {
-            return [];
+            return null;
         }
 
-        // It is possible to let the server translate multiple "sentences" in one request.
-        // The response will have multiple items in the "translations" array.
-        // We know that the style of our API call will always result
-        // in exactly one item in the translations array so we can access it here directly.
-        $set = $this->responseContent->translations[0];
+        $translatedText = '';
 
-        // Actually the beams array contains the different translation proposals so we return it
-        return $set->beams;
+        foreach ($this->responseContent->translations as $translation) {
+            // The beams array contains 1-n translation alternatives.
+            // The first one (index 0) is the "best" one (best score)
+            $beam = $translation->beams[0];
+
+            if ($translatedText !== '') {
+                $translatedText .= ' ';
+            }
+
+            $translatedText .= $beam->postprocessed_sentence;
+        }
+
+        return $translatedText;
     }
 
     /**
-     * Returns an array (might be empty) with all translation texts.
-     * The first result (index 0) is the "best" translation (highest score),
-     * the others are alternatives.
+     * Returns the translation alternatives for a single translation / sentence
+     * as a string array. Might return an empty array.
      *
      * @return string[]
      */
-    public function getTranslations()
+    public function getTranslationAlternatives()
     {
         if (sizeof($this->responseContent->translations) === 0) {
             return [];
         }
 
-        // Unfortunately - without an API documentation - we do not exactly know the meaning of
-        // "translations" and "beams". We assume that the style of our API call always will result
-        // in exactly one item in the translations array.
-        // Wording definition: When we speak of "translations" we actually mean beams.
-        // For now we simply ignore the existence of the translations array in the result object.
-        $set = $this->responseContent->translations[0];
-
-        $beams = $set->beams;
-
-        // Not sure if sorting is necessary - but better save than sorry
-        usort($beams, function ($beamA, $beamB)
-        {
-            return ($beamA->score < $beamB->score) ? 1 : -1;
-        });
-
-        $translations = array_column($beams, 'postprocessed_sentence');
-
-        // array_column() might return null instead of an empty array so create one
-        if ($translations === null) {
-            $translations = [];
+        if (sizeof($this->responseContent->translations) > 1) {
+            throw new \LogicException('This method does not operate on more than one source text');
         }
 
-        return $translations;
+        $beams = $this->responseContent->translations[0]->beams;
+
+        $translationAlternatives = array_column($beams, 'postprocessed_sentence');
+
+        return $translationAlternatives;
+    }
+
+    /**
+     * Returns a string array (might be empty) with all translation texts.
+     * Every item in the result array will be one sentence.
+     *
+     * @return string[]
+     */
+    public function getTranslatedSentences()
+    {
+        $translatedTexts = [];
+
+        foreach ($this->responseContent->translations as $translation) {
+            // The beams array contains 1-n translation alternatives.
+            // The first one (index 0) is the "best" one (best score)
+            $translatedTexts = $translation->beams[0]->postprocessed_sentence;
+        }
+
+        return $translatedTexts;
     }
 
     /**

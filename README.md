@@ -102,8 +102,8 @@ This is not an official package. It will be 100% open source and non-commercial.
 
 DeepL is a product from DeepL GmbH. More info: [deepl.com/publisher.html](https://www.deepl.com/publisher.html)
 
-This package has been heavily inspired by [node-deepls](https://github.com/pbrln/node-deepl).
-Thank you for your great work!
+This package has been heavily inspired by [node-deepls](https://github.com/pbrln/node-deepl)
+and [deeplator](https://github.com/uinput/deeplator). Thank you for your great work!
 
 ## General Notes
 

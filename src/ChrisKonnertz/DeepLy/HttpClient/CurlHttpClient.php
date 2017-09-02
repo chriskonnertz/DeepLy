@@ -46,14 +46,15 @@ class CurlHttpClient implements HttpClientInterface
     /**
      * Executes an API call (a request) and returns the raw response data
      *
-     * @param  string $url The URL of the API endpoint
+     * @param  string $url     The URL of the API endpoint
      * @param  array  $payload The payload of the request. Will be encoded as JSON
+     * @param  string $method  The name of the method of the API call
      * @return string The raw response data as string (usually contains stringified JSON)
      * @throws CallException Throws a call exception if the call could not be executed
      */
-    public function callApi($url, array $payload)
+    public function callApi($url, array $payload, $method)
     {
-        $jsonData = $this->protocol->createRequestData($payload);
+        $jsonData = $this->protocol->createRequestData($payload, $method);
 
         $curl = curl_init($url);
 
