@@ -89,13 +89,15 @@ class DeepLy
     }
 
     /**
-     * Requests a translation from the API.
+     * Requests a translation from the API. Returns a TranslationBag object.
+     * Might throw an exception.
      *
      * @param string      $text The text you want to translate
-     * @param string      $to   A self::LANG_<code> constant
+     * @param string      $to   Optional: A self::LANG_<code> constant
      * @param string|null $from Optional: A self::LANG_<code> constant
      * @param bool        $joinSentences If true, all sentences will be joined to one long sentence
      * @return TranslationBag
+     * @throws \Exception
      */
     protected function requestTranslation($text, $to = self::LANG_EN, $from = self::LANG_AUTO, $joinSentences = false)
     {
@@ -130,7 +132,7 @@ class DeepLy
         ];
 
         if ($joinSentences) {
-            // We could add multiple items in the "jobs" item, this will result in multiple items
+            // We could add multiple items in the "jobs" item, this would result in multiple items
             // in the "translations" array in the response
             $params['jobs'] = [
                 [
@@ -178,7 +180,7 @@ class DeepLy
         }
 
         $params = [
-            // We could add multiple items in the "texts" item, this will result in multiple items
+            // We could add multiple items in the "texts" item, this would result in multiple items
             // in the "splitted_texts" array in the response
             'texts' => [
                 $text
@@ -216,11 +218,11 @@ class DeepLy
     /**
      * Translates a text.
      *
-     * @param string      $text The text you want to translate
-     * @param string      $to   A self::LANG_<code> constant
-     * @param string|null $from Optional:  A self::LANG_<code> constant
+     * @param string      $text          The text you want to translate
+     * @param string      $to            Optional: A self::LANG_<code> constant
+     * @param string|null $from          Optional: A self::LANG_<code> constant
      * @param bool        $joinSentences If true, all sentences will be joined to one long sentence
-     * @return null|string Returns the translated text or null if there is no translation
+     * @return null|string               Returns the translated text or null if there is no translation
      */
     public function translate($text, $to = self::LANG_EN, $from = self::LANG_AUTO, $joinSentences = false)
     {
@@ -233,9 +235,9 @@ class DeepLy
      * Translates one text / sentence. Returns an array of translation proposals.
      *
      * @param string      $text The text you want to translate
-     * @param string      $to   A self::LANG_<code> constant
-     * @param string|null $from A self::LANG_<code> constant
-     * @return string|null      Returns the translated text or null if there is no translation
+     * @param string      $to   Optional: A self::LANG_<code> constant
+     * @param string|null $from Optional: A self::LANG_<code> constant
+     * @return string[]         Returns translation alternatives as a string array
      * @throws \Exception
      */
     public function proposeTranslations($text, $to = self::LANG_EN, $from = self::LANG_AUTO)
@@ -246,11 +248,11 @@ class DeepLy
     }
 
     /**
-     * Translates a text. Returns an array of translation proposals.
+     * Translates a text. Returns a string array of translation sentences.
      *
      * @param string      $text The text you want to translate
-     * @param string      $to   A self::LANG_<code> constant
-     * @param string|null $from A self::LANG_<code> constant
+     * @param string      $to   Optional: A self::LANG_<code> constant
+     * @param string|null $from Optional: A self::LANG_<code> constant
      * @return string|null      Returns the translated text or null if there is no translation
      * @throws \Exception
      */
@@ -265,11 +267,11 @@ class DeepLy
      * Translates a text file. The $from argument is optional.
      * This method will throw an exception if reading the file fails.
      *
-     * @param string      $filename The name of the file you want to translate
-     * @param string      $to       A self::LANG_<code> constant
-     * @param string|null $from     A self::LANG_<code> constant
+     * @param string      $filename      The name of the file you want to translate
+     * @param string      $to            Optional: A self::LANG_<code> constant
+     * @param string|null $from          Optional: A self::LANG_<code> constant
      * @param bool        $joinSentences If true, all sentences will be joined to one long sentence
-     * @return string|null          Returns the translated text or null if there is no translation
+     * @return string|null               Returns the translated text or null if there is no translation
      * @throws \Exception
      */
     public function translateFile($filename, $to = self::LANG_EN, $from = self::LANG_AUTO, $joinSentences = false)
@@ -354,11 +356,15 @@ class DeepLy
     /**
      * Getter for the array with all supported language codes
      *
-     * @param bool $withAuto
+     * @param bool $withAuto Optional: If true, the 'auto' code will be in the returned array
      * @return \string[]
      */
     public function getLangCodes($withAuto = true)
     {
+        if (! is_bool($withAuto)) {
+            throw new \InvalidArgumentException('The $withAuto argument has to be boolean');
+        }
+
         if ($withAuto) {
             return self::LANG_CODES;
         }
@@ -369,7 +375,7 @@ class DeepLy
 
     /**
      * Getter for the TranslationBag object. Might return null!
-     * The translation bag contains the raw result of the API call.
+     * The translation bag contains the result of the API call.
      *
      * @return TranslationBag|null
      */

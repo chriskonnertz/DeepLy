@@ -61,9 +61,9 @@ class JsonRpcProtocol implements ProtocolInterface
 
         $data = [
             'jsonrpc' => self::PROTOCOL_VERSION, // Set the protocol version
-            'method' => $method, // Set the method of the JSON RPC API call
-            'params' => $payload, // Set the parameters / the payload
-            'id' => $id, // Set the ID of this request. (Omitting it would mean we do not expect a response)
+            'method'  => $method, // Set the method of the JSON RPC API call
+            'params'  => $payload, // Set the parameters / the payload
+            'id'      => $id, // Set the ID of this request. (Omitting it would mean we do not expect a response)
         ];
 
         $jsonData = json_encode($data);
@@ -76,8 +76,8 @@ class JsonRpcProtocol implements ProtocolInterface
      * Returns the payload (data) of the response or throws a ProtocolException.
      *
      * @param string $rawResponseData The data (payload) of the response as a stringified JSON string
-     * @return \stdClass The data (payload) of the response as an object structure
-     * @throws ProtocolException
+     * @return \stdClass              The data (payload) of the response as an object structure
+     * @throws ProtocolException|\InvalidArgumentException
      */
     public function processResponseData($rawResponseData)
     {
@@ -94,10 +94,10 @@ class JsonRpcProtocol implements ProtocolInterface
     }
 
     /**
-     * Validates the response data (usually a \stdClass built by json_decode)
+     * Validates that the response data (usually a \stdClass object built by json_decode)
      * is valid response data from an API call to the DeepL API using the JSON RPC protocol.
      *
-     * @param $responseData
+     * @param mixed $responseData The response data, usually a \stdClass object
      * @throws ProtocolException
      */
     protected function validateResponseData($responseData)
