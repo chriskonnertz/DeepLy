@@ -42,7 +42,7 @@ class TranslationBag
     /**
      * Verifies that the given result bag (usually a \stdClass built by json_decode)
      * is a valid result from an API call to the DeepL API.
-     * This method will not return true or false bgut throw an exception if something is invalid.
+     * This method will not return true/false but throw an exception if something is invalid.
      *
      * @param mixed|null $resultBag
      * @throws TranslationBagException
@@ -84,6 +84,21 @@ class TranslationBag
             throw new TranslationBagException(
                 'DeepLy API call resulted in a malformed result - translations are not an array'
             );
+        }
+
+        if (sizeof($resultBag->result->translations) > 0) {
+            foreach ($resultBag->result->translations as $index => $translation) {
+                if (! property_exists($translation, 'beams')) {
+                    throw new TranslationBagException(
+                        'DeepLy API call resulted in a malformed result - beams are missing for translation '.$index
+                    );
+                }
+                if (! is_array($translation->beams)) {
+                    throw new TranslationBagException(
+                        'DeepLy API call resulted in a malformed result - beams are not an array in translation '.$index
+                    );
+                }
+            }
         }
     }
 
@@ -131,15 +146,8 @@ class TranslationBag
         // For now we simply ignore the existence of the translations array in the result object.
         $translation = $this->result->translations[0];
 
-        // TODO Move these exceptions to a better place?
-        if (! property_exists($translation, 'beams')) {
-            throw new TranslationBagException('DeepLy API call resulted in a malformed result - beams are missing');
-        }
-        if (! is_array($translation->beams)) {
-            throw new TranslationBagException('DeepLy API call resulted in a malformed result - beams are not an array');
-        }
-
-        return $this->result->translations[0]->beams;
+        // Actually the beams array contains different translation proposals so we return it
+        return $translation->beams;
     }
 
     /**
