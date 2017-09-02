@@ -29,15 +29,15 @@ class DeepLyTests extends \PHPUnit\Framework\TestCase
         $this->assertNotNull($deepLy);
     }
 
-    public function testGetAndSetConnector()
+    public function testGetAndSetHttpClient()
     {
         $deepLy = $this->getInstance();
 
-        $connector = $deepLy->getConnector();
+        $httpClient = $deepLy->getHttpClient();
 
-        $this->assertNotNull($connector);
+        $this->assertNotNull($httpClient);
 
-        $deepLy->setConnector($connector);
+        $deepLy->setHttpClient($httpClient);
     }
 
     public function testTranslation()
