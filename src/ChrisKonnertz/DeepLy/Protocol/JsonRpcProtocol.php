@@ -3,7 +3,7 @@
 namespace ChrisKonnertz\DeepLy\Protocol;
 
 /**
- * JSON RPC is a remote procedure call protocol that uses JSOn to encode data.
+ * JSON RPC is a remote procedure call protocol that uses JSON to encode data.
  * This class represents this protocol.
  *
  * @see https://en.wikipedia.org/wiki/JSON-RPC
@@ -15,6 +15,16 @@ class JsonRpcProtocol implements ProtocolInterface
      * The number of the supported protocol version
      */
     const PROTOCOL_VERSION = '2.0';
+
+    /**
+     * ID of the last JSON RPC request, int >= 0 (> 0 if there was a request)
+     *
+     * WARNING: There is no absolute guarantee that this ID is unique!
+     * Use this class like a singleton to ensure uniqueness.
+     *
+     * @var int
+     */
+    static $lastId = 0;
 
     /**
      * Creates a request bag according to the JSON RPC protocol.
@@ -34,10 +44,17 @@ class JsonRpcProtocol implements ProtocolInterface
             throw new \InvalidArgumentException('The $method argument has to be null or of type string');
         }
 
+        // Every JSON RPC request has a unique ID so that the request and its response can be linked.
+        // WARNING: There is no absolute guarantee that this ID is unique!
+        // Use this class like a singleton to ensure uniqueness.
+        self::$lastId = ++self::$lastId;
+        $id = self::$lastId;
+
         $data = [
             'jsonrpc' => self::PROTOCOL_VERSION, // Set the protocol version
             'method' => $method, // Set the method of the JSON RPC API call
-            'params' => $payload // Set the parameters / the payload
+            'params' => $payload, // Set the parameters / the payload
+            'id' => $id,
         ];
 
         $jsonData = json_encode($data);
@@ -70,6 +87,7 @@ class JsonRpcProtocol implements ProtocolInterface
     /**
      * Validates the response data (usually a \stdClass built by json_decode)
      * is valid response data from an API call to the DeepL API using the JSON RPC protocol.
+     * TODO: It might make sense to validate the I of the response.
      *
      * @param $responseData
      * @throws ProtocolException
