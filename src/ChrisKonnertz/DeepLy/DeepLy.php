@@ -123,19 +123,18 @@ class DeepLy
                 ],
             ],
             'lang' => [
-                'source_lang_user_selected' => $from,
+                'source_lang' => $from,
                 'target_lang' => $to,
-            ],
-            //'priority' => -1
+            ]
         ];
 
         // The API call might throw an exception but we do not want to catch it,
         // the caller of this method should catch it instead.
         $rawResponseData = $this->httpClient->callApi(self::API_BASE_URL, $params);
 
-        $responseData = $this->protocol->processResponseData($rawResponseData);
+        $responseContent = $this->protocol->processResponseData($rawResponseData);
 
-        $translationBag = new TranslationBag($responseData);
+        $translationBag = new TranslationBag($responseContent);
 
         $this->translationBag = $translationBag;
 
@@ -156,6 +155,22 @@ class DeepLy
         $translationBag = $this->requestTranslation($text, $to, $from);
 
         return $translationBag->getBestTranslatedText();
+    }
+
+    /**
+     * Translates a text. Returns an array of translation proposals.
+     *
+     * @param string      $text The text you want to translate
+     * @param string      $to   A self::LANG_<code> constant
+     * @param string|null $from A self::LANG_<code> constant
+     * @return string|null      Returns the translated text or null if there is no translation
+     * @throws \Exception
+     */
+    public function proposeTranslations($text, $to = self::LANG_EN, $from = self::LANG_AUTO)
+    {
+        $translationBag = $this->requestTranslation($text, $to, $from);
+
+        return $translationBag->getTranslations();
     }
 
     /**

@@ -78,6 +78,14 @@ class DeepLyTests extends \PHPUnit\Framework\TestCase
         $translatedText = $deepLy->translate('Hello world!', 'DE', 'EN');
 
         $this->assertEquals($translatedText, 'Hallo Welt!');
+
+        $translationBag = $deepLy->getTranslationBag();
+
+        $this->assertNotNull($translationBag);
+
+        $translations = $translationBag->getTranslations();
+
+        $this->assertNotNull($translations);
     }
 
     public function testGetTranslationBag()
