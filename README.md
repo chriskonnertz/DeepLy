@@ -52,7 +52,7 @@ try {
 
 ```
 
-Always wrap calls of the `translate` method in a try-catch-block, because it might throw an exception if the
+Always wrap calls of the `translate` method in a try-catch-block, because they might throw an exception if the
 arguments are invalid or the API call fails. Instead of using hardcoded strings as language arguments 
 better use the language code constants of the `DeepLy` class. The class also offers methods such as
 `getLangCodes($withAuto = true)` and `supportsLangCode($langCode)`. 
