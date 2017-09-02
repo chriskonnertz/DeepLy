@@ -33,6 +33,23 @@ class TranslationBag
 
         $resultBag = json_decode($rawResult);
 
+        $this->verifyResult($resultBag);
+
+        // We only keep the inner result object, the other properties are no longer important
+        $this->result = $resultBag->result;
+    }
+
+    /**
+     * Verifies that the given result bag (usually a \stdClass built by json_decode)
+     * is a valid result from an API call to the DeepL API.
+     * This method will not return true or false bgut throw an exception if something is invalid.
+     *
+     * @param mixed|null $resultBag
+     * @throws TranslationBagException
+     * @return void
+     */
+    public function verifyResult($resultBag)
+    {
         if (! $resultBag instanceof \stdClass) {
             throw new TranslationBagException('DeepLy API call did not return JSON that describes a \stdClass object');
         }
@@ -68,9 +85,6 @@ class TranslationBag
                 'DeepLy API call resulted in a malformed result - translations are not an array'
             );
         }
-
-        // We only keep the inner result object, the other properties are no longer important
-        $this->result = $resultBag->result;
     }
 
     /**
