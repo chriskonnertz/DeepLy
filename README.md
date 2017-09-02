@@ -22,13 +22,28 @@ It is possible to use this library without using Composer but then it is necessa
 
 > This library requires PHP 5.6 or higher and the cURL extension.
 
-## Usage example
+## Usage Example
 
 ```php
 $deepLy = new ChrisKonnertz\DeepLy\DeepLy();
 
+$translatedText = $deepLy->translate('Hello world!', 'DE', 'EN');
+    
+echo $translatedText; // Prints "Hallo Welt!"
+```
+
+> There is a PHP demo script included. It is located at `dev/demo.php`.
+
+### Sophisticated Example
+
+
+```php
+use ChrisKonnertz\DeepLy\DeepLy;
+
+$deepLy = new DeepLy();
+
 try {
-    $translatedText = $deepLy->translate('Hello world!', 'DE', 'EN');
+    $translatedText = $deepLy->translate('Hello world!', DeepLy::LANG_EN, DeepLy::LANG_AUTO);
     
     echo $translatedText; // Prints "Hallo Welt!"
 } catch (\Exception $exception) {
@@ -37,7 +52,10 @@ try {
 
 ```
 
-> There is a PHP demo script included. It is located at `dev/demo.php`.
+Always wrap the `translate` method in a try-catch-block, because it might throw an exception if the
+arguments are invalid or the API call fails. Instead of using hardcoded string as language arguments 
+better use the language code constants of the `DeepLy` class. The class also offers methods such as
+`getLangCodes($withAuto = true)` and `supportsLangCode($langCode)`. 
 
 ## Supported Languages
 
