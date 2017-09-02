@@ -66,9 +66,10 @@ such as [Guzzle](https://github.com/guzzle/guzzle), create a class that implemen
  to inject it.
  
 > Note: If you experience issues with the integrated cURL client that could be solved by setting the
-`CURLOPT_SSL_VERIFYPEER` to `false`, first read this: 
-[snippets.webaware.com.au/../](https://snippets.webaware.com.au/howto/stop-turning-off-curlopt_ssl_verifypeer-and-fix-your-php-config/) 
-If it does not help try `$deepLy->getHttpClient()->setSslVerifyPeer(false)`.
+> `CURLOPT_SSL_VERIFYPEER` to `false`, first read this: 
+> [snippets.webaware.com.au/../](https://snippets.webaware.com.au/howto/stop-turning-off-curlopt_ssl_verifypeer-and-fix-your-php-config/)
+>
+> If it does not help try: `$deepLy->getHttpClient()->setSslVerifyPeer(false)`
 
 ## Current State
 
