@@ -175,24 +175,6 @@ class DeepLy
     }
 
     /**
-     * Decides if a language (code) is supported by DeepL(y).
-     * Note that 'auto' is not a valid value in this context.
-     *
-     * @param string $langCode The language code, for example 'EN'
-     * @return bool
-     */
-    public function supportsLang($langCode)
-    {
-        if (! is_string($langCode)) {
-            throw new \InvalidArgumentException('The $langCode argument has to be a string');
-        }
-
-        $supported = in_array($langCode, $this->getLangCodes(false));
-
-        return $supported;
-    }
-
-    /**
      * Getter for the protocol object
      *
      * @return ProtocolInterface
@@ -231,6 +213,24 @@ class DeepLy
     public function setHttpClient(HttpClientInterface $httpClient)
     {
         $this->httpClient = $httpClient;
+    }
+
+    /**
+     * Decides if a language (code) is supported by DeepL(y).
+     * Note that 'auto' is not a valid value in this context.
+     *
+     * @param string $langCode The language code, for example 'EN'
+     * @return bool
+     */
+    public function supportsLangCode($langCode)
+    {
+        if (! is_string($langCode)) {
+            throw new \InvalidArgumentException('The $langCode argument has to be a string');
+        }
+
+        $supported = in_array($langCode, $this->getLangCodes(false));
+
+        return $supported;
     }
 
     /**
