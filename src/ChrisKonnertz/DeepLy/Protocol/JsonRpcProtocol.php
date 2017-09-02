@@ -85,7 +85,7 @@ class JsonRpcProtocol implements ProtocolInterface
 
         $this->validateResponseData($responseData);
 
-        // We only return the inner result object, the other properties are no longer important
+        // We only return the inner result (=content) object, the other properties are no longer important
         return $responseData->result;
     }
 

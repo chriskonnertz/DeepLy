@@ -31,7 +31,7 @@ class TranslationBag
     }
 
     /**
-     * Verifies that the given response content (usually a \stdClass built by json_decode)
+     * Verifies that the given response content (usually a \stdClass built by json_decode())
      * is a valid result from an API call to the DeepL API.
      * This method will not return true/false but throw an exception if something is invalid.
      *
@@ -128,14 +128,13 @@ class TranslationBag
             return [];
         }
 
-        // Unfortunately - without an API documentation - we do not exactly know the meaning of
-        // "translations" and "beams". We assume that the style of our API call always will result
-        // in exactly one item in the translations array.
-        // Wording definition: When we speak of "translations" we actually mean beams.
-        // For now we simply ignore the existence of the translations array in the result object.
+        // It is possible to let the server translate multiple "sentences" in one request.
+        // The response will have multiple items in the "translations" array.
+        // We know that the style of our API call will always result
+        // in exactly one item in the translations array so we can access it here directly.
         $set = $this->responseContent->translations[0];
 
-        // Actually the beams array contains different translation proposals so we return it
+        // Actually the beams array contains the different translation proposals so we return it
         return $set->beams;
     }
 

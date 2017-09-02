@@ -116,11 +116,13 @@ class DeepLy
 
         // Note that this array will be converted to a data structure of arrays AND objects later on
         $params = [
+            // We can add multiple items in the "jobs" item, this will result in multiple items
+            // in the "translations" array in the response
             'jobs' => [
                 [
                     'kind' => 'default',
                     'raw_en_sentence' => $text,
-                ],
+                ]
             ],
             'lang' => [
                 'source_lang' => $from,
