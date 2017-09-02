@@ -2,6 +2,9 @@
 
 namespace ChrisKonnertz\DeepLy\HttpClient;
 
+use ChrisKonnertz\DeepLy\Protocol\ProtocolInterface;
+use ChrisKonnertz\Protocol\JsonRpcProtocol;
+
 /**
  * This class uses cURL to execute API calls.
  */
@@ -19,28 +22,39 @@ class CurlHttpClient implements HttpClientInterface
     protected $sslVerifyPeer = true;
 
     /**
-     * CurlHttpClient constructor.
+     * The protocol object that represents the protocol used for communication with the API
+     *
+     * @var ProtocolInterface
      */
-    public function __construct()
+    protected $protocol;
+
+    /**
+     * CurlHttpClient constructor.
+     *
+     * @param ProtocolInterface $protocol
+     */
+    public function __construct(ProtocolInterface $protocol)
     {
         if (! $this->isCurlAvailable()) {
             throw new \LogicException(
                 'Cannot use DeepLy\'s CurlHttpClient class, because the cURL PHP extension is not available'
             );
         }
+
+        $this->protocol = $protocol;
     }
 
     /**
      * Executes an API call
      *
      * @param  string $url The URL of the API endpoint
-     * @param  array  $params The payload of the request. Will be encoded as JSON
+     * @param  array  $payload The payload of the request. Will be encoded as JSON
      * @return string The raw result as string (usually contains stringified JSON)
      * @throws CallException Throws a call exception if the call could not be executed
      */
-    public function callApi($url, array $params)
+    public function callApi($url, array $payload)
     {
-        $jsonData = $this->createJsonData($params);
+        $jsonData = $this->protocol->createRequestData($payload);
 
         $curl = curl_init($url);
 
@@ -62,25 +76,7 @@ class CurlHttpClient implements HttpClientInterface
         return $rawResult;
     }
 
-    /**
-     * Creates a data array that the API will understand,
-     * encodes it as a JSON string and returns it.
-     *
-     * @param array $params The payload of the request. Will be encoded as JSON
-     * @return string
-     */
-    protected function createJsonData(array $params)
-    {
-        $data = [
-            'jsonrpc' => '2.0', // Set the protocol version. @see https://en.wikipedia.org/wiki/JSON-RPC
-            'method' => 'LMT_handle_jobs', // Set the method of the API call
-            'params' => $params // Set the parameters
-        ];
 
-        $jsonData = json_encode($data);
-
-        return $jsonData;
-    }
 
     /**
      * Getter for the sslVerifyPeer property

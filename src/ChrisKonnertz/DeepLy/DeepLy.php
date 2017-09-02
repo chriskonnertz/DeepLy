@@ -4,6 +4,8 @@ namespace ChrisKonnertz\DeepLy;
 
 use ChrisKonnertz\DeepLy\HttpClient\HttpClientInterface;
 use ChrisKonnertz\DeepLy\HttpClient\CurlHttpClient;
+use ChrisKonnertz\DeepLy\Protocol\JsonRpcProtocol;
+use ChrisKonnertz\DeepLy\Protocol\ProtocolInterface;
 use ChrisKonnertz\DeepLy\TranslationBag\TranslationBag;
 
 /**
@@ -49,9 +51,18 @@ class DeepLy
     const VERSION = '0.7';
 
     /**
+     * The protocol used for communication
+     *
+     * @var ProtocolInterface
+     */
+    protected $protocol;
+
+    /**
+     * The HTTP client used for communication
+     *
      * @var HttpClientInterface
      */
-    protected $httpClient = null;
+    protected $httpClient;
 
     /**
      * This property stores the result (object) of the last translation
@@ -65,8 +76,10 @@ class DeepLy
      */
     public function __construct()
     {
+        $this->protocol = new JsonRpcProtocol();
+
         // Create a default HTTP client. You can call setHttpClient() to set another HTTP client.
-        $this->httpClient = new CurlHttpClient();
+        $this->httpClient = new CurlHttpClient($this->protocol);
     }
 
     /**
@@ -153,7 +166,9 @@ class DeepLy
         $text = file_get_contents($filename);
 
         if ($text === false) {
-            throw new \RuntimeException('Could not read file with the given filename');
+            throw new \RuntimeException(
+                'Could not read file with the given filename. Does this file exists and do we have read permission?'
+            );
         }
 
         return $this->translate($text, $to, $from);
@@ -175,6 +190,26 @@ class DeepLy
         $supported = in_array($langCode, $this->getLangCodes(false));
 
         return $supported;
+    }
+
+    /**
+     * Getter for the protocol object
+     *
+     * @return ProtocolInterface
+     */
+    public function getProtocol()
+    {
+        return $this->protocol;
+    }
+
+    /**
+     * Setter for the protocol object
+     *
+     * @param ProtocolInterface $protocol
+     */
+    public function setProtocol(ProtocolInterface $protocol)
+    {
+        $this->protocol = $protocol;
     }
 
     /**

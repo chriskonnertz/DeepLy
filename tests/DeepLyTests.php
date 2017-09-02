@@ -3,6 +3,7 @@
 // Ensure backward compatibility
 // @see http://stackoverflow.com/questions/42811164/class-phpunit-framework-testcase-not-found#answer-42828632
 use ChrisKonnertz\DeepLy\HttpClient\CurlHttpClient;
+use ChrisKonnertz\DeepLy\Protocol\JsonRpcProtocol;
 
 if (!class_exists('\PHPUnit\Framework\TestCase')) {
     class_alias('\PHPUnit_Framework_TestCase', '\PHPUnit\Framework\TestCase');
@@ -31,6 +32,17 @@ class DeepLyTests extends \PHPUnit\Framework\TestCase
         $this->assertNotNull($deepLy);
     }
 
+    public function testGetAndSetProtocol()
+    {
+        $deepLy = $this->getInstance();
+
+        $protocol = $deepLy->getProtocol();
+
+        $this->assertNotNull($protocol);
+
+        $deepLy->setProtocol($protocol);
+    }
+
     public function testGetAndSetHttpClient()
     {
         $deepLy = $this->getInstance();
@@ -44,7 +56,9 @@ class DeepLyTests extends \PHPUnit\Framework\TestCase
 
     public function testGetAndSetSslVerifyPeer()
     {
-        $curlHttpClient = new CurlHttpClient();
+        $protocol = new JsonRpcProtocol();
+
+        $curlHttpClient = new CurlHttpClient($protocol);
 
         $currentValue = $curlHttpClient->getSslVerifyPeer();
 
