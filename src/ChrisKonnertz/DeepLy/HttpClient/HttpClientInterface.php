@@ -12,13 +12,13 @@ interface HttpClientInterface
 {
 
     /**
-     * Executes an API call
+     * Executes an API call (a request) and returns the raw response data
      *
      * @param  string $url The URL of the API endpoint
-     * @param  array  $params The data. Will be encoded as JSON
-     * @return string The raw result as string (usually contains stringified JSON)
+     * @param  array  $payload The payload of the request. Will be encoded as JSON
+     * @return string The raw response data as string (usually contains stringified JSON)
      * @throws CallException Throws a call exception if the call could not be executed
      */
-    public function callApi($url, array $params);
+    public function callApi($url, array $payload);
 
 }
