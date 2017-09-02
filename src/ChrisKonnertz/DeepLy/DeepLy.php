@@ -135,9 +135,11 @@ class DeepLy
 
         // The API call might throw an exception but we do not want to catch it,
         // the caller of this method should catch it instead.
-        $rawResult = $this->httpClient->callApi(self::API_BASE_URL, $params);
+        $rawResponseData = $this->httpClient->callApi(self::API_BASE_URL, $params);
 
-        $translationBag = new TranslationBag($rawResult);
+        $responseData = $this->protocol->processResponseData($rawResponseData);
+
+        $translationBag = new TranslationBag($responseData);
 
         $this->translationBag = $translationBag;
 

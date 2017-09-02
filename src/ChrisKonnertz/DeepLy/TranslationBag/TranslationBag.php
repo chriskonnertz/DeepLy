@@ -3,91 +3,71 @@
 namespace ChrisKonnertz\DeepLy\TranslationBag;
 
 /**
- * This class handles the result of a successful API call.
- * It decodes the JSON result, checks its validity
- * and offers method to access the contents of the result.
- * It implements an abstraction layer above the original
- * result of the API call.
+ * This class handles the response data of a successful API translation call.
+ * It checks its validity and offers method to access the contents of the response data.
+ * It implements an abstraction layer above the original response data of the API call.
  */
 class TranslationBag
 {
 
     /**
-     * The (inner) result object from the API call
+     * The response data (payload) object of a translation API call
      *
      * @var \stdClass
      */
-    protected $result;
+    protected $responseData;
 
     /**
      * TranslationBag constructor.
      *
-     * @param string $rawResult The raw result of an API call as string (usually contains stringified JSON)
+     * @param \stdClass $responseData The response data (payload) of a translation API call
      * @throws TranslationBagException
      */
-    public function __construct($rawResult)
+    public function __construct(\stdClass $responseData)
     {
-        if (! is_string($rawResult)) {
-            throw new \InvalidArgumentException('The $rawResult argument has to be a string');
-        }
+        $this->verifyResponseData($responseData);
 
-        $resultBag = json_decode($rawResult);
-
-        $this->verifyResult($resultBag);
-
-        // We only keep the inner result object, the other properties are no longer important
-        $this->result = $resultBag->result;
+        $this->responseData = $responseData;
     }
 
     /**
-     * Verifies that the given result bag (usually a \stdClass built by json_decode)
+     * Verifies that the given response data (usually a \stdClass built by json_decode)
      * is a valid result from an API call to the DeepL API.
      * This method will not return true/false but throw an exception if something is invalid.
      *
-     * @param mixed|null $resultBag
+     * @param mixed|null $responseData The response data (payload) of a translation API call
      * @throws TranslationBagException
      * @return void
      */
-    public function verifyResult($resultBag)
+    public function verifyResponseData($responseData)
     {
-        if (! $resultBag instanceof \stdClass) {
+        if (! $responseData instanceof \stdClass) {
             throw new TranslationBagException('DeepLy API call did not return JSON that describes a \stdClass object');
         }
 
-        if (property_exists($resultBag, 'error')) {
-            if ($resultBag->error instanceof \stdClass and property_exists($resultBag->error, 'message')) {
+        if (property_exists($responseData, 'error')) {
+            if ($responseData->error instanceof \stdClass and property_exists($responseData->error, 'message')) {
                 throw new TranslationBagException(
-                    'DeepLy API call resulted in this error: '.$resultBag->error->message
+                    'DeepLy API call resulted in this error: '.$responseData->error->message
                 );
             } else {
                 throw new TranslationBagException('DeepLy API call resulted in an unknown error');
             }
         }
 
-        if (! property_exists($resultBag, 'result')) {
-            throw new TranslationBagException(
-                'DeepLy API call resulted in a malformed result - inner result is missing'
-            );
-        }
-        if (! $resultBag->result instanceof \stdClass) {
-            throw new TranslationBagException(
-                'DeepLy API call resulted in a malformed result - inner result is not a \stdClass'
-            );
-        }
-
-        if (! property_exists($resultBag->result, 'translations')) {
+        if (! property_exists($responseData, 'translations')) {
             throw new TranslationBagException(
                 'DeepLy API call resulted in a malformed result - translations are missing'
             );
         }
-        if (! is_array($resultBag->result->translations)) {
+        if (! is_array($responseData->translations)) {
             throw new TranslationBagException(
                 'DeepLy API call resulted in a malformed result - translations are not an array'
             );
         }
 
-        if (sizeof($resultBag->result->translations) > 0) {
-            foreach ($resultBag->result->translations as $index => $translation) {
+        if (sizeof($responseData->translations) > 0) {
+            foreach ($responseData->translations as $index => $translation) {
                 if (! property_exists($translation, 'beams')) {
                     throw new TranslationBagException(
                         'DeepLy API call resulted in a malformed result - beams are missing for translation '.$index
@@ -103,7 +83,7 @@ class TranslationBag
     }
 
     /**
-     * Returns a translation from the result of the API call.
+     * Returns a translation from the response data of the API call.
      * Tries to return the "best" translation (which is the first).
      * Returns null if there is no translation.
      *
@@ -135,7 +115,7 @@ class TranslationBag
      */
     public function getAllTranslations()
     {
-        if (sizeof($this->result->translations) === 0) {
+        if (sizeof($this->responseData->translations) === 0) {
             return [];
         }
 
@@ -144,20 +124,20 @@ class TranslationBag
         // in exactly one item in the translations array.
         // Wording definition: When we speak of "translations" we actually mean beams.
         // For now we simply ignore the existence of the translations array in the result object.
-        $translation = $this->result->translations[0];
+        $translation = $this->responseData->translations[0];
 
         // Actually the beams array contains different translation proposals so we return it
         return $translation->beams;
     }
 
     /**
-     * Getter for the (inner) result object from the API call.
+     * Getter for the response data (payload) object of a translation API call
      *
      * @return \stdClass
      */
-    public function getResult()
+    public function getResponseData()
     {
-        return $this->result;
+        return $this->responseData;
     }
 
 }
