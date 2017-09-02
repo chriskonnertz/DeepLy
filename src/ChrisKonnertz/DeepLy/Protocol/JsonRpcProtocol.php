@@ -20,6 +20,13 @@ class JsonRpcProtocol implements ProtocolInterface
     const PROTOCOL_VERSION = '2.0';
 
     /**
+     * Validate the ID of the response?
+     *
+     * TODO Use modifiable property instead?
+     */
+    const VALIDATE_ID = true;
+
+    /**
      * ID of the last JSON RPC request, int >= 0 (> 0 if there was a request)
      *
      * WARNING: There is no absolute guarantee that this ID is unique!
@@ -27,7 +34,7 @@ class JsonRpcProtocol implements ProtocolInterface
      *
      * @var int
      */
-    static $lastId = 0;
+    protected static $lastId = 0;
 
     /**
      * Creates a request bag according to the JSON RPC protocol.
@@ -92,7 +99,6 @@ class JsonRpcProtocol implements ProtocolInterface
     /**
      * Validates the response data (usually a \stdClass built by json_decode)
      * is valid response data from an API call to the DeepL API using the JSON RPC protocol.
-     * TODO: It might make sense to validate the I of the response.
      *
      * @param $responseData
      * @throws ProtocolException
@@ -119,7 +125,7 @@ class JsonRpcProtocol implements ProtocolInterface
                 $message = 'DeepLy API call resulted in this error: '.$responseData->error->message;
 
                 // Note: According to the specs the error object can include a data property,
-                // but the DeepL API (usually) does not seem to add it.
+                // but the DeepL API (usually) does not seem to add it. We will completely ignore it.
                 if (property_exists($responseData->error, 'code') and is_int($responseData->error->code)) {
                     // Note: The meanings of the codes are defined in the protocol specification
                     throw new ProtocolException($message, $responseData->error->code);
@@ -128,6 +134,15 @@ class JsonRpcProtocol implements ProtocolInterface
                 }
             } else {
                 throw new ProtocolException('DeepLy API call resulted in an unknown error');
+            }
+        }
+
+        if (self::VALIDATE_ID) {
+            if (! property_exists($responseData, 'id')) {
+                throw new ProtocolException('DeepLy API call resulted in a malformed result - ID property is missing');
+            }
+            if ($responseData->id !== self::$lastId) {
+                throw new ProtocolException('DeepLy API call resulted in an invalid result - the ID is invalid');
             }
         }
 
