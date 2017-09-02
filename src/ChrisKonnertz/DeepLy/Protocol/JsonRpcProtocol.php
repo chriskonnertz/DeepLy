@@ -47,6 +47,8 @@ class JsonRpcProtocol implements ProtocolInterface
         // Every JSON RPC request has a unique ID so that the request and its response can be linked.
         // WARNING: There is no absolute guarantee that this ID is unique!
         // Use this class like a singleton to ensure uniqueness.
+        // Note: According to the specs of the JSON RPC protocol we can send any type,
+        // so uniqid() - which returns a string - should work. Unfortunately it does not.
         self::$lastId = ++self::$lastId;
         $id = self::$lastId;
 
