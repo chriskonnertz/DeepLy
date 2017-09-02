@@ -7,12 +7,16 @@ namespace ChrisKonnertz\DeepLy\HttpClient;
  */
 class CurlHttpClient implements HttpClientInterface
 {
-    
-    /*
-     * Set this to 0 if you do not want cURL to 
+
+    /**
+     * Set this to false if you do not want cURL to
      * try to verify the SSL certificate - it could fail
+     *
+     * @see https://snippets.webaware.com.au/howto/stop-turning-off-curlopt_ssl_verifypeer-and-fix-your-php-config/
+     *
+     * @var bool
      */
-    const CURLOPT_SSL_VERIFYPEER = 0;
+    protected $sslVerifyPeer = true;
 
     /**
      * CurlHttpClient constructor.
@@ -40,10 +44,10 @@ class CurlHttpClient implements HttpClientInterface
 
         $curl = curl_init($url);
 
-        curl_setopt($curl, CURLOPT_CUSTOMREQUEST, "POST");
+        curl_setopt($curl, CURLOPT_CUSTOMREQUEST, 'POST');
         curl_setopt($curl, CURLOPT_POSTFIELDS, $jsonData);
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-        //curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, self::CURLOPT_SSL_VERIFYPEER);
+        curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, $this->sslVerifyPeer);
         curl_setopt($curl, CURLOPT_HTTPHEADER, array(
             'Content-Type: application/json',
             'Content-Length: ' . strlen($jsonData)) // Note: We do not need mb_strlen here since JSON encodes Unicode
@@ -76,6 +80,30 @@ class CurlHttpClient implements HttpClientInterface
         $jsonData = json_encode($data);
 
         return $jsonData;
+    }
+
+    /**
+     * Getter for the sslVerifyPeer property
+     *
+     * @return bool
+     */
+    public function getSslVerifyPeer()
+    {
+        return $this->sslVerifyPeer;
+    }
+
+    /**
+     * Setter for the sslVerifyPeer property
+     *
+     * @param bool $sslVerifyPeer
+     */
+    public function setSslVerifyPeer($sslVerifyPeer)
+    {
+        if (! is_bool($sslVerifyPeer)) {
+            throw new \InvalidArgumentException('$sslVerifyPeer has to be boolean');
+        }
+        
+        $this->sslVerifyPeer = $sslVerifyPeer;
     }
 
     /**
