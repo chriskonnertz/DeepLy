@@ -83,18 +83,18 @@ class DeepLy
     }
 
     /**
-     * Translates a text. The $from argument is optional.
+     * Requests a translation from the API.
      *
      * @param string      $text The text you want to translate
      * @param string      $to   A self::LANG_<code> constant
-     * @param string|null $from A self::LANG_<code> constant
-     * @return string|null      Returns the translated text or null if there is no translation
+     * @param string|null $from Optional: A self::LANG_<code> constant
+     * @return TranslationBag
      * @throws \Exception
      */
-    public function translate($text, $to = self::LANG_EN, $from = self::LANG_AUTO)
+    protected function requestTranslation($text, $to = self::LANG_EN, $from = self::LANG_AUTO)
     {
         $this->translationBag = null;
-        
+
         if (! is_string($text)) {
             throw new \InvalidArgumentException('The $text argument has to be a string');
         }
@@ -123,14 +123,10 @@ class DeepLy
                 ],
             ],
             'lang' => [
-                'user_preferred_langs' => [
-                    $from,
-                    $to
-                ],
                 'source_lang_user_selected' => $from,
                 'target_lang' => $to,
             ],
-            'priority' => -1
+            //'priority' => -1
         ];
 
         // The API call might throw an exception but we do not want to catch it,
@@ -142,6 +138,22 @@ class DeepLy
         $translationBag = new TranslationBag($responseData);
 
         $this->translationBag = $translationBag;
+
+        return $translationBag;
+    }
+
+    /**
+     * Translates a text.
+     *
+     * @param string      $text The text you want to translate
+     * @param string      $to   A self::LANG_<code> constant
+     * @param string|null $from Optional:  A self::LANG_<code> constant
+     * @return string|null      Returns the translated text or null if there is no translation
+     * @throws \Exception
+     */
+    public function translate($text, $to = self::LANG_EN, $from = self::LANG_AUTO)
+    {
+        $translationBag = $this->requestTranslation($text, $to, $from);
 
         return $translationBag->getBestTranslatedText();
     }

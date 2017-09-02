@@ -92,11 +92,11 @@ class TranslationBag
     public function getBestTranslatedText()
     {
         // The result might contain multiple translations...
-        $allTranslations = $this->getAllTranslations();
+        $rawTranslations = $this->getRawTranslations();
 
         // ...but we simply choose the first
-        if (sizeof($allTranslations) > 0) {
-            $firstTranslation = $allTranslations[0]->postprocessed_sentence;
+        if (sizeof($rawTranslations) > 0) {
+            $firstTranslation = $rawTranslations[0]->postprocessed_sentence;
         } else {
             $firstTranslation = null;
         }
@@ -105,7 +105,7 @@ class TranslationBag
     }
 
     /**
-     * Returns an array with all translations.
+     * Returns an array with all raw translation objects.
      * They are returned as an array of \stdClass objects.
      * These objects have a property called "postprocessed_sentence"
      * that contains the actual text of the translation.
@@ -113,7 +113,7 @@ class TranslationBag
      * @return \stdClass[]
      * @throws TranslationBagException
      */
-    public function getAllTranslations()
+    public function getRawTranslations()
     {
         if (sizeof($this->responseData->translations) === 0) {
             return [];
@@ -124,10 +124,10 @@ class TranslationBag
         // in exactly one item in the translations array.
         // Wording definition: When we speak of "translations" we actually mean beams.
         // For now we simply ignore the existence of the translations array in the result object.
-        $translation = $this->responseData->translations[0];
+        $set = $this->responseData->translations[0];
 
         // Actually the beams array contains different translation proposals so we return it
-        return $translation->beams;
+        return $set->beams;
     }
 
     /**
