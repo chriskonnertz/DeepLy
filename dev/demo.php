@@ -89,7 +89,7 @@
 
             if ($text !== null and $to !== null) {
                 try {
-                    $result = $deepLy->translate($text, $to, $from, true);
+                    $result = $deepLy->translate($text, $to, $from);
 
                     echo '<div class="success">Result: <blockquote><b>' . $result . '</b></blockquote></div>';
                 } catch (\Exception $exception) {
