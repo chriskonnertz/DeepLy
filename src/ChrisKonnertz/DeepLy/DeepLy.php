@@ -2,8 +2,8 @@
 
 namespace ChrisKonnertz\DeepLy;
 
-use ChrisKonnertz\DeepLy\Connector\ConnectorInterface;
-use ChrisKonnertz\DeepLy\Connector\CurlConnector;
+use ChrisKonnertz\DeepLy\HttpClient\HttpClientInterface;
+use ChrisKonnertz\DeepLy\HttpClient\CurlHttpClient;
 use ChrisKonnertz\DeepLy\TranslationBag\TranslationBag;
 
 /**
@@ -46,12 +46,12 @@ class DeepLy
     /**
      * Current version number
      */
-    const VERSION = '0.5';
+    const VERSION = '0.6';
 
     /**
-     * @var ConnectorInterface
+     * @var HttpClientInterface
      */
-    protected $connector = null;
+    protected $httpClient = null;
 
     /**
      * This property stores the result (object) of the last translation
@@ -65,8 +65,8 @@ class DeepLy
      */
     public function __construct()
     {
-        // Create a default connector. You can call setConnector() to set another connector.
-        $this->connector = new CurlConnector();
+        // Create a default HTTP client. You can call setHttpClient() to set another HTTP client.
+        $this->httpClient = new CurlHttpClient();
     }
 
     /**
@@ -101,8 +101,6 @@ class DeepLy
             throw new \InvalidArgumentException('The $from argument has to a valid language code');
         }
 
-        $connector = $this->connector;
-
         // Note that this array will be converted to a data structure of arrays AND objects later on
         $params = [
             'jobs' => [
@@ -124,7 +122,7 @@ class DeepLy
 
         // The API call might throw an exception but we do not want to catch it,
         // the caller of this method should catch it instead.
-        $rawResult = $connector->apiCall(self::API_BASE_URL, $params);
+        $rawResult = $this->httpClient->callApi(self::API_BASE_URL, $params);
 
         $translationBag = new TranslationBag($rawResult);
 
@@ -134,24 +132,24 @@ class DeepLy
     }
 
     /**
-     * Getter for the connector object
+     * Getter for the HTTP client object
      *
-     * @return ConnectorInterface
+     * @return HttpClientInterface
      */
-    public function getConnector()
+    public function getHttpClient()
     {
-        return $this->connector;
+        return $this->httpClient;
     }
 
     /**
-     * Setter for the connector object. This allows you to use another connector
-     * than the default cURL based connector.
+     * Setter for the HTTP client object. This allows you to use another HTTP client
+     * than the default cURL based HTTP client.
      *
-     * @param ConnectorInterface $connector
+     * @param HttpClientInterface $httpClient
      */
-    public function setConnector(ConnectorInterface $connector)
+    public function setHttpClient(HttpClientInterface $httpClient)
     {
-        $this->connector = $connector;
+        $this->httpClient = $httpClient;
     }
 
     /**

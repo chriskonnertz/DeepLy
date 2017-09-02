@@ -20,7 +20,7 @@ class TranslationBag
     protected $result;
 
     /**
-     * CurlConnector constructor.
+     * TranslationBag constructor.
      *
      * @param string $rawResult The raw result of an API call as string (usually contains stringified JSON)
      * @throws TranslationBagException

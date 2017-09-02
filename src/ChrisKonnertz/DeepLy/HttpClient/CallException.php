@@ -1,6 +1,6 @@
 <?php
 
-namespace ChrisKonnertz\DeepLy\Connector;
+namespace ChrisKonnertz\DeepLy\HttpClient;
 
 /*
  * This exception might be thrown during an API call

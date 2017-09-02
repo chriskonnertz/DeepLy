@@ -1,11 +1,11 @@
 <?php
 
-namespace ChrisKonnertz\DeepLy\Connector;
+namespace ChrisKonnertz\DeepLy\HttpClient;
 
 /**
  * This class uses cURL to execute API calls.
  */
-class CurlConnector implements ConnectorInterface
+class CurlHttpClient implements HttpClientInterface
 {
     
     /*
@@ -15,13 +15,13 @@ class CurlConnector implements ConnectorInterface
     const CURLOPT_SSL_VERIFYPEER = 0;
 
     /**
-     * CurlConnector constructor.
+     * CurlHttpClient constructor.
      */
     public function __construct()
     {
         if (! $this->isCurlAvailable()) {
             throw new \LogicException(
-                'Cannot use DeepLy\'s CurlConnector class, because the cURL PHP extension is not available'
+                'Cannot use DeepLy\'s CurlHttpClient class, because the cURL PHP extension is not available'
             );
         }
     }
@@ -34,7 +34,7 @@ class CurlConnector implements ConnectorInterface
      * @return string The raw result as string (usually contains stringified JSON)
      * @throws CallException Throws a call exception if the call could not be executed
      */
-    public function apiCall($url, array $params)
+    public function callApi($url, array $params)
     {
         $jsonData = $this->createJsonData($params);
 
