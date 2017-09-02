@@ -29,9 +29,14 @@ It is possible to use this library without using Composer but then it is necessa
 ```php
 $deepLy = new ChrisKonnertz\DeepLy\DeepLy();
 
-$translatedText = $deepLy->translate('Hello world!', 'DE', 'EN');
+try {
+    $translatedText = $deepLy->translate('Hello world!', 'DE', 'EN');
+    
+    echo $translatedText; // Prints "Hallo Welt!"
+} catch (\Exception $exception) {
+    echo $exception->getMessage();
+}
 
-echo $translatedText; // Prints "Hallo Welt!"
 ```
 
 > There is a PHP demo script included. It is located at `dev/demo.php`.
