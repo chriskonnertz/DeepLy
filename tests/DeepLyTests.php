@@ -88,7 +88,7 @@ class DeepLyTests extends \PHPUnit\Framework\TestCase
     {
         $deepLy = $this->getInstance();
 
-        $langCodes = $deepLy->getLangCodes();
+        $langCodes = $deepLy->getLangCodes(false);
         $langCode = current($langCodes);
 
         $supportsLang = $deepLy->supportsLang($langCode);
