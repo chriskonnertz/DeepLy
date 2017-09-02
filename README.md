@@ -6,8 +6,6 @@
 [DeepL.com](https://www.deepl.com/) is a great, new translation service. 
 It provides better translations compared to other popular translation engines.
 DeepLy is a PHP package that implements a client to interact with DeepL via their _undocumented_ API. 
-I do not know if or when they will officially publish their API but I expect them to do it. 
-Meanwhile you may use this PHP client implementation to prepare your project for the official API release.
 
 ## Installation
 
@@ -73,6 +71,9 @@ such as [Guzzle](https://github.com/guzzle/guzzle), create a class that implemen
 
 ## Current State
 
+I do not know if or when they will officially publish their API but I expect them to do it. 
+Meanwhile you may use this PHP client implementation to prepare your project for the official API release.
+
 I tried to rush towards a first release. It works and I hope that I do not have to change the main method `translate()`
 in a way that makes it incompatible with the current release. However, I cannot guarantee that. 
 More commits will come soon. There is a lot to refactor and improve.
@@ -80,6 +81,7 @@ More commits will come soon. There is a lot to refactor and improve.
 ## Disclaimer
 
 This is not an official package. It will be 100% open source and non-commercial. 
+
 DeepL is a product from DeepL GmbH. More info: [deepl.com/publisher.html](https://www.deepl.com/publisher.html)
 
 This package has been heavily inspired by [node-deepls](https://github.com/pbrln/node-deepl).
