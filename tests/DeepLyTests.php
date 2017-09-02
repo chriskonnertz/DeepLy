@@ -83,9 +83,9 @@ class DeepLyTests extends \PHPUnit\Framework\TestCase
 
         $this->assertNotNull($translationBag);
 
-        $tanslatedSentences = $translationBag->getTranslatedSentences();
+        $translatedSentences = $translationBag->getTranslatedSentences();
 
-        $this->assertNotNull($tanslatedSentences);
+        $this->assertNotNull($translatedSentences);
     }
 
     public function testGetTranslationBag()
