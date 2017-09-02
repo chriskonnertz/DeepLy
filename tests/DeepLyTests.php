@@ -2,6 +2,8 @@
 
 // Ensure backward compatibility
 // @see http://stackoverflow.com/questions/42811164/class-phpunit-framework-testcase-not-found#answer-42828632
+use ChrisKonnertz\DeepLy\HttpClient\CurlHttpClient;
+
 if (!class_exists('\PHPUnit\Framework\TestCase')) {
     class_alias('\PHPUnit_Framework_TestCase', '\PHPUnit\Framework\TestCase');
 }
@@ -38,6 +40,21 @@ class DeepLyTests extends \PHPUnit\Framework\TestCase
         $this->assertNotNull($httpClient);
 
         $deepLy->setHttpClient($httpClient);
+    }
+
+    public function testGetAndSetSslVerifyPeer()
+    {
+        $curlHttpClient = new CurlHttpClient();
+
+        $currentValue = $curlHttpClient->getSslVerifyPeer();
+
+        $this->assertNotNull($currentValue);
+
+        $curlHttpClient->setSslVerifyPeer($currentValue);
+
+        $internalValue = $curlHttpClient->getSslVerifyPeer();
+
+        $this->assertEquals($currentValue, $internalValue);
     }
 
     public function testTranslation()

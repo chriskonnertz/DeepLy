@@ -64,6 +64,9 @@ Per default DeepLy uses a minimalistic HTTP client based on cURL. If you want to
 such as [Guzzle](https://github.com/guzzle/guzzle), create a class that implements the `HttpClient\HttpClientInterface`
  and makes use of the methods of the alternative HTTP client. Then use `$deepLy->setHttpClient($youHttpClient)`
  to inject it.
+ 
+> Note: If you experience issues with the integrated cURL client that could be solved by setting the
+`CURLOPT_SSL_VERIFYPEER` to `false`, try `$deepLy->getHttpClient()->setSslVerifyPeer(false)`
 
 ## Current State
 
