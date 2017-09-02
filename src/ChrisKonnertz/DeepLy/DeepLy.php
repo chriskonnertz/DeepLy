@@ -41,6 +41,12 @@ class DeepLy
     ];
 
     /**
+     * Constants that are names of methods that can be called with the API
+     */
+    const METHOD_TRANSLATE = 'LMT_handle_jobs'; // Translates a text
+    const METHOD_SPLIT = 'LMT_split_into_sentences'; // Splits a text into sentences
+
+    /**
      * The base URL of the API endpoint
      */
     const API_BASE_URL = 'https://www.deepl.com/jsonrpc/';
@@ -146,7 +152,7 @@ class DeepLy
 
         // The API call might throw an exception but we do not want to catch it,
         // the caller of this method should catch it instead.
-        $rawResponseData = $this->httpClient->callApi(self::API_BASE_URL, $params, 'LMT_handle_jobs');
+        $rawResponseData = $this->httpClient->callApi(self::API_BASE_URL, $params, self::METHOD_TRANSLATE);
 
         $responseContent = $this->protocol->processResponseData($rawResponseData);
 
@@ -182,7 +188,7 @@ class DeepLy
             ]
         ];
 
-        $rawResponseData = $this->httpClient->callApi(self::API_BASE_URL, $params, 'LMT_split_into_sentences');
+        $rawResponseData = $this->httpClient->callApi(self::API_BASE_URL, $params, self::METHOD_SPLIT);
 
         $responseContent = $this->protocol->processResponseData($rawResponseData);
 
