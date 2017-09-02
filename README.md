@@ -101,7 +101,7 @@ More commits will come soon. There is a lot to refactor and improve.
 
 ## Disclaimer
 
-This is not an official package. It will be 100% open source and non-commercial. 
+This is not an official package. It is 100% open source and non-commercial. 
 
 DeepL is a product from DeepL GmbH. More info: [deepl.com/publisher.html](https://www.deepl.com/publisher.html)
 
