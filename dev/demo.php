@@ -103,7 +103,7 @@
     <div class="block info">
         <small>
             This is not an official package.
-            It will be 100% open source and non-commercial.
+            It is 100% open source and non-commercial.
             DeepL is a product from DeepL GmbH. More info:
             <a href="https://www.deepl.com/publisher.html">www.deepl.com/publisher.html</a>
         </small>
