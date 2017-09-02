@@ -58,6 +58,13 @@ DeepL(y) supports these languages:
 
 > Note that auto detection only is possible for the source language.
 
+## HTTP Client
+
+Per default DeepLy uses a minimalistic HTTP client based on cURL. If you want to use another HTTP client, 
+such as [Guzzle](https://github.com/guzzle/guzzle), create a class that implements the `HttpClient\HttpClientInterface`
+ and makes use of the methods of the alternative HTTP client. Then use `$deepLy->setHttpClient($youHttpClient)`
+ to inject it.
+
 ## Current State
 
 I tried to rush towards a first release. It works and I hope that I do not have to change the main method `translate()`
