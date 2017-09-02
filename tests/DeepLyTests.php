@@ -84,4 +84,16 @@ class DeepLyTests extends \PHPUnit\Framework\TestCase
         $this->assertNotNull($langCodes);
     }
 
+    public function testGetSupported()
+    {
+        $deepLy = $this->getInstance();
+
+        $langCodes = $deepLy->getLangCodes();
+        $langCode = current($langCodes);
+
+        $supportsLang = $deepLy->supportsLang($langCode);
+
+        $this->assertEquals($supportsLang, true);
+    }
+
 }
