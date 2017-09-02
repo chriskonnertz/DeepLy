@@ -1,6 +1,6 @@
 {
   "name": "chriskonnertz/deeply",
-  "description": "DeepLy is a simple PHP client for the DeepL.com API",
+  "description": "DeepLy is a PHP client for the DeepL.com translation API",
   "keywords": ["deepl", "deeply", "translation", "translate", "language", "api", "client", "english", "german", "french"],
   "license": "MIT",
   "authors": [
