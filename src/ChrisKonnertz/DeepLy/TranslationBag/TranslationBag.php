@@ -80,7 +80,7 @@ class TranslationBag
                 }
 
                 foreach ($translation->beams as $beamIndex => $beam) {
-                    if (! property_exists($translation, 'postprocessed_sentence')) {
+                    if (! property_exists($beam, 'postprocessed_sentence')) {
                         throw new TranslationBagException(
                             'DeepLy API call resulted in a malformed result - '.
                             'postprocessed_sentence property is missing in beam '.$index
