@@ -5,7 +5,7 @@ namespace ChrisKonnertz\DeepLy\HttpClient;
 /*
  * This exception might be thrown during an API call
  */
-class CallException extends \Exception
+class CallException extends \RuntimeException
 {
 
 }
