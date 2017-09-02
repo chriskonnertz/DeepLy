@@ -132,6 +132,34 @@ class DeepLy
     }
 
     /**
+     * Translates a text file. The $from argument is optional.
+     * This method will throw an exception if reading the file fails.
+     *
+     * @param string      $filename The name of the file you want to translate
+     * @param string      $to       A self::LANG_<code> constant
+     * @param string|null $from     A self::LANG_<code> constant
+     * @return string|null          Returns the translated text or null if there is no translation
+     * @throws \Exception
+     */
+    public function translateFile($filename, $to = self::LANG_EN, $from = self::LANG_AUTO)
+    {
+        if (! is_string($filename)) {
+            throw new \InvalidArgumentException('The $filename argument has to be a string');
+        }
+        if (! is_readable($filename)) {
+            throw new \InvalidArgumentException('Could not read file with the given filename');
+        }
+
+        $text = file_get_contents($filename);
+
+        if ($text === false) {
+            throw new \RuntimeException('Could not read file with the given filename');
+        }
+
+        return $this->translate($text, $to, $from);
+    }
+
+    /**
      * Getter for the HTTP client object
      *
      * @return HttpClientInterface
