@@ -6,7 +6,10 @@ namespace ChrisKonnertz\DeepLy\Protocol;
  * JSON RPC is a remote procedure call protocol that uses JSON to encode data.
  * This class represents this protocol.
  *
- * @see https://en.wikipedia.org/wiki/JSON-RPC
+ * Note: This class does not support batch requests/responses
+ *
+ * @see https://en.wikipedia.org/wiki/JSON-RPC (Wikipedia article)
+ * @see http://www.jsonrpc.org/specification (Official specification)
  */
 class JsonRpcProtocol implements ProtocolInterface
 {
@@ -47,7 +50,7 @@ class JsonRpcProtocol implements ProtocolInterface
         // Every JSON RPC request has a unique ID so that the request and its response can be linked.
         // WARNING: There is no absolute guarantee that this ID is unique!
         // Use this class like a singleton to ensure uniqueness.
-        // Note: According to the specs of the JSON RPC protocol we can send any type,
+        // Note: According to the specs of the JSON RPC protocol we can send an int or a string,
         // so uniqid() - which returns a string - should work. Unfortunately it does not.
         self::$lastId = ++self::$lastId;
         $id = self::$lastId;
@@ -56,7 +59,7 @@ class JsonRpcProtocol implements ProtocolInterface
             'jsonrpc' => self::PROTOCOL_VERSION, // Set the protocol version
             'method' => $method, // Set the method of the JSON RPC API call
             'params' => $payload, // Set the parameters / the payload
-            'id' => $id,
+            'id' => $id, // Set the ID of this request. (Omitting it would mean we do not expect a response)
         ];
 
         $jsonData = json_encode($data);
@@ -113,9 +116,16 @@ class JsonRpcProtocol implements ProtocolInterface
 
         if (property_exists($responseData, 'error')) {
             if ($responseData->error instanceof \stdClass and property_exists($responseData->error, 'message')) {
-                throw new ProtocolException(
-                    'DeepLy API call resulted in this error: '.$responseData->error->message
-                );
+                $message = 'DeepLy API call resulted in this error: '.$responseData->error->message;
+
+                // Note: According to the specs the error object can include a data property,
+                // but the DeepL API (usually) does not seem to add it.
+                if (property_exists($responseData->error, 'code') and is_int($responseData->error->code)) {
+                    // Note: The meanings of the codes are defined in the protocol specification
+                    throw new ProtocolException($message, $responseData->error->code);
+                } else {
+                    throw new ProtocolException($message);
+                }
             } else {
                 throw new ProtocolException('DeepLy API call resulted in an unknown error');
             }
