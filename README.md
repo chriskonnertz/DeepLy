@@ -57,6 +57,9 @@ arguments are invalid or the API call fails. Instead of using hardcoded strings 
 better use the language code constants of the `DeepLy` class. The class also offers methods such as
 `getLangCodes($withAuto = true)` and `supportsLangCode($langCode)`. 
 
+You may use the `proposeTranslations` method if you want to get alternative translations for a text. 
+This method cannot operate on more than one sentence at once. 
+
 ## Supported Languages
 
 DeepL(y) supports these languages:
@@ -78,7 +81,7 @@ DeepL(y) supports these languages:
 
 Per default DeepLy uses a minimalistic HTTP client based on cURL. If you want to use another HTTP client, 
 such as [Guzzle](https://github.com/guzzle/guzzle), create a class that implements the `HttpClient\HttpClientInterface`
- and makes use of the methods of the alternative HTTP client. Then use `$deepLy->setHttpClient($youHttpClient)`
+ and makes use of the methods of the alternative HTTP client. Then use `$deepLy->setHttpClient($yourHttpClient)`
  to inject it.
  
 > Note: If you experience issues with the integrated cURL client that could be solved by setting the
