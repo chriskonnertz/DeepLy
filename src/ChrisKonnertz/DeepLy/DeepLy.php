@@ -162,7 +162,8 @@ class DeepLy
      *
      * @param string $text The text you want to split into sentences
      * @param string $from Optional: A self::LANG_<code> constant
-     * @return string[]
+     * @return \string[]
+     * @throws \Exception
      */
     public function splitText($text, $from = self::LANG_AUTO)
     {
@@ -185,7 +186,18 @@ class DeepLy
 
         $responseContent = $this->protocol->processResponseData($rawResponseData);
 
-        // TODO Validate
+        // TODO Move this exceptions to a better place?
+        if (! property_exists($responseContent, 'splitted_texts')) {
+            throw new \Exception(
+                'DeepLy API call resulted in a malformed result - splitted_texts property is missing'
+            );
+        }
+        if (! is_array($responseContent->splitted_texts)) {
+            throw new \Exception(
+                'DeepLy API call resulted in a malformed result - splitted_texts property is not an array'
+            );
+        }
+
         $splitTexts = $responseContent->splitted_texts;
 
         // We know the $splitTexts has only one item, because we have
