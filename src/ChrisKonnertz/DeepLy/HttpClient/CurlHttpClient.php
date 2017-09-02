@@ -3,7 +3,6 @@
 namespace ChrisKonnertz\DeepLy\HttpClient;
 
 use ChrisKonnertz\DeepLy\Protocol\ProtocolInterface;
-use ChrisKonnertz\Protocol\JsonRpcProtocol;
 
 /**
  * This class uses cURL to execute API calls.
@@ -45,11 +44,11 @@ class CurlHttpClient implements HttpClientInterface
     }
 
     /**
-     * Executes an API call
+     * Executes an API call (a request) and returns the raw response data
      *
      * @param  string $url The URL of the API endpoint
      * @param  array  $payload The payload of the request. Will be encoded as JSON
-     * @return string The raw result as string (usually contains stringified JSON)
+     * @return string The raw response data as string (usually contains stringified JSON)
      * @throws CallException Throws a call exception if the call could not be executed
      */
     public function callApi($url, array $payload)
@@ -62,21 +61,22 @@ class CurlHttpClient implements HttpClientInterface
         curl_setopt($curl, CURLOPT_POSTFIELDS, $jsonData);
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, $this->sslVerifyPeer);
+
+        // Note: We assume that we always will use JSON to encode data
+        // so this is independent from the protocol that we actually use
         curl_setopt($curl, CURLOPT_HTTPHEADER, array(
             'Content-Type: application/json',
             'Content-Length: ' . strlen($jsonData)) // Note: We do not need mb_strlen here since JSON encodes Unicode
         );
 
-        $rawResult = curl_exec($curl);
+        $rawResponseData = curl_exec($curl);
 
-        if ($rawResult === false) {
+        if ($rawResponseData === false) {
             throw new CallException('cURL error during DeepLy API call: '.curl_error($curl));
         }
 
-        return $rawResult;
+        return $rawResponseData;
     }
-
-
 
     /**
      * Getter for the sslVerifyPeer property
