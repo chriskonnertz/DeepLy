@@ -31,6 +31,7 @@ class JsonRpcProtocol implements ProtocolInterface
      *
      * WARNING: There is no absolute guarantee that this ID is unique!
      * Use this class like a singleton to ensure uniqueness.
+     * [ TODO This comment is too vague ]
      *
      * @var int
      */
