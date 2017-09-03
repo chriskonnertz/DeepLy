@@ -97,7 +97,7 @@ Meanwhile you may use this PHP client on your own risk. Also note that their API
 
 I tried to rush towards a first release. It works and I hope that I do not have to change the main method `translate()`
 in a way that makes it incompatible with the current release. However, I cannot guarantee that. 
-More commits might come soon. There still is space for improvements.
+More commits might come soon. There still is space for [improvements](https://github.com/chriskonnertz/DeepLy/issues/1).
 
 ## Disclaimer
 
