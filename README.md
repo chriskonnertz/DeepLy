@@ -92,12 +92,12 @@ such as [Guzzle](https://github.com/guzzle/guzzle), create a class that implemen
 
 ## Current State
 
-I do not know if or when they will officially publish their API but I expect them to do it. 
-Meanwhile you may use this PHP client implementation to prepare your project for the official API release.
+I do not know if or when DeepL.com will officially release their API but I expect them to do it at some point. 
+Meanwhile you may use this PHP client on your own risk. Also note that their API responds quite slow. This might be intentional.
 
 I tried to rush towards a first release. It works and I hope that I do not have to change the main method `translate()`
 in a way that makes it incompatible with the current release. However, I cannot guarantee that. 
-More commits will come soon. There is a lot to refactor and improve.
+More commits might come soon. There still is space for improvements.
 
 ## Disclaimer
 
