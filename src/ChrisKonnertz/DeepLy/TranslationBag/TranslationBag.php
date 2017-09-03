@@ -4,7 +4,7 @@ namespace ChrisKonnertz\DeepLy\TranslationBag;
 
 /**
  * This class handles the response content of a successful API translation call.
- * It checks its validity and offers method to access the contents of the response content.
+ * It checks its validity and offers methods to access the contents of the response content.
  * It implements an abstraction layer above the original response of the API call.
  */
 class TranslationBag
