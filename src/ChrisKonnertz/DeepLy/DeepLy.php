@@ -337,18 +337,20 @@ class DeepLy
 
     /**
      * Decides if a language (code) is supported by DeepL(y).
-     * Note that 'auto' is not a valid value in this context.
+     * Note that 'auto' is not a valid value in this context
+     * except you explicitly set the $allowAuto param to true
      *
-     * @param string $langCode The language code, for example 'EN'
+     * @param string $langCode  The language code, for example 'EN'
+     * @param bool   $allowAuto Opional: If false, 'auto' is not a valid langue
      * @return bool
      */
-    public function supportsLangCode($langCode)
+    public function supportsLangCode($langCode, $allowAuto = false)
     {
         if (! is_string($langCode)) {
             throw new \InvalidArgumentException('The $langCode argument has to be a string');
         }
 
-        $supported = in_array($langCode, $this->getLangCodes(false));
+        $supported = in_array($langCode, $this->getLangCodes($allowAuto));
 
         return $supported;
     }
