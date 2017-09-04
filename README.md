@@ -94,6 +94,7 @@ such as [Guzzle](https://github.com/guzzle/guzzle), create a class that implemen
 
 I do not know if or when DeepL.com will officially release their API but I expect them to do it at some point. 
 Meanwhile you may use this PHP client on your own risk. Also note that their API responds quite slow. This might be intentional.
+Nevertheless the API is reliable. I had not a single issue amongst hundreds of API calls.
 
 I tried to rush towards a first release. It works and I hope that I do not have to change the main method `translate()`
 in a way that makes it incompatible with the current release. However, I cannot guarantee that. 
@@ -101,7 +102,7 @@ More commits might come soon. There still is space for [improvements](https://gi
 
 ## Disclaimer
 
-This is not an official package. It is 100% open source and non-commercial. 
+This is not an official package. It is 100% open source and non-commercial. The API of DeepL.com is free as well but this might change in the future.
 
 DeepL is a product from DeepL GmbH. More info: [deepl.com/publisher.html](https://www.deepl.com/publisher.html)
 
