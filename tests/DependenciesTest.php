@@ -64,7 +64,6 @@ class DependenciesTest extends \PHPUnit\Framework\TestCase
 
     public function testTranslationAfterResponse()
     {
-        // Note that the ID has to be 0
         $rawResponseData = '{"id":0,"jsonrpc":"2.0","result":{"source_lang":"EN","source_lang_is_confident":0,'.
             '"target_lang":"DE","translations":[{"beams":[{"num_symbols":4,"postprocessed_sentence":"Hallo Welt!"'.
             ',"score":-5000.23,"totalLogProb":-0.577141},{"num_symbols":5,"postprocessed_sentence":"Hallo, Welt!",'.
@@ -73,6 +72,10 @@ class DependenciesTest extends \PHPUnit\Framework\TestCase
             '"timeSentToEndpoint":15,"total_time_endpoint":1}]}}';
 
         $protocol = new JsonRpcProtocol();
+
+        // To avoid problems with the ID being set to another value by previous use of the class.
+        // Yeah, there we have it, the "singleton is an anti pattern" thing...
+        $protocol->setValidateId(false);
 
         $responseContent = $protocol->processResponseData($rawResponseData);
 
