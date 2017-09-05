@@ -139,7 +139,7 @@ class JsonRpcProtocol implements ProtocolInterface
                 throw new ProtocolException('DeepLy API call resulted in a malformed result - ID property is missing');
             }
             if ($responseData->id !== self::$lastId) {
-                throw new ProtocolException('DeepLy API call resulted in an invalid result - the ID is invalid');
+                throw new ProtocolException('DeepLy API call resulted in an invalid result - ID is not '.self::$lastId);
             }
         }
 
