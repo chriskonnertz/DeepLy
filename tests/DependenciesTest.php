@@ -64,7 +64,8 @@ class DependenciesTest extends \PHPUnit\Framework\TestCase
 
     public function testTranslationAfterResponse()
     {
-        $rawResponseData = '{"id":2,"jsonrpc":"2.0","result":{"source_lang":"EN","source_lang_is_confident":0,'.
+        // Note that the ID has to be 0
+        $rawResponseData = '{"id":0,"jsonrpc":"2.0","result":{"source_lang":"EN","source_lang_is_confident":0,'.
             '"target_lang":"DE","translations":[{"beams":[{"num_symbols":4,"postprocessed_sentence":"Hallo Welt!"'.
             ',"score":-5000.23,"totalLogProb":-0.577141},{"num_symbols":5,"postprocessed_sentence":"Hallo, Welt!",'.
             '"score":-5001.52,"totalLogProb":-3.94975},{"num_symbols":4,"postprocessed_sentence":"Hello World!"'.
