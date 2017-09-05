@@ -21,17 +21,16 @@ class JsonRpcProtocol implements ProtocolInterface
 
     /**
      * Validate the ID of the response?
+     * JSON RPC supports to add an ID to each request/response
+     * that can be used to identify a request/response pair.
      *
-     * TODO Use modifiable property instead?
+     * @var bool
      */
-    const VALIDATE_ID = true;
+    protected $validateId = true;
 
     /**
      * ID of the last JSON RPC request, int >= 0 (> 0 if there was a request)
-     *
-     * WARNING: There is no absolute guarantee that this ID is unique!
-     * Use this class like a singleton to ensure uniqueness.
-     * [ TODO This comment is too vague ]
+     * We use a static var here so multiple instances of this class should not interfere.
      *
      * @var int
      */
@@ -135,7 +134,7 @@ class JsonRpcProtocol implements ProtocolInterface
             }
         }
 
-        if (self::VALIDATE_ID) {
+        if ($this->validateId) {
             if (! property_exists($responseData, 'id')) {
                 throw new ProtocolException('DeepLy API call resulted in a malformed result - ID property is missing');
             }
@@ -154,6 +153,30 @@ class JsonRpcProtocol implements ProtocolInterface
                 'DeepLy API call resulted in a malformed result - inner result property is not a \stdClass'
             );
         }
+    }
+
+    /**
+     * Validate the ID of the response?
+     *
+     * @return bool
+     */
+    public function getValidateId()
+    {
+        return $this->validateId;
+    }
+
+    /**
+     * Setter for the validateId property
+     *
+     * @param bool $validateId
+     */
+    public function setValidateId($validateId)
+    {
+        if (! is_bool($validateId)) {
+            throw new \InvalidArgumentException('The $validateId argument must be a boolean');
+        }
+
+        $this->validateId = $validateId;
     }
 
 }
