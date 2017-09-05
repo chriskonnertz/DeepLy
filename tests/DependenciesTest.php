@@ -45,7 +45,7 @@ class DependenciesTest extends \PHPUnit\Framework\TestCase
     {
         $protocol = new JsonRpcProtocol();
 
-        $result = $protocol->createRequestData([], ['method' => 'something']);
+        $result = $protocol->createRequestData([], 'some_method');
         $this->assertNotNull($result);
     }
 
