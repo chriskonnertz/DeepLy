@@ -10,9 +10,10 @@ if (!class_exists('\PHPUnit\Framework\TestCase')) {
 }
 
 /**
- * Class DeepLyTests for tests with PHPUnit.
+ * Class MainClassTest for tests with PHPUnit.
+ * The focus is here on the main class of this library, ChrisKonnertz\DeePly.
  */
-class DeepLyTests extends \PHPUnit\Framework\TestCase
+class MainClassTest extends \PHPUnit\Framework\TestCase
 {
 
     /**
@@ -52,23 +53,6 @@ class DeepLyTests extends \PHPUnit\Framework\TestCase
         $this->assertNotNull($httpClient);
 
         $deepLy->setHttpClient($httpClient);
-    }
-
-    public function testGetAndSetSslVerifyPeer()
-    {
-        $protocol = new JsonRpcProtocol();
-
-        $curlHttpClient = new CurlHttpClient($protocol);
-
-        $currentValue = $curlHttpClient->getSslVerifyPeer();
-
-        $this->assertNotNull($currentValue);
-
-        $curlHttpClient->setSslVerifyPeer($currentValue);
-
-        $internalValue = $curlHttpClient->getSslVerifyPeer();
-
-        $this->assertEquals($currentValue, $internalValue);
     }
 
     public function testTranslation()
