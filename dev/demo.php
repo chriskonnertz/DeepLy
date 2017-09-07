@@ -126,7 +126,7 @@
                     }
                 });
 
-                request.open('GET', 'demo_ping.php', true);
+                request.open('GET', 'demo_ping.php?simple=1', true);
                 request.send();
             }
         )();
