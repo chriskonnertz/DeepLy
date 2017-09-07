@@ -55,6 +55,16 @@ class MainClassTest extends \PHPUnit\Framework\TestCase
         $deepLy->setHttpClient($httpClient);
     }
 
+    public function testPing()
+    {
+        $deepLy = $this->getInstance();
+
+        // We assume that the ping will be successful.
+        // If the API is not reachable this will not be the case, of course,
+        // and the test will fail.
+        $deepLy->ping();
+    }
+
     public function testTranslation()
     {
         $deepLy = $this->getInstance();

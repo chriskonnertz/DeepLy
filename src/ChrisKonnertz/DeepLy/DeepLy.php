@@ -2,6 +2,7 @@
 
 namespace ChrisKonnertz\DeepLy;
 
+use ChrisKonnertz\DeepLy\HttpClient\CallException;
 use ChrisKonnertz\DeepLy\HttpClient\HttpClientInterface;
 use ChrisKonnertz\DeepLy\HttpClient\CurlHttpClient;
 use ChrisKonnertz\DeepLy\Protocol\JsonRpcProtocol;
@@ -292,6 +293,18 @@ class DeepLy
         }
 
         return $this->translate($text, $to, $from, $joinSentences);
+    }
+
+    /**
+     * Pings the API server. Returns the duration in seconds
+     * or throws an exception if no valid response was received.
+     *
+     * @return float
+     * @throws CallException
+     */
+    public function ping()
+    {
+        return $this->httpClient->ping(self::API_BASE_URL);
     }
 
     /**

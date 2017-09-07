@@ -51,10 +51,9 @@
         form { margin-bottom: 20px }
         textarea { resize: vertical; }
         blockquote { margin-left: 0; margin-right: 0; }
-        div.success { border: 1px solid #4ce276; padding: 10px; border-top-width: 10px }
-        div.error { border: 1px solid #f36362; padding: 10px; border-top-width: 10px }
+        div.success { border: 1px solid #4ce276; margin: 20px 0; padding: 10px; border-top-width: 10px }
+        div.error { border: 1px solid #f36362; margin: 20px 0; padding: 10px; border-top-width: 10px }
         .form-select { max-width: 100px }
-        .info { margin-top: 20px }
     </style>
 </head>
 <body>
@@ -80,6 +79,8 @@
                 <?php createSelect('to', array_combine($deepLy->getLangCodes(false), $deepLy->getLangCodes(false)), $to) ?>
             </div>
         </div>
+
+        <div id="ping-result"></div>
 
         <input type="submit" value="Translate" class="button">
     </form>
@@ -108,5 +109,27 @@
             <a href="https://www.deepl.com/publisher.html">www.deepl.com/publisher.html</a>
         </small>
     </div>
+
+    <script>
+        (
+            // Use DeepLy's ping method to check if the APi server is reachable
+            function()
+            {
+                var request = new XMLHttpRequest();
+
+                request.addEventListener('readystatechange', function() {
+                    if (request.readyState === XMLHttpRequest.DONE) {
+                        if (request.status !== 200 || request.responseText !== '1') {
+                            document.getElementById("ping-result").innerHTML =
+                                '<div class="error"><b>WARNING:</b> API seems unreachable.</div>';
+                        }
+                    }
+                });
+
+                request.open('GET', 'demo_ping.php', true);
+                request.send();
+            }
+        )();
+    </script>
 </body>
 </html>

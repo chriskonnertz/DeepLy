@@ -54,6 +54,13 @@ class CurlHttpClient implements HttpClientInterface
      */
     public function callApi($url, array $payload, $method)
     {
+        if (! is_string($url)) {
+            throw new \InvalidArgumentException('$url has to be a string');
+        }
+        if (! is_string($method)) {
+            throw new \InvalidArgumentException('$method has to be a string');
+        }
+
         $jsonData = $this->protocol->createRequestData($payload, $method);
 
         $curl = curl_init($url);
@@ -72,11 +79,50 @@ class CurlHttpClient implements HttpClientInterface
 
         $rawResponseData = curl_exec($curl);
 
+        // TODO: Do not use a new session for each request?
+        curl_close($curl);
+
         if ($rawResponseData === false) {
             throw new CallException('cURL error during DeepLy API call: '.curl_error($curl));
         }
 
         return $rawResponseData;
+    }
+
+    /**
+     * Pings the API server. Returns the duration in seconds
+     * or throws an exception if no valid response was received.
+     *
+     * @param string $url
+     * @return float
+     * @throws CallException
+     */
+    public function ping($url)
+    {
+        if (! is_string($url)) {
+            throw new \InvalidArgumentException('$url has to be a string');
+        }
+
+        $curl = curl_init($url);
+
+        // Do not "include the header in the output" (from the docs).
+        // Should make the response a little bit smaller.
+        curl_setopt($curl, CURLOPT_HEADER, 0);
+        // Set this to true, because if it is set to false, curl will echo the result!
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+
+        $startedAt = microtime(true);
+        $result = curl_exec($curl);
+        $duration = microtime(true) - $startedAt;
+
+        // TODO: Do not use a new session for each request?
+        curl_close($curl);
+
+        if ($result === false) {
+            throw new CallException('Did not get a valid response. API seems to be unreachable.');
+        }
+
+        return $duration;
     }
 
     /**

@@ -22,4 +22,14 @@ interface HttpClientInterface
      */
     public function callApi($url, array $payload, $method);
 
+    /**
+     * Pings the API server. Returns the duration in seconds
+     * or throws an exception if no valid response was received.
+     *
+     * @param string $url
+     * @return float
+     * @throws CallException
+     */
+    public function ping($url);
+
 }
