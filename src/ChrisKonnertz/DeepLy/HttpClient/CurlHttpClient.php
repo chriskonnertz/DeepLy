@@ -36,7 +36,7 @@ class CurlHttpClient implements HttpClientInterface
     {
         if (! $this->isCurlAvailable()) {
             throw new \LogicException(
-                'Cannot use DeepLy\'s CurlHttpClient class, because the cURL PHP extension is not available'
+                'Cannot create instance of DeepLy\'s CurlHttpClient class, because the cURL PHP extension is not available'
             );
         }
 
@@ -49,8 +49,8 @@ class CurlHttpClient implements HttpClientInterface
      * @param  string $url     The URL of the API endpoint
      * @param  array  $payload The payload of the request. Will be encoded as JSON
      * @param  string $method  The name of the method of the API call
-     * @return string The raw response data as string (usually contains stringified JSON)
-     * @throws CallException Throws a call exception if the call could not be executed
+     * @return string          The raw response data as string (usually contains stringified JSON)
+     * @throws CallException   Throws a call exception if the call could not be executed
      */
     public function callApi($url, array $payload, $method)
     {
@@ -150,7 +150,7 @@ class CurlHttpClient implements HttpClientInterface
     }
 
     /**
-     * Returns true if the cURL extension is available, otherwise false
+     * Returns true if the cURL extension is available, false otherwise
      *
      * @return bool
      */
