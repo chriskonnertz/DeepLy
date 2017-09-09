@@ -84,9 +84,10 @@ class DeepLy
      */
     public function __construct()
     {
+        // Create the default protocol object. You may call setProtocol() to switch it.
         $this->protocol = new JsonRpcProtocol();
 
-        // Create a default HTTP client. You can call setHttpClient() to set another HTTP client.
+        // Create the default HTTP client. You may call setHttpClient() to set another HTTP client.
         $this->httpClient = new CurlHttpClient($this->protocol);
     }
 
