@@ -21,7 +21,7 @@ class TranslationBag
      * TranslationBag constructor.
      *
      * @param \stdClass $responseContent The response content (payload) of a translation API call
-     * @throws TranslationBagException
+     * @throws BagException
      */
     public function __construct(\stdClass $responseContent)
     {
@@ -36,32 +36,32 @@ class TranslationBag
      * This method will not return true/false but throw an exception if something is invalid.
      *
      * @param mixed|null $responseContent The response content (payload) of a translation API call
-     * @throws TranslationBagException
+     * @throws BagException
      * @return void
      */
     public function verifyResponseContent($responseContent)
     {
         if (! $responseContent instanceof \stdClass) {
-            throw new TranslationBagException('DeepLy API call did not return JSON that describes a \stdClass object');
+            throw new BagException('DeepLy API call did not return JSON that describes a \stdClass object');
         }
 
         if (property_exists($responseContent, 'error')) {
             if ($responseContent->error instanceof \stdClass and property_exists($responseContent->error, 'message')) {
-                throw new TranslationBagException(
+                throw new BagException(
                     'DeepLy API call resulted in this error: '.$responseContent->error->message
                 );
             } else {
-                throw new TranslationBagException('DeepLy API call resulted in an unknown error');
+                throw new BagException('DeepLy API call resulted in an unknown error');
             }
         }
 
         if (! property_exists($responseContent, 'translations')) {
-            throw new TranslationBagException(
+            throw new BagException(
                 'DeepLy API call resulted in a malformed result - translations are missing'
             );
         }
         if (! is_array($responseContent->translations)) {
-            throw new TranslationBagException(
+            throw new BagException(
                 'DeepLy API call resulted in a malformed result - translations are not an array'
             );
         }
@@ -69,19 +69,19 @@ class TranslationBag
         if (sizeof($responseContent->translations) > 0) {
             foreach ($responseContent->translations as $index => $translation) {
                 if (! property_exists($translation, 'beams')) {
-                    throw new TranslationBagException(
+                    throw new BagException(
                         'DeepLy API call resulted in a malformed result - beams are missing for translation '.$index
                     );
                 }
                 if (! is_array($translation->beams)) {
-                    throw new TranslationBagException(
+                    throw new BagException(
                         'DeepLy API call resulted in a malformed result - beams are not an array in translation '.$index
                     );
                 }
 
                 foreach ($translation->beams as $beamIndex => $beam) {
                     if (! property_exists($beam, 'postprocessed_sentence')) {
-                        throw new TranslationBagException(
+                        throw new BagException(
                             'DeepLy API call resulted in a malformed result - '.
                             'postprocessed_sentence property is missing in beam '.$index
                         );

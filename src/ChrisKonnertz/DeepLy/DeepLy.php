@@ -7,6 +7,7 @@ use ChrisKonnertz\DeepLy\HttpClient\HttpClientInterface;
 use ChrisKonnertz\DeepLy\HttpClient\CurlHttpClient;
 use ChrisKonnertz\DeepLy\Protocol\JsonRpcProtocol;
 use ChrisKonnertz\DeepLy\Protocol\ProtocolInterface;
+use ChrisKonnertz\DeepLy\ResponseBag\SentencesBag;
 use ChrisKonnertz\DeepLy\ResponseBag\TranslationBag;
 
 /**
@@ -55,7 +56,7 @@ class DeepLy
     /**
      * Current version number
      */
-    const VERSION = '1.1.0';
+    const VERSION = '1.1.1';
 
     /**
      * The protocol used for communication
@@ -171,7 +172,7 @@ class DeepLy
      *
      * @param string $text The text you want to split into sentences
      * @param string $from Optional: A self::LANG_<code> constant
-     * @return \string[]
+     * @return string[]
      * @throws \Exception
      */
     public function splitText($text, $from = self::LANG_AUTO)
@@ -195,23 +196,9 @@ class DeepLy
 
         $responseContent = $this->protocol->processResponseData($rawResponseData);
 
-        // TODO Move this exceptions to a better place?
-        if (! property_exists($responseContent, 'splitted_texts')) {
-            throw new \Exception(
-                'DeepLy API call resulted in a malformed result - splitted_texts property is missing'
-            );
-        }
-        if (! is_array($responseContent->splitted_texts)) {
-            throw new \Exception(
-                'DeepLy API call resulted in a malformed result - splitted_texts property is not an array'
-            );
-        }
+        $splitTextBag = new SentencesBag($responseContent);
 
-        $splitTexts = $responseContent->splitted_texts;
-
-        // We know the $splitTexts has only one item, because we have
-        // added only one item to text "texts" array earlier on
-        $sentences = $splitTexts[0];
+        $sentences = $splitTextBag->getAllSentences();
 
         return $sentences;
     }
