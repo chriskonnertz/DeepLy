@@ -120,7 +120,7 @@
                 request.addEventListener('readystatechange', function() {
                     if (request.readyState === XMLHttpRequest.DONE) {
                         if (request.status !== 200 || request.responseText !== '1') {
-                            document.getElementById("ping-result").innerHTML =
+                            document.getElementById('ping-result').innerHTML =
                                 '<div class="error"><b>WARNING:</b> API seems unreachable.</div>';
                         }
                     }
