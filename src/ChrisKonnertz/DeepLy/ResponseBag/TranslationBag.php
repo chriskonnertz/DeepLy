@@ -1,6 +1,6 @@
 <?php
 
-namespace ChrisKonnertz\DeepLy\TranslationBag;
+namespace ChrisKonnertz\DeepLy\ResponseBag;
 
 /**
  * This class handles the response content of a successful API translation call.

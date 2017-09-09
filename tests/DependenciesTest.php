@@ -1,11 +1,11 @@
 <?php
 
-// Ensure backward compatibility
-// @see http://stackoverflow.com/questions/42811164/class-phpunit-framework-testcase-not-found#answer-42828632
 use ChrisKonnertz\DeepLy\HttpClient\CurlHttpClient;
 use ChrisKonnertz\DeepLy\Protocol\JsonRpcProtocol;
-use ChrisKonnertz\DeepLy\TranslationBag\TranslationBag;
+use ChrisKonnertz\DeepLy\ResponseBag\TranslationBag;
 
+// Ensure backward compatibility
+// @see http://stackoverflow.com/questions/42811164/class-phpunit-framework-testcase-not-found#answer-42828632
 if (!class_exists('\PHPUnit\Framework\TestCase')) {
     class_alias('\PHPUnit_Framework_TestCase', '\PHPUnit\Framework\TestCase');
 }

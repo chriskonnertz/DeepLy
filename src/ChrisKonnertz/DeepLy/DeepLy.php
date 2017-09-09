@@ -7,7 +7,7 @@ use ChrisKonnertz\DeepLy\HttpClient\HttpClientInterface;
 use ChrisKonnertz\DeepLy\HttpClient\CurlHttpClient;
 use ChrisKonnertz\DeepLy\Protocol\JsonRpcProtocol;
 use ChrisKonnertz\DeepLy\Protocol\ProtocolInterface;
-use ChrisKonnertz\DeepLy\TranslationBag\TranslationBag;
+use ChrisKonnertz\DeepLy\ResponseBag\TranslationBag;
 
 /**
  * This is the main class. Call its translate() method to translate text.
