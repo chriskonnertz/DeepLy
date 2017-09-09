@@ -91,6 +91,42 @@ class DeepLy
     }
 
     /**
+     * Uses the DeepL API to split a text into a string array of sentences.
+     *
+     * @param string $text The text you want to split into sentences
+     * @param string $from Optional: A self::LANG_<code> constant
+     * @return string[]
+     * @throws \Exception
+     */
+    public function splitText($text, $from = self::LANG_AUTO)
+    {
+        if (! is_string($text)) {
+            throw new \InvalidArgumentException('The $text argument has to be a string');
+        }
+
+        $params = [
+            // We could add multiple items in the "texts" item, this would result in multiple items
+            // in the "splitted_texts" array in the response
+            'texts' => [
+                $text
+            ],
+            'lang' => [
+                'lang_user_selected' => $from
+            ]
+        ];
+
+        $rawResponseData = $this->httpClient->callApi(self::API_BASE_URL, $params, self::METHOD_SPLIT);
+
+        $responseContent = $this->protocol->processResponseData($rawResponseData);
+
+        $splitTextBag = new SentencesBag($responseContent);
+
+        $sentences = $splitTextBag->getAllSentences();
+
+        return $sentences;
+    }
+
+    /**
      * Requests a translation from the API. Returns a TranslationBag object.
      * Might throw an exception.
      *
@@ -165,42 +201,6 @@ class DeepLy
         $this->translationBag = $translationBag;
 
         return $translationBag;
-    }
-
-    /**
-     * Uses the DeepL API to split a text into a string array of sentences.
-     *
-     * @param string $text The text you want to split into sentences
-     * @param string $from Optional: A self::LANG_<code> constant
-     * @return string[]
-     * @throws \Exception
-     */
-    public function splitText($text, $from = self::LANG_AUTO)
-    {
-        if (! is_string($text)) {
-            throw new \InvalidArgumentException('The $text argument has to be a string');
-        }
-
-        $params = [
-            // We could add multiple items in the "texts" item, this would result in multiple items
-            // in the "splitted_texts" array in the response
-            'texts' => [
-                $text
-            ],
-            'lang' => [
-                'lang_user_selected' => $from
-            ]
-        ];
-
-        $rawResponseData = $this->httpClient->callApi(self::API_BASE_URL, $params, self::METHOD_SPLIT);
-
-        $responseContent = $this->protocol->processResponseData($rawResponseData);
-
-        $splitTextBag = new SentencesBag($responseContent);
-
-        $sentences = $splitTextBag->getAllSentences();
-
-        return $sentences;
     }
 
     /**
@@ -371,7 +371,7 @@ class DeepLy
             return self::LANG_CODES;
         }
 
-        // Attention! This only works as long as self::LANG_AUTO is the first item!
+        // ATTENTION! This only works as long as self::LANG_AUTO is the first item!
         return array_slice(self::LANG_CODES, 1);
     }
 
