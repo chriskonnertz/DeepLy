@@ -79,12 +79,19 @@ class CurlHttpClient implements HttpClientInterface
 
         $rawResponseData = curl_exec($curl);
 
+        if ($rawResponseData === false) {
+            $exception = new CallException('cURL error during DeepLy API call: '.curl_error($curl));
+            throw $exception;
+        }
+
+        $code = curl_getinfo($curl, CURLINFO_HTTP_CODE);
+        if ($code !== 200) {
+            // Note that the response probably will contain an error description wrapped in a HTML page
+            throw new CallException('Server side error during DeepLy API call: HTTP code '.$code);
+        }
+
         // TODO: Do not use a new session for each request?
         curl_close($curl);
-
-        if ($rawResponseData === false) {
-            throw new CallException('cURL error during DeepLy API call: '.curl_error($curl));
-        }
 
         return $rawResponseData;
     }
