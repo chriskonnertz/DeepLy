@@ -81,7 +81,7 @@ DeepL(y) supports these languages:
 
 ## HTTP Client
 
-Per default DeepLy uses a minimalistic HTTP client based on cURL. If you want to use another HTTP client, 
+Per default DeepLy uses a minimalistic HTTP client based on cURL. If you want to use a different HTTP client, 
 such as [Guzzle](https://github.com/guzzle/guzzle), create a class that implements the `HttpClient\HttpClientInterface`
  and makes use of the methods of the alternative HTTP client. Then use `$deepLy->setHttpClient($yourHttpClient)`
  to inject it.
