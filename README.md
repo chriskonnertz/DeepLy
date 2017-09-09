@@ -92,7 +92,7 @@ such as [Guzzle](https://github.com/guzzle/guzzle), create a class that implemen
 
 ## Text Length Limit
 
-According to the website, the length of the text that has to be translated is limited to 5000 characters.
+According to the DeepL.com website, the length of the text that has to be translated is limited to 5000 characters.
 
 ## Current State
 
