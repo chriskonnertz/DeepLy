@@ -128,7 +128,8 @@ class DeepLy
 
     /**
      * Requests a translation from the API. Returns a TranslationBag object.
-     * Might throw an exception.
+     * ATTENTION: The target language parameter is followed by the source language parameter!
+     * This method might throw an exception so you should wrap it in a try-catch-block.
      *
      * @param string      $text The text you want to translate
      * @param string      $to   Optional: A self::LANG_<code> constant
@@ -205,6 +206,8 @@ class DeepLy
 
     /**
      * Translates a text.
+     * ATTENTION: The target language parameter is followed by the source language parameter!
+     * This method might throw an exception so you should wrap it in a try-catch-block.
      *
      * @param string      $text          The text you want to translate
      * @param string      $to            Optional: A self::LANG_<code> constant
@@ -221,6 +224,8 @@ class DeepLy
 
     /**
      * Translates one text / sentence. Returns an array of translation proposals.
+     * ATTENTION: The target language parameter is followed by the source language parameter!
+     * This method might throw an exception so you should wrap it in a try-catch-block.
      *
      * @param string      $text The text you want to translate
      * @param string      $to   Optional: A self::LANG_<code> constant
@@ -237,6 +242,8 @@ class DeepLy
 
     /**
      * Translates a text. Returns a string array of translation sentences.
+     * ATTENTION: The target language parameter is followed by the source language parameter!
+     * This method might throw an exception so you should wrap it in a try-catch-block.
      *
      * @param string      $text The text you want to translate
      * @param string      $to   Optional: A self::LANG_<code> constant
@@ -253,7 +260,9 @@ class DeepLy
 
     /**
      * Translates a text file. The $from argument is optional.
-     * This method will throw an exception if reading the file fails.
+     * ATTENTION: The target language parameter is followed by the source language parameter!
+     * This method will throw an exception if reading the file or translating fails
+     * so you should wrap it in a try-catch-block.
      *
      * @param string      $filename      The name of the file you want to translate
      * @param string      $to            Optional: A self::LANG_<code> constant
@@ -341,7 +350,7 @@ class DeepLy
      * except you explicitly set the $allowAuto param to true
      *
      * @param string $langCode  The language code, for example 'EN'
-     * @param bool   $allowAuto Opional: If false, 'auto' is not a valid langue
+     * @param bool   $allowAuto Optional: If false, 'auto' is not a valid language
      * @return bool
      */
     public function supportsLangCode($langCode, $allowAuto = false)
