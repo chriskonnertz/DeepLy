@@ -90,6 +90,10 @@ such as [Guzzle](https://github.com/guzzle/guzzle), create a class that implemen
 >
 > If it does not help try: `$deepLy->getHttpClient()->setSslVerifyPeer(false)`
 
+## Text Length Limit
+
+According to the website, the length of the text that has to be translated is limited to 5000 characters.
+
 ## Current State
 
 I do not know if or when DeepL.com will officially release their API but I expect them to do it at some point. 
