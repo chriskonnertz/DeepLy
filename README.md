@@ -1,7 +1,9 @@
 # DeepLy
 
-[![Build Status](https://travis-ci.org/chriskonnertz/DeepLy.png)](https://travis-ci.org/chriskonnertz/DeepLy)
+[![Build Status](img.shields.io/travis/chriskonnertz/DeepLy.svg)](https://travis-ci.org/chriskonnertz/DeepLy)
 [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://raw.githubusercontent.com/chriskonnertz/deeply/master/LICENSE)
+[![Build Status](https://img.shields.io/packagist/v/chriskonnertz/DeepLy.svg)](https://packagist.org/packages/chriskonnertz/deeply)
+
 
 [DeepL.com](https://www.deepl.com/) is a great, new translation service. 
 It provides better translations compared to other popular translation engines.
