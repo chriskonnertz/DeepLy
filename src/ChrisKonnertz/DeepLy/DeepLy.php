@@ -285,7 +285,7 @@ class DeepLy
 
         if ($text === false) {
             throw new \RuntimeException(
-                'Could not read file with the given filename. Does this file exists and do we have read permission?'
+                'Could not read file with the given filename. Does this file exist and do we have read permission?'
             );
         }
 
