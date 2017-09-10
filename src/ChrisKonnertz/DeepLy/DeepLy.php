@@ -43,7 +43,7 @@ class DeepLy
     ];
 
     /**
-     * Constants that are names of methods that can be called with the API
+     * Constants that are names of methods that can be called via the API
      */
     const METHOD_TRANSLATE = 'LMT_handle_jobs'; // Translates a text
     const METHOD_SPLIT = 'LMT_split_into_sentences'; // Splits a text into sentences
