@@ -249,7 +249,7 @@ class DeepLy
      * @param string      $text The text you want to translate
      * @param string      $to   Optional: A self::LANG_<code> constant
      * @param string|null $from Optional: A self::LANG_<code> constant
-     * @return string|null      Returns the translated text or null if there is no translation
+     * @return string[]         Returns a string array (might be empty)
      * @throws \Exception
      */
     public function translateSentences($text, $to = self::LANG_EN, $from = self::LANG_AUTO)
