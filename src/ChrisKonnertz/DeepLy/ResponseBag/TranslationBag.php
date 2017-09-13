@@ -108,7 +108,10 @@ class TranslationBag extends AbstractBag
 
         $beams = $this->responseContent->translations[0]->beams;
 
-        $translationAlternatives = array_column($beams, 'postprocessed_sentence');
+        $translationAlternatives = [];
+        foreach ($beams as $beam) {
+            $translationAlternatives[] = $beam->postprocessed_sentence;
+        }
 
         return $translationAlternatives;
     }
