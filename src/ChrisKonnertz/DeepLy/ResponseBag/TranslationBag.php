@@ -129,7 +129,7 @@ class TranslationBag extends AbstractBag
         foreach ($this->responseContent->translations as $translation) {
             // The beams array contains 1-n translation alternatives.
             // The first one (index 0) is the "best" one (best score)
-            $translatedTexts = $translation->beams[0]->postprocessed_sentence;
+            $translatedTexts[] = $translation->beams[0]->postprocessed_sentence;
         }
 
         return $translatedTexts;
