@@ -112,7 +112,7 @@
 
     <script>
         (
-            // Use DeepLy's ping method to check if the APi server is reachable
+            // Use DeepLy's ping method to check if the API server is reachable
             function()
             {
                 var request = new XMLHttpRequest();
