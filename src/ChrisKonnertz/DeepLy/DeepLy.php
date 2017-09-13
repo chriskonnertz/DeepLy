@@ -17,6 +17,11 @@ class DeepLy
 {
 
     /**
+     * The length of the text for translations is limited by the API
+     */
+    const MAX_TRANSLATION_TEXT_LEN = 5000;
+
+    /**
      * All supported language code constants
      */
     const LANG_AUTO = 'auto'; // Let DeepL decide which language it is (only works for the source language)
@@ -57,6 +62,14 @@ class DeepLy
      * Current version number
      */
     const VERSION = '1.2.0';
+
+    /**
+     * If true, validate that the length of a translation text
+     * is not greater than self::MAX_TRANSLATION_TEXT_LEN
+     *
+     * @var bool
+     */
+    protected $validateTextLength = true;
 
     /**
      * The protocol used for communication
@@ -162,6 +175,9 @@ class DeepLy
             throw new \InvalidArgumentException('The $from argument has to a valid language code');
         }
 
+        if ($this->validateTextLength and mb_strlen($text) > self::MAX_TRANSLATION_TEXT_LEN) {
+            throw new \InvalidArgumentException('The text exceeds the maximum of '.self::MAX_TRANSLATION_TEXT_LEN);
+        }
 
         // Note that this array will be converted to a data structure of arrays AND objects later on
         $params = [
@@ -302,6 +318,34 @@ class DeepLy
     public function ping()
     {
         return $this->httpClient->ping(self::API_BASE_URL);
+    }
+
+    /**
+     * Setter for the validateTextLength property
+     * If true, validate that the length of a translation text
+     * is not greater than self::MAX_TRANSLATION_TEXT_LEN
+     *
+     * @return bool
+     */
+    public function getValidateTextLength()
+    {
+        return $this->validateTextLength;
+    }
+
+    /**
+     * Getter for the validateTextLength property.
+     * If true, validate that the length of a translation text
+     * is not greater than self::MAX_TRANSLATION_TEXT_LEN
+     *
+     * @param bool $validateTextLength
+     */
+    public function setValidateTextLength($validateTextLength)
+    {
+        if (! is_bool($validateTextLength)) {
+            throw new \InvalidArgumentException('$validateTextLength has to be boolean');
+        }
+
+        $this->validateTextLength = $validateTextLength;
     }
 
     /**
