@@ -56,7 +56,7 @@ class DeepLy
     /**
      * Current version number
      */
-    const VERSION = '1.1.2';
+    const VERSION = '1.2.0';
 
     /**
      * The protocol used for communication
