@@ -1,2 +1,4 @@
 .idea/
+vendor/
 *.iml
+composer.phar
