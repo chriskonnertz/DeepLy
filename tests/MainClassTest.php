@@ -62,6 +62,19 @@ class MainClassTest extends \PHPUnit\Framework\TestCase
         $deepLy->ping();
     }
 
+    public function testSplitText()
+    {
+        $deepLy = $this->getInstance();
+
+        $sentences = $deepLy->splitText('Hello world! What a wonderful world.', 'EN');
+
+        $numberOfSentences = sizeof($sentences);
+        $this->assertEquals(2, $numberOfSentences);
+
+        $expectedSentences = ['Hello world!', 'What a wonderful world.'];
+        $this->assertEquals($expectedSentences, $sentences);
+    }
+
     public function testTranslation()
     {
         $deepLy = $this->getInstance();
@@ -81,6 +94,40 @@ class MainClassTest extends \PHPUnit\Framework\TestCase
         $translationAlternatives = $translationBag->getTranslationAlternatives();
 
         $this->assertNotNull($translationAlternatives);
+    }
+
+    public function testProposeTranslations()
+    {
+        $deepLy = $this->getInstance();
+
+        $proposals = $deepLy->proposeTranslations('The old man an the sea', 'DE', 'EN');
+
+        $numberOfProposals = sizeof($proposals);
+        $this->assertEquals(4, $numberOfProposals);
+
+        // We assume that the result will look like this.
+        // If the result will change for some reason,
+        // of course the test will fail
+        $expectedProposals = [
+            'Der alte Mann am Meer',
+            'Der alte Mann und das Meer',
+            'Der Alte und das Meer',
+            'Der Alte am Meer',
+        ];
+        $this->assertEquals($expectedProposals, $proposals);
+    }
+
+    public function testTranslateSentences()
+    {
+        $deepLy = $this->getInstance();
+
+        $sentences = $deepLy->translateSentences('Hello world! What a wonderful world.', 'DE', 'EN');
+
+        $numberOfSentences = sizeof($sentences);
+        $this->assertEquals(2, $numberOfSentences);
+
+        $expectedSentences = ['Hallo Welt!', 'Was für eine wunderbare Welt.'];
+        $this->assertEquals($expectedSentences, $sentences);
     }
 
     public function testGetTranslationBag()
