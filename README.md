@@ -95,6 +95,8 @@ such as [Guzzle](https://github.com/guzzle/guzzle), create a class that implemen
 ## Text Length Limit
 
 According to the DeepL.com website, the length of the text that has to be translated is limited to 5000 characters.
+Per default DeepLy will throw an exception if the length limit is exceeded. 
+You may call `$deepLy->setValidateTextLength(false)` to disable that validation.
 
 ## Current State
 
