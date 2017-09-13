@@ -17,11 +17,6 @@ class DeepLy
 {
 
     /**
-     * The length of the text for translations is limited by the API
-     */
-    const MAX_TRANSLATION_TEXT_LEN = 5000;
-
-    /**
      * All supported language code constants
      */
     const LANG_AUTO = 'auto'; // Let DeepL decide which language it is (only works for the source language)
@@ -46,6 +41,11 @@ class DeepLy
         self::LANG_NL,
         self::LANG_PL,
     ];
+
+    /**
+     * The length of the text for translations is limited by the API
+     */
+    const MAX_TRANSLATION_TEXT_LEN = 5000;
 
     /**
      * Constants that are names of methods that can be called via the API
