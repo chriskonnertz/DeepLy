@@ -149,7 +149,8 @@ class JsonRpcProtocol implements ProtocolInterface
             );
         }
         if (! $responseData->result instanceof \stdClass) {
-            // TODO remove this check? Is it an exception if no result is returned if the input text was empty?
+            // If we try to translate an empty string the APi answers with a malformed generic error response.
+            // Due to the nature of the response we do not know for sure what ahs caused it.
             throw new ProtocolException(
                 'DeepLy API call resulted in a malformed result - inner result property is not a \stdClass. '.
                 'Probably the API could not extract any sentences from the text.'
