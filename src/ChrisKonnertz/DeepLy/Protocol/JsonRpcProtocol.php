@@ -153,7 +153,7 @@ class JsonRpcProtocol implements ProtocolInterface
             // Due to the nature of the response we do not know for sure what ahs caused it.
             throw new ProtocolException(
                 'DeepLy API call resulted in a malformed result - inner result property is not a \stdClass. '.
-                'Probably the API could not extract any sentences from the text.'
+                'A possible cause is that the API could not translate the text, for example if it is an empty string'
             );
         }
     }
