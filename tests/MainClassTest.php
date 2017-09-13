@@ -68,9 +68,6 @@ class MainClassTest extends \PHPUnit\Framework\TestCase
 
         $sentences = $deepLy->splitText('Hello world! What a wonderful world.', 'EN');
 
-        $numberOfSentences = sizeof($sentences);
-        $this->assertEquals(2, $numberOfSentences);
-
         $expectedSentences = ['Hello world!', 'What a wonderful world.'];
         $this->assertEquals($expectedSentences, $sentences);
     }
@@ -102,9 +99,6 @@ class MainClassTest extends \PHPUnit\Framework\TestCase
 
         $proposals = $deepLy->proposeTranslations('The old man an the sea', 'DE', 'EN');
 
-        $numberOfProposals = sizeof($proposals);
-        $this->assertEquals(4, $numberOfProposals);
-
         // We assume that the result will look like this.
         // If the result will change for some reason,
         // of course the test will fail.
@@ -123,9 +117,6 @@ class MainClassTest extends \PHPUnit\Framework\TestCase
         $deepLy = $this->getInstance();
 
         $sentences = $deepLy->translateSentences('Hello world! What a wonderful world.', 'DE', 'EN');
-
-        $numberOfSentences = sizeof($sentences);
-        $this->assertEquals(2, $numberOfSentences);
 
         $expectedSentences = ['Hallo Welt!', 'Was für eine wunderbare Welt.'];
         $this->assertEquals($expectedSentences, $sentences);
