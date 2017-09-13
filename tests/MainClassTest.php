@@ -107,7 +107,8 @@ class MainClassTest extends \PHPUnit\Framework\TestCase
 
         // We assume that the result will look like this.
         // If the result will change for some reason,
-        // of course the test will fail
+        // of course the test will fail.
+        // Unfortunately the result tends to alter.
         $expectedProposals = [
             'Der alte Mann am Meer',
             'Der alte Mann und das Meer',
