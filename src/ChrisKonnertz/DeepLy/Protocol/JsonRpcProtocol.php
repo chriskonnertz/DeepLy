@@ -149,8 +149,8 @@ class JsonRpcProtocol implements ProtocolInterface
             );
         }
         if (! $responseData->result instanceof \stdClass) {
-            // If we try to translate an empty string the APi answers with a malformed generic error response.
-            // Due to the nature of the response we do not know for sure what ahs caused it.
+            // If we try to translate an empty string the API responses with a malformed generic error response.
+            // Due to the nature of the response we do not know for sure what has caused it.
             throw new ProtocolException(
                 'DeepLy API call resulted in a malformed result - inner result property is not a \stdClass. '.
                 'A possible cause is that the API could not translate the text, for example if it is an empty string'
