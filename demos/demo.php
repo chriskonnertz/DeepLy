@@ -10,7 +10,13 @@
         require __DIR__ . '/../src/' . $class . '.php';
     }
 
-    spl_autoload_register('miniAutoloader');
+    // If the Composer autoloader exists, use it. If not, use our own.
+    $composerAutoloader = __DIR__.'/../vendor/autoload.php';
+    if (is_readable($composerAutoloader)) {
+        require $composerAutoloader;
+    } else {
+        spl_autoload_register('miniAutoloader');
+    }
 
     $text = isset($_POST['text']) ? $_POST['text'] : null;
     $to = isset($_POST['to']) ? $_POST['to'] : 'DE';
@@ -90,6 +96,10 @@
 
             if ($text !== null and $to !== null) {
                 try {
+                    $protocol = $deepLy->getProtocol();
+                    $httpClient = new \ChrisKonnertz\DeepLy\HttpClient\GuzzleHttpClient($protocol);
+                    $deepLy->setHttpClient($httpClient);
+
                     $result = $deepLy->translate($text, $to, $from);
 
                     echo '<div class="success">Result: <blockquote><b>' . $result . '</b></blockquote></div>';
