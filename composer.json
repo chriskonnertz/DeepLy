@@ -15,6 +15,9 @@
     "phpunit/phpunit": "5.7",
     "guzzlehttp/guzzle": "^6.2@dev"
   },
+  "suggest": {
+    "guzzlehttp/guzzle": "^6.2@dev"
+  },
   "autoload": {
     "psr-0": {
       "ChrisKonnertz\\DeepLy": "src/"
