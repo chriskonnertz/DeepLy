@@ -96,10 +96,6 @@
 
             if ($text !== null and $to !== null) {
                 try {
-                    $protocol = $deepLy->getProtocol();
-                    $httpClient = new \ChrisKonnertz\DeepLy\HttpClient\GuzzleHttpClient($protocol);
-                    $deepLy->setHttpClient($httpClient);
-
                     $result = $deepLy->translate($text, $to, $from);
 
                     echo '<div class="success">Result: <blockquote><b>' . $result . '</b></blockquote></div>';

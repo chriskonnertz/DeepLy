@@ -86,6 +86,15 @@ such as [Guzzle](https://github.com/guzzle/guzzle), create a class that implemen
  and makes use of the methods of the alternative HTTP client. Then use `$deepLy->setHttpClient($yourHttpClient)`
  to inject it.
  
+Support for Guzzle is available out-of-the-box. Make sure you have installed Guzzle, 
+then copy this code and paste it right after you instantiate DeepLy:
+
+```php
+$protocol = $deepLy->getProtocol();
+$httpClient = new \ChrisKonnertz\DeepLy\HttpClient\GuzzleHttpClient($protocol);
+$deepLy->setHttpClient($httpClient);
+```
+ 
 > Note: If you experience issues with the integrated cURL client that could be solved by setting the
 > `CURLOPT_SSL_VERIFYPEER` to `false`, first read this: 
 > [snippets.webaware.com.au/../](https://snippets.webaware.com.au/howto/stop-turning-off-curlopt_ssl_verifypeer-and-fix-your-php-config/)
