@@ -10,7 +10,7 @@ function miniAutoloader($class)
     require __DIR__ . '/../src/' . $class . '.php';
 }
 
-// If the Composer autoloader exists, use it. If not, use our own.
+// If the Composer autoloader exists, use it. If not, use our own as fallback.
 $composerAutoloader = __DIR__.'/../vendor/autoload.php';
 if (is_readable($composerAutoloader)) {
     require $composerAutoloader;
