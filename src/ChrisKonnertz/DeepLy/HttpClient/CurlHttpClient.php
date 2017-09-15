@@ -161,7 +161,7 @@ class CurlHttpClient implements HttpClientInterface
      *
      * @return bool
      */
-    protected function isCurlAvailable()
+    public function isCurlAvailable()
     {
         return (in_array('curl', get_loaded_extensions()));
     }
