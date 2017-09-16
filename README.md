@@ -94,8 +94,8 @@ such as [Guzzle](https://github.com/guzzle/guzzle), create a class that implemen
 
 ### Guzzle
  
-Support for Guzzle is available out-of-the-box. Make sure you have installed Guzzle (preferably via Composer), 
-then copy this code and paste it right after you instantiate DeepLy:
+If you want to use Guzzle as the HTTP client: Support for Guzzle is available out-of-the-box. 
+Make sure you have installed Guzzle (preferably via Composer), then copy this code and paste it right after you instantiate DeepLy:
 
 ```php
 $protocol = $deepLy->getProtocol();
@@ -121,7 +121,8 @@ More commits might come soon. There still is space for [improvements](https://gi
 
 ## Disclaimer
 
-This is not an official package. It is 100% open source and non-commercial. The API of DeepL.com is free as well but this might change in the future.
+This is not an official package. It is 100% open source and non-commercial. 
+The API of DeepL.com is free as well but this might change in the future.
 
 DeepL is a product from DeepL GmbH. More info: [deepl.com/publisher.html](https://www.deepl.com/publisher.html)
 

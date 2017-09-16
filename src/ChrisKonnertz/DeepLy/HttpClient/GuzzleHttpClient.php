@@ -142,4 +142,24 @@ class GuzzleHttpClient implements HttpClientInterface
         return class_exists(Client::class);
     }
 
+    /**
+     * Getter for the Guzzle object
+     *
+     * @return Client
+     */
+    public function getGuzzle()
+    {
+        return $this->guzzle;
+    }
+
+    /**
+     * Setter for the Guzzle object
+     *
+     * @param Client $guzzle
+     */
+    public function setGuzzle(Client $guzzle)
+    {
+        $this->guzzle = $guzzle;
+    }
+
 }
