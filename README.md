@@ -115,9 +115,7 @@ I do not know if or when DeepL.com will officially release their API but I expec
 Meanwhile you may use this PHP client on your own risk. Also note that their API responds quite slow. This might be intentional.
 Nevertheless the API is reliable. I had not a single issue amongst hundreds of API calls.
 
-I tried to rush towards a first release. It works and I hope that I do not have to change the main method `translate()`
-in a way that makes it incompatible with the current release. However, I cannot guarantee that. 
-More commits might come soon. There still is space for [improvements](https://github.com/chriskonnertz/DeepLy/issues/1).
+I tried to rush towards a first release. More commits might come soon. There certainly is room for [improvements](https://github.com/chriskonnertz/DeepLy/issues/1).
 
 ## Disclaimer
 
