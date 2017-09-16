@@ -16,7 +16,7 @@
     "guzzlehttp/guzzle": "^6.2@dev"
   },
   "suggest": {
-    "guzzlehttp/guzzle": "^6.2@dev"
+    "guzzlehttp/guzzle": "You might want to install Guzzle if you want to use it as the HTTP client"
   },
   "autoload": {
     "psr-0": {
