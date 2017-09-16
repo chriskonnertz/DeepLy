@@ -101,7 +101,7 @@ class GuzzleHttpClient implements HttpClientInterface
      * Pings the API server. Returns the duration in seconds
      * or throws an exception if no valid response was received.
      *
-     * @param string $url
+     * @param string $url The URL of the API endpoint
      * @return float
      * @throws CallException
      */
@@ -113,7 +113,7 @@ class GuzzleHttpClient implements HttpClientInterface
 
         try {
             $startedAt = microtime(true);
-            $this->guzzle->get($url.'dsdasdasd');
+            $this->guzzle->get($url);
             $duration = microtime(true) - $startedAt;
         } catch (GuzzleException $exception) {
             throw new CallException('Did not get a valid response. API seems to be unreachable.');

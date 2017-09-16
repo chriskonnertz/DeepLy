@@ -100,7 +100,7 @@ class CurlHttpClient implements HttpClientInterface
      * Pings the API server. Returns the duration in seconds
      * or throws an exception if no valid response was received.
      *
-     * @param string $url
+     * @param string $url The URL of the API endpoint
      * @return float
      * @throws CallException
      */
