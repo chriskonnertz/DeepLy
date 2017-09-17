@@ -16,12 +16,22 @@
     "guzzlehttp/guzzle": "^6.2@dev"
   },
   "suggest": {
-    "guzzlehttp/guzzle": "You might want to install Guzzle if you want to use it as the HTTP client"
+    "guzzlehttp/guzzle": "You might want to install Guzzle if you want to use it as the HTTP client for DeepLy"
   },
   "autoload": {
     "psr-0": {
       "ChrisKonnertz\\DeepLy": "src/"
     }
   },
+  "extra": {
+    "laravel": {
+      "providers": [
+        "ChrisKonnertz\\DeepLy\\Integration\\Laravel\\DeepLyServiceProvider"
+      ],
+      "aliases": {
+        "DeepLy": "ChrisKonnertz\\DeepLy\\Integration\\Laravel\\DeepLyFacade"
+      }
+    }
+  }
   "minimum-stability": "dev"
 }
