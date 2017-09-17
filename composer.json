@@ -32,6 +32,6 @@
         "DeepLy": "ChrisKonnertz\\DeepLy\\Integration\\Laravel\\DeepLyFacade"
       }
     }
-  }
+  },
   "minimum-stability": "dev"
 }
