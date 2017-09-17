@@ -1,6 +1,6 @@
 <?php
 
-namespace ChrisKonnertz\DeepLy\Integration\Laravel;
+namespace ChrisKonnertz\DeepLy\Integrations\Laravel;
 
 use ChrisKonnertz\DeepLy\DeepLy;
 use Illuminate\Support\ServiceProvider;

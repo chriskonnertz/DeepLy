@@ -1,6 +1,6 @@
 <?php
 
-namespace ChrisKonnertz\DeepLy\Integration\Laravel;
+namespace ChrisKonnertz\DeepLy\Integrations\Laravel;
 
 use Illuminate\Support\Facades\Facade;
 

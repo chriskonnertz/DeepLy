@@ -79,6 +79,12 @@ DeepL(y) supports these languages:
 
 > Note that auto detection only is possible for the source language.
 
+## Text Length Limit
+
+According to the DeepL.com website, the length of the text that has to be translated is limited to 5000 characters.
+Per default DeepLy will throw an exception if the length limit is exceeded. 
+You may call `$deepLy->setValidateTextLength(false)` to disable that validation.
+
 ## HTTP Client
 
 Per default DeepLy uses a minimalistic HTTP client based on cURL. If you want to use a different HTTP client, 
@@ -103,11 +109,13 @@ $httpClient = new \ChrisKonnertz\DeepLy\HttpClient\GuzzleHttpClient($protocol);
 $deepLy->setHttpClient($httpClient);
 ```
 
-## Text Length Limit
+## Framework Integration
 
-According to the DeepL.com website, the length of the text that has to be translated is limited to 5000 characters.
-Per default DeepLy will throw an exception if the length limit is exceeded. 
-You may call `$deepLy->setValidateTextLength(false)` to disable that validation.
+DeepLy comes with support for Laravel 5.x and since it also supports 
+[package auto-discovery](https://medium.com/@taylorotwell/package-auto-discovery-in-laravel-5-5-ea9e3ab20518)
+ it will be auto-detected in Laravel 5.5. In older version of Laravel you have to register the service provider
+ `ChrisKonnertz\DeepLy\Integrations\Laravel\DeepLyServiceProvider` and the facade 
+ `ChrisKonnertz\DeepLy\Integrations\Laravel\DeepLyFacade` in your `app/config/app.php` config file.
 
 ## Current State
 
