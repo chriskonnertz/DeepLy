@@ -47,6 +47,11 @@ class TranslationBag extends AbstractBag
                         'DeepLy API call resulted in a malformed result - beams are not an array in translation '.$index
                     );
                 }
+                if (sizeof($translation->beams) == 0) {
+                    throw new BagException(
+                        'DeepLy API call resulted in a malformed result - beams array is empty in translation '.$index
+                    );
+                }
 
                 foreach ($translation->beams as $beamIndex => $beam) {
                     if (! property_exists($beam, 'postprocessed_sentence')) {
