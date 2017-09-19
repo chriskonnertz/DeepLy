@@ -11,7 +11,7 @@ DeepLy is a PHP package that implements a client to interact with DeepL via thei
 
 ## Installation
 
-Through Composer:
+Through [Composer](https://getcomposer.org/):
 
 ```
 composer require chriskonnertz/deeply
