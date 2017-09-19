@@ -16,7 +16,7 @@
     "guzzlehttp/guzzle": "^6.2@dev"
   },
   "suggest": {
-    "guzzlehttp/guzzle": "You might want to install Guzzle if you want to use it as the HTTP client for DeepLy"
+    "guzzlehttp/guzzle": "You might want to install Guzzle if you want to use it as HTTP client for DeepLy"
   },
   "autoload": {
     "psr-0": {
