@@ -61,7 +61,7 @@ class DeepLy
     /**
      * Current version number
      */
-    const VERSION = '1.3.0';
+    const VERSION = '1.3.1';
 
     /**
      * If true, validate that the length of a translation text
