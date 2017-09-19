@@ -26,10 +26,10 @@
   "extra": {
     "laravel": {
       "providers": [
-        "ChrisKonnertz\\DeepLy\\Integration\\Laravel\\DeepLyServiceProvider"
+        "ChrisKonnertz\\DeepLy\\Integrations\\Laravel\\DeepLyServiceProvider"
       ],
       "aliases": {
-        "DeepLy": "ChrisKonnertz\\DeepLy\\Integration\\Laravel\\DeepLyFacade"
+        "DeepLy": "ChrisKonnertz\\DeepLy\\Integrations\\Laravel\\DeepLyFacade"
       }
     }
   },
