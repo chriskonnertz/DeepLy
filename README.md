@@ -115,7 +115,7 @@ DeepLy comes with support for Laravel 5.x and since it also supports
 [package auto-discovery](https://medium.com/@taylorotwell/package-auto-discovery-in-laravel-5-5-ea9e3ab20518)
  it will be auto-detected in Laravel 5.5. In older version of Laravel you have to register the service provider
  `ChrisKonnertz\DeepLy\Integrations\Laravel\DeepLyServiceProvider` and the facade 
- `ChrisKonnertz\DeepLy\Integrations\Laravel\DeepLyFacade` in your `app/config/app.php` config file.
+ `ChrisKonnertz\DeepLy\Integrations\Laravel\DeepLyFacade` in your `config/app.php` config file.
 
 ## Current State
 
