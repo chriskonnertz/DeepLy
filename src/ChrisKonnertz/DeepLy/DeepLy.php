@@ -145,10 +145,10 @@ class DeepLy
      * ATTENTION: The target language parameter is followed by the source language parameter!
      * This method might throw an exception so you should wrap it in a try-catch-block.
      *
-     * @param string      $text The text you want to translate
-     * @param string      $to   Optional: A self::LANG_<code> constant
-     * @param string|null $from Optional: A self::LANG_<code> constant
-     * @param bool        $joinSentences If true, all sentences will be joined to one long sentence
+     * @param string|string[] $text          The text to translate. A single string or an array of sentences (strings)
+     * @param string          $to            Optional: A self::LANG_<code> constant
+     * @param string|null     $from          Optional: A self::LANG_<code> constant
+     * @param bool            $joinSentences If true, all sentences will be joined to one long sentence
      * @return TranslationBag
      * @throws \Exception
      */
@@ -156,8 +156,30 @@ class DeepLy
     {
         $this->translationBag = null;
 
-        if (! is_string($text)) {
-            throw new \InvalidArgumentException('The $text argument has to be a string');
+        if (! is_string($text) and ! is_array($text)) {
+            throw new \InvalidArgumentException('The $text argument has to be a string or an array');
+        }
+        if (is_array($text)) {
+            foreach ($text as $index => $sentence) {
+                if (! is_string($sentence)) {
+                    throw new \InvalidArgumentException(
+                        'The $text argument has to be a string or an array of strings. '.
+                        'The '.(++$index).'. item of the array is not a string.'
+                    );
+                }
+                // TODO Ensure that the limit is per sentence
+                if ($this->validateTextLength and mb_strlen($sentence) > self::MAX_TRANSLATION_TEXT_LEN) {
+                    throw new \InvalidArgumentException(
+                        'The '.(++$index).'. sentence exceeds the maximum of '.self::MAX_TRANSLATION_TEXT_LEN.' chars'
+                    );
+                }
+            }
+        } else {
+            if ($this->validateTextLength and mb_strlen($text) > self::MAX_TRANSLATION_TEXT_LEN) {
+                throw new \InvalidArgumentException(
+                    'The text exceeds the maximum of '.self::MAX_TRANSLATION_TEXT_LEN.' chars'
+                );
+            }
         }
         if (! is_string($to)) {
             throw new \InvalidArgumentException('The $to argument has to be a string');
@@ -175,10 +197,6 @@ class DeepLy
             throw new \InvalidArgumentException('The $from argument has to a valid language code');
         }
 
-        if ($this->validateTextLength and mb_strlen($text) > self::MAX_TRANSLATION_TEXT_LEN) {
-            throw new \InvalidArgumentException('The text exceeds the maximum of '.self::MAX_TRANSLATION_TEXT_LEN);
-        }
-
         // Note that this array will be converted to a data structure of arrays AND objects later on
         $params = [
             'lang' => [
@@ -188,6 +206,10 @@ class DeepLy
         ];
 
         if ($joinSentences) {
+            if (is_array($text)) {
+                $text = implode(' ', $text);
+            }
+
             // We could add multiple items in the "jobs" item, this would result in multiple items
             // in the "translations" array in the response
             $params['jobs'] = [
@@ -197,7 +219,12 @@ class DeepLy
                 ]
             ];
         } else {
-            $sentences = $this->splitText($text, $from);
+            if (is_array($text)) {
+                $sentences = $text;
+            } else {
+                // Let the API split the text into sentences
+                $sentences = $this->splitText($text, $from);
+            }
 
             $params['jobs'] = [];
             foreach ($sentences as $sentence) {
@@ -262,17 +289,23 @@ class DeepLy
      * ATTENTION: The target language parameter is followed by the source language parameter!
      * This method might throw an exception so you should wrap it in a try-catch-block.
      *
-     * @param string      $text The text you want to translate
-     * @param string      $to   Optional: A self::LANG_<code> constant
-     * @param string|null $from Optional: A self::LANG_<code> constant
-     * @return string[]         Returns a string array (might be empty)
-     * @throws \Exception
+     * @param string[]    $sentences The sentences you want to translate
+     * @param string      $to        Optional: A self::LANG_<code> constant
+     * @param string|null $from      Optional: A self::LANG_<code> constant
+     * @param bool        $join      If true, join all sentences to a single string
+     * @return \string[] Returns a string array (might be empty)
      */
-    public function translateSentences($text, $to = self::LANG_EN, $from = self::LANG_AUTO)
+    public function translateSentences(array $sentences, $to = self::LANG_EN, $from = self::LANG_AUTO, $join = false)
     {
-        $translationBag = $this->requestTranslation($text, $to, $from);
+        $translationBag = $this->requestTranslation($sentences, $to, $from);
 
-        return $translationBag->getTranslatedSentences();
+        $translatedSentences = $translationBag->getTranslatedSentences();
+
+        if ($join) {
+            return implode(' ', $translatedSentences);
+        }
+
+        return $translatedSentences;
     }
 
     /**

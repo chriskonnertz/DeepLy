@@ -115,7 +115,7 @@ class MainClassTest extends \PHPUnit\Framework\TestCase
         ];
 
         // Sometimes - for an unknown reason - the API does not return the expected proposals.
-        // We will jsut ignore this rare case.
+        // We will just ignore this rare case.
         if ($proposals == ['Der alte Mann am Meer']) {
             return;
         }
@@ -127,7 +127,8 @@ class MainClassTest extends \PHPUnit\Framework\TestCase
     {
         $deepLy = $this->getInstance();
 
-        $sentences = $deepLy->translateSentences('Hello world! What a wonderful world.', 'DE', 'EN');
+        $sentences = ['Hello world!', 'What a wonderful world.'];
+        $sentences = $deepLy->translateSentences($sentences, 'DE', 'EN');
 
         $expectedSentences = ['Hallo Welt!', 'Was für eine wunderbare Welt.'];
         $this->assertEquals($expectedSentences, $sentences);
