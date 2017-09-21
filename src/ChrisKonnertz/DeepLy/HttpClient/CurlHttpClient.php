@@ -166,4 +166,24 @@ class CurlHttpClient implements HttpClientInterface
         return (in_array('curl', get_loaded_extensions()));
     }
 
+    /**
+     * Getter for the protocol object
+     *
+     * @return ProtocolInterface
+     */
+    public function getProtocol()
+    {
+        return $this->protocol;
+    }
+
+    /**
+     * Setter for the protocol object
+     *
+     * @param ProtocolInterface $protocol
+     */
+    public function setProtocol($protocol)
+    {
+        $this->protocol = $protocol;
+    }
+
 }

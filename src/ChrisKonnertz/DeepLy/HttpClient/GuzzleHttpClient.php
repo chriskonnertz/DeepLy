@@ -10,15 +10,8 @@ use GuzzleHttp\Psr7\Stream;
 /**
  * This class uses cURL to execute API calls.
  */
-class GuzzleHttpClient implements HttpClientInterface
+class GuzzleHttpClient extends CurlHttpClient
 {
-
-    /**
-     * The protocol object that represents the protocol used for communication with the API
-     *
-     * @var ProtocolInterface
-     */
-    protected $protocol;
 
     /**
      * The Guzzle instance
@@ -34,11 +27,7 @@ class GuzzleHttpClient implements HttpClientInterface
      */
     public function __construct(ProtocolInterface $protocol)
     {
-        if (! $this->isCurlAvailable()) {
-            throw new \LogicException(
-                'Cannot create instance of Guzzle, because the cURL PHP extension is not available'
-            );
-        }
+        parent::__construct($protocol);
 
         if (! $this->isGuzzleAvailable()) {
             throw new \LogicException(
@@ -46,8 +35,6 @@ class GuzzleHttpClient implements HttpClientInterface
                 'It is not installed or the autoloading is not working'
             );
         }
-
-        $this->protocol = $protocol;
 
         $this->guzzle = new Client();
     }
@@ -120,16 +107,6 @@ class GuzzleHttpClient implements HttpClientInterface
         }
 
         return $duration;
-    }
-
-    /**
-     * Returns true if the cURL extension is available, false otherwise
-     *
-     * @return bool
-     */
-    public function isCurlAvailable()
-    {
-        return (in_array('curl', get_loaded_extensions()));
     }
 
     /**
