@@ -97,11 +97,21 @@ class MainClassTest extends \PHPUnit\Framework\TestCase
     {
         $deepLy = $this->getInstance();
 
-        $proposals = $deepLy->proposeTranslations('The old man an the sea', 'DE', 'EN');
+        // Sometimes - for an unknown reason - the API does not return the expected proposals.
+        // We simply repeat the request until we get the expected result or until a specific limit
+        for ($i = 0; $i < 5; $i++) {
+            $proposals = $deepLy->proposeTranslations('The old man an the sea', 'DE', 'EN');
 
-        
-        // TODO rewrite this test, it is not reliable
-        //return;
+            if (sizeof($proposals) == 4) {
+                break;
+            }
+        }
+
+        // Sometimes - for an unknown reason - the API does not return the expected proposals.
+        // We will just ignore this rare case.
+        if ($proposals == ['Der alte Mann am Meer']) {
+            return;
+        }
 
         // We assume that the result will look like this.
         // If the result will change for some reason,
@@ -113,12 +123,6 @@ class MainClassTest extends \PHPUnit\Framework\TestCase
             'Der Alte und das Meer',
             'Der Alte am Meer',
         ];
-
-        // Sometimes - for an unknown reason - the API does not return the expected proposals.
-        // We will just ignore this rare case.
-        if ($proposals == ['Der alte Mann am Meer']) {
-            return;
-        }
 
         $this->assertEquals($expectedProposals, $proposals);
     }
