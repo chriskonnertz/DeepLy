@@ -131,7 +131,7 @@ Nevertheless the API is reliable. I had not a single issue amongst hundreds of A
 ## Disclaimer
 
 This is not an official package. It is 100% open source and non-commercial. 
-The API of DeepL.com is free as well but this might change in the future.
+The API of DeepL.com is free as well but this ~~might~~ [will](https://blog.wdr.de/digitalistan/bessere-uebersetzungen-dank-deeplearning/) change in the future.
 
 DeepL is a product from DeepL GmbH. More info: [deepl.com/publisher.html](https://www.deepl.com/publisher.html)
 
