@@ -27,29 +27,31 @@ class MainClassTest extends \PHPUnit\Framework\TestCase
     {
         $deepLy = $this->getInstance();
 
-        $this->assertNotNull($deepLy);
+        $this->assertInstanceOf(ChrisKonnertz\DeepLy\DeepLy::class, $deepLy);
     }
 
     public function testGetAndSetProtocol()
     {
         $deepLy = $this->getInstance();
 
-        $protocol = $deepLy->getProtocol();
+        $protocolOne = $deepLy->getProtocol();
+        $this->assertInstanceOf(ChrisKonnertz\DeepLy\Protocol\ProtocolInterface::class, $protocolOne);
 
-        $this->assertNotNull($protocol);
-
-        $deepLy->setProtocol($protocol);
+        $deepLy->setProtocol($protocolOne);
+        $protocolTwo = $deepLy->getProtocol();
+        $this->assertEquals($protocolOne, $protocolTwo);
     }
 
     public function testGetAndSetHttpClient()
     {
         $deepLy = $this->getInstance();
 
-        $httpClient = $deepLy->getHttpClient();
+        $httpClientOne = $deepLy->getHttpClient();
+        $this->assertInstanceOf(ChrisKonnertz\DeepLy\HttpClient\HttpClientInterface::class, $httpClientOne);
 
-        $this->assertNotNull($httpClient);
-
-        $deepLy->setHttpClient($httpClient);
+        $deepLy->setHttpClient($httpClientOne);
+        $httpClientTwo = $deepLy->getHttpClient();
+        $this->assertEquals($httpClientOne, $httpClientTwo);
     }
 
     public function testPing()
@@ -77,19 +79,15 @@ class MainClassTest extends \PHPUnit\Framework\TestCase
         $deepLy = $this->getInstance();
 
         $translatedText = $deepLy->translate('Hello world!', 'DE', 'EN');
-
         $this->assertEquals($translatedText, 'Hallo Welt!');
 
         $translationBag = $deepLy->getTranslationBag();
-
-        $this->assertNotNull($translationBag);
+        $this->assertInstanceOf(ChrisKonnertz\DeepLy\ResponseBag\TranslationBag::class, $translationBag);
 
         $translatedSentences = $translationBag->getTranslatedSentences();
-
         $this->assertNotNull($translatedSentences);
 
         $translationAlternatives = $translationBag->getTranslationAlternatives();
-
         $this->assertNotNull($translationAlternatives);
     }
 
@@ -143,7 +141,6 @@ class MainClassTest extends \PHPUnit\Framework\TestCase
         $deepLy = $this->getInstance();
 
         $translationBag = $deepLy->getTranslationBag();
-
         $this->assertNull($translationBag);
     }
 
@@ -168,6 +165,34 @@ class MainClassTest extends \PHPUnit\Framework\TestCase
         $supportsLang = $deepLy->supportsLangCode($langCode);
 
         $this->assertEquals($supportsLang, true);
+    }
+
+    public function testGuzzle()
+    {
+        $deepLy = $this->getInstance();
+
+        $protocol = $deepLy->getProtocol();
+        $guzzleHttpClient = new \ChrisKonnertz\DeepLy\HttpClient\GuzzleHttpClient($protocol);
+        $deepLy->setHttpClient($guzzleHttpClient);
+
+        $httpClient = $deepLy->getHttpClient();
+        $this->assertEquals($guzzleHttpClient, $httpClient);
+
+        $guzzleOne = $guzzleHttpClient->getGuzzle();
+        $this->assertInstanceOf(\GuzzleHttp\Client::class, $guzzleOne);
+
+        $guzzleHttpClient->setGuzzle($guzzleOne);
+        $guzzleTwo = $guzzleHttpClient->getGuzzle();
+        $this->assertEquals($guzzleOne, $guzzleTwo);
+
+        // We assume that the ping will be successful.
+        // If the API is not reachable this will not be the case, of course,
+        // and the test will fail.
+        $deepLy->ping();
+
+        $translatedText = $deepLy->translate('Hello world!', 'DE', 'EN');
+
+        $this->assertEquals($translatedText, 'Hallo Welt!');
     }
 
 }
