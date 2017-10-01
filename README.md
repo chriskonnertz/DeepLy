@@ -128,12 +128,10 @@ I do not know if or when DeepL.com will officially release their API but I expec
 Meanwhile you may use this PHP client on your own risk. Also note that their API responds quite slow. This might be intentional.
 Nevertheless the API is reliable. I had not a single issue amongst hundreds of API calls.
 
-I tried to rush towards a first release. More commits might come soon. There certainly is room for [improvements](https://github.com/chriskonnertz/DeepLy/issues/1).
-
 ## Disclaimer
 
 This is not an official package. It is 100% open source and non-commercial. 
-The API of DeepL.com is free as well but this might change in the future.
+The API of DeepL.com is free as well but this ~~might~~ [will](https://blog.wdr.de/digitalistan/bessere-uebersetzungen-dank-deeplearning/) change in the future.
 
 DeepL is a product from DeepL GmbH. More info: [deepl.com/publisher.html](https://www.deepl.com/publisher.html)
 
