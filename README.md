@@ -69,7 +69,7 @@ $languageCode = $deepLy->detectLanguage('Hello world!');
 ```
 
 This will return 'EN'. The language of the text has to be one of the supported languages or the result will be incorrect.
-if you do not need the code of the language but its name, you amy call the `$deepLy->getLangName($langCode)` method. 
+If you do not need the code of the language but its name, you may call the `$deepLy->getLangName($langCode)` method. 
 
 >  An interactive PHP demo script is included. It is located at `demos/demo_detect.php`.
 
