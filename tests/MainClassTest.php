@@ -74,6 +74,17 @@ class MainClassTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals($expectedSentences, $sentences);
     }
 
+    public function testDetectLanguage()
+    {
+        $deepLy = $this->getInstance();
+
+        $languageCode = $deepLy->detectLanguage('Hello world!');
+        $this->assertEquals('EN', $languageCode);
+
+        $languageCode = $deepLy->detectLanguage('Hallo Welt!');
+        $this->assertEquals('DE', $languageCode);
+    }
+
     public function testTranslation()
     {
         $deepLy = $this->getInstance();

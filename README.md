@@ -34,10 +34,9 @@ $translatedText = $deepLy->translate('Hello world!', 'DE', 'EN');
 echo $translatedText; // Prints "Hallo Welt!"
 ```
 
-> There is an interactive PHP demo script included. It is located at `demos/demo_interactive.php`.
+> An interactive PHP demo script is included. It is located at `demos/demo_translation.php`.
 
 ### Sophisticated Example
-
 
 ```php
 use ChrisKonnertz\DeepLy\DeepLy;
@@ -51,7 +50,6 @@ try {
 } catch (\Exception $exception) {
     echo $exception->getMessage();
 }
-
 ```
 
 Always wrap calls of the `translate` method in a try-catch-block, because they might throw an exception if the
@@ -61,6 +59,18 @@ better use the language code constants of the `DeepLy` class. The class also off
 
 You may use the `proposeTranslations` method if you want to get alternative translations for a text. 
 This method cannot operate on more than one sentence at once. 
+
+## Auto-detect language
+
+DeepLy has a method that uses the DeepL API to detect the language of a text:
+
+```php
+$languageCode = $deepLy->detectLanguage('Hello world!');
+```
+
+This will return 'EN'. The language of the text has to be one of the supported languages or the result will be incorrect.
+
+>  An interactive PHP demo script is included. It is located at `demos/demo_detect.php`.
 
 ## Supported Languages
 

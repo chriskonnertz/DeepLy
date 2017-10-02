@@ -19,36 +19,15 @@
     }
 
     $text = isset($_POST['text']) ? $_POST['text'] : null;
-    $to = isset($_POST['to']) ? $_POST['to'] : 'DE';
-    $from = isset($_POST['from']) ? $_POST['from'] : 'auto';
 
     $deepLy = new ChrisKonnertz\DeepLy\DeepLy();
-
-    /**
-     * Prints HTML code for a select element. Does not use htmlspecialchars() or whatsoever.
-     *
-     * @param string $name
-     * @param array  $options The options - key => option value, value => option name
-     * @param null   $default
-     */
-    function createSelect($name, array $options, $default = null)
-    {
-        echo '<select class="form-field" name="'.$name.'">';
-
-        foreach ($options as $optionValue => $optionName) {
-            $defaultAttr = ($default !== $optionValue) ? '' : 'selected="selected"';
-            echo '<option value="'.$optionValue.'" '.$defaultAttr.'>'.$optionName.'</option>';
-        }
-
-        echo '</select>';
-    }
 
 ?>
 <!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8">
-    <title>DeepLy Demo</title>
+    <title>DeepLy Demo - Language Detection</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/framy/latest/css/framy.min.css">
     <style>
         body { padding: 20px }
@@ -59,7 +38,6 @@
         blockquote { margin-left: 0; margin-right: 0; }
         div.success { border: 1px solid #4ce276; margin: 20px 0; padding: 10px; border-top-width: 10px }
         div.error { border: 1px solid #f36362; margin: 20px 0; padding: 10px; border-top-width: 10px }
-        .form-select { max-width: 100px }
     </style>
 </head>
 <body>
@@ -72,31 +50,17 @@
             <textarea id="text" class="form-field" name="text" rows="4"><?php echo $text !== null ? $text : 'Hello world!' ?></textarea>
         </div>
 
-        <div class="form-element">
-            <label for="from">From:</label>
-            <div class="form-select">
-                <?php createSelect('from', array_combine($deepLy->getLangCodes(), $deepLy->getLangCodes()), $from) ?>
-            </div>
-        </div>
-
-        <div class="form-element">
-            <label for="to">To:</label>
-            <div class="form-select">
-                <?php createSelect('to', array_combine($deepLy->getLangCodes(false), $deepLy->getLangCodes(false)), $to) ?>
-            </div>
-        </div>
-
         <div id="ping-result"></div>
 
-        <input type="submit" value="Translate" class="button">
+        <input type="submit" value="Detect Language" class="button">
     </form>
 
     <div class="block result">
         <?php
 
-            if ($text !== null and $to !== null) {
+            if ($text !== null) {
                 try {
-                    $result = $deepLy->translate($text, $to, $from);
+                    $result = $deepLy->detectLanguage($text);
 
                     echo '<div class="success">Result: <blockquote><b>' . $result . '</b></blockquote></div>';
                 } catch (\Exception $exception) {

@@ -24,6 +24,13 @@ class TranslationBag extends AbstractBag
         // Let the original method of the abstract base class do some basic checks
         parent::verifyResponseContent($responseContent);
 
+        if (! property_exists($responseContent, 'source_lang')) {
+            throw new BagException('DeepLy API call resulted in a malformed result - source_lang attribute is missing');
+        }
+        if (! property_exists($responseContent, 'target_lang')) {
+            throw new BagException('DeepLy API call resulted in a malformed result - target_lang attribute is missing');
+        }
+
         if (! property_exists($responseContent, 'translations')) {
             throw new BagException(
                 'DeepLy API call resulted in a malformed result - translations are missing'
@@ -138,6 +145,28 @@ class TranslationBag extends AbstractBag
         }
 
         return $translatedTexts;
+    }
+
+    /**
+     * Returns the language code of the source ("from") language. Might have been auto-detected by DeepL.
+     * Attention: DeepLy does not check if the result is in the Deeply::LANG_CODES array.
+     * Therefore DeepLy also will work if DeepL adds support for new languages.
+     *
+     * @return string The language code, one of these: Deeply::LANG_CODES
+     */
+    public function getSourceLanguage()
+    {
+        return $this->responseContent->source_lang;
+    }
+
+    /**
+     * Returns the language code of the target ("to") language.
+     *
+     * @return string The language code, one of these: Deeply::LANG_CODES
+     */
+    public function getTargetLanguage()
+    {
+        return $this->responseContent->target_lang;
     }
 
 }
