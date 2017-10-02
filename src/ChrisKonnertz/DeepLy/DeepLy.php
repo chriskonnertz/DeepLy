@@ -105,24 +105,6 @@ class DeepLy
     }
 
     /**
-     * Tries to detect the language of a text and returns its language code.
-     * The language of the text has to be one of the supported languages or the result will be incorrect.
-     * This method might throw an exception so you should wrap it in a try-catch-block.
-     *
-     * @param string      $text The text you want to analyze
-     * @return string|null      Returns a language code from the self::LANG_CODES array or null
-     * @throws \Exception
-     */
-    public function detectLanguage($text)
-    {
-        // Note: We always use English as the target language. if the source language is English as well,
-        // DeepL automatically seems to set the target language to French so this is not a problem.
-        $translationBag = $this->requestTranslation($text, self::LANG_EN);
-
-        return $translationBag->getSourceLanguage();
-    }
-
-    /**
      * Uses the DeepL API to split a text into a string array of sentences.
      *
      * @param string $text The text you want to split into sentences
@@ -156,6 +138,24 @@ class DeepLy
         $sentences = $splitTextBag->getAllSentences();
 
         return $sentences;
+    }
+
+    /**
+     * Tries to detect the language of a text and returns its language code.
+     * The language of the text has to be one of the supported languages or the result will be incorrect.
+     * This method might throw an exception so you should wrap it in a try-catch-block.
+     *
+     * @param string      $text The text you want to analyze
+     * @return string|null      Returns a language code from the self::LANG_CODES array or null
+     * @throws \Exception
+     */
+    public function detectLanguage($text)
+    {
+        // Note: We always use English as the target language. if the source language is English as well,
+        // DeepL automatically seems to set the target language to French so this is not a problem.
+        $translationBag = $this->requestTranslation($text, self::LANG_EN);
+
+        return $translationBag->getSourceLanguage();
     }
 
     /**
