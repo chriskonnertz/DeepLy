@@ -62,7 +62,7 @@
                 try {
                     $result = $deepLy->detectLanguage($text);
 
-                    echo '<div class="success">Result: <blockquote><b>' . $result . '</b></blockquote></div>';
+                    echo '<div class="success">Language detected: <blockquote><b>' . $result . '</b></blockquote></div>';
                 } catch (\Exception $exception) {
                     echo '<div class="error">'.$exception->getMessage().'</div>';
                 }

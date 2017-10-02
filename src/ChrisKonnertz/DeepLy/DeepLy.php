@@ -18,6 +18,7 @@ class DeepLy
 
     /**
      * All supported language code constants
+     * @see https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes
      */
     const LANG_AUTO = 'auto'; // Let DeepL decide which language it is (only works for the source language)
     const LANG_DE = 'DE'; // German
@@ -30,6 +31,7 @@ class DeepLy
 
     /**
      * Array with all supported language codes
+     * @see https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes
      */
     const LANG_CODES = [
         self::LANG_AUTO,
@@ -40,6 +42,21 @@ class DeepLy
         self::LANG_IT,
         self::LANG_NL,
         self::LANG_PL,
+    ];
+
+    /**
+     * Array with language codes as keys and the matching language names in English as values
+     * @see https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes
+     */
+    const LANG_NAMES = [
+        self::LANG_AUTO => 'Auto',
+        self::LANG_DE => 'German',
+        self::LANG_EN => 'English',
+        self::LANG_FR => 'French',
+        self::LANG_ES => 'Spanish',
+        self::LANG_IT => 'Italian',
+        self::LANG_NL => 'Dutch',
+        self::LANG_PL => 'Polish',
     ];
 
     /**
@@ -478,6 +495,38 @@ class DeepLy
 
         // ATTENTION! This only works as long as self::LANG_AUTO is the first item!
         return array_slice(self::LANG_CODES, 1);
+    }
+
+    /**
+     * Returns the English name of a language for a given language code.
+     * The language code must be on of these: self::LANG_CODES
+     *
+     * @param string $langCode The code of the language
+     * @return string
+     */
+    public function getLangName($langCode)
+    {
+        if (! in_array($langCode, self::LANG_CODES)) {
+            throw new \InvalidArgumentException('The language code is unknown');
+        }
+
+        return self::LANG_NAMES[$langCode];
+    }
+
+    /**
+     * Returns the language code of a language for a given language name.
+     * The language name must be one of these: self::LANG_NAMES
+     *
+     * @param string $langName The name of the language
+     * @return string
+     */
+    public function getLangCodeByName($langName)
+    {
+        if (! in_array($langName, self::LANG_NAMES)) {
+            throw new \InvalidArgumentException('The language name is unknown');
+        }
+
+        return array_search($langName, self::LANG_NAMES);
     }
 
     /**

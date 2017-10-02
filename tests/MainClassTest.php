@@ -178,6 +178,27 @@ class MainClassTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals($supportsLang, true);
     }
 
+    public function testGetLangName()
+    {
+        $deepLy = $this->getInstance();
+
+        $langName = $deepLy->getLangName('EN');
+        $this->assertEquals('English', $langName);
+
+        $langName = $deepLy->getLangName('DE');
+        $this->assertEquals('German', $langName);
+    }
+
+    public function testGetLangCodeByName()
+    {
+        $deepLy = $this->getInstance();
+
+        $langCode = $deepLy->getLangCodeByName('English');
+        $this->assertSame('EN', $langCode);
+        $langCode = $deepLy->getLangCodeByName('German');
+        $this->assertSame('DE', $langCode);
+    }
+
     public function testGuzzle()
     {
         $deepLy = $this->getInstance();
