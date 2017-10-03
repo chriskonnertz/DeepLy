@@ -103,8 +103,8 @@ class CurlHttpClient implements HttpClientInterface
     }
 
     /**
-     * Returns the text from a HTML document (passed as a HTML code string).
-     * The text ist rimmed and line breaks are replaces by dashes.
+     * Returns the text from an HTML document (passed as an HTML code string).
+     * The text ist trimmed and line breaks are replaced by dashes.
      * Returns null if extracting the text was not possible.
      *
      * @param string $htmlCode
