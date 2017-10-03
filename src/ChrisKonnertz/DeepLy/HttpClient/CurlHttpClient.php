@@ -86,14 +86,56 @@ class CurlHttpClient implements HttpClientInterface
 
         $code = curl_getinfo($curl, CURLINFO_HTTP_CODE);
         if ($code !== 200) {
-            // Note that the response probably will contain an error description wrapped in a HTML page
-            throw new CallException('Server side error during DeepLy API call: HTTP code '.$code);
+            // Note that the response probably will contain an error description wrapped in a HTML page.
+            // We extract the text and display add it tot he exception message.
+            $text = $this->getTextFromHtml($rawResponseData);
+            if ($text !== null) {
+                $text = ', message: "'.$text.'"';
+            }
+
+            throw new CallException('Server side error during DeepLy API call: HTTP code '.$code.$text);
         }
 
         // TODO: Do not start a new session for each request?
         curl_close($curl);
 
         return $rawResponseData;
+    }
+
+    /**
+     * Returns the text from a HTML document (passed as a HTML code string).
+     * The text ist rimmed and line breaks are replaces by dashes.
+     * Returns null if extracting the text was not possible.
+     *
+     * @param string $htmlCode
+     * @return string|null
+     */
+    protected function getTextFromHtml($htmlCode)
+    {
+        $document = new \DOMDocument();
+
+        $okay = $document->loadHTML($htmlCode);
+
+        // Cannot load HTML document, not a valid HTML document
+        if (!$okay) {
+            return null;
+        }
+
+        $bodyElements = $document->getElementsByTagName('body');
+
+        // Cannot find body-Element, not a valid HTML-Document
+        if (sizeof($bodyElements) != 1) {
+            return null;
+        }
+
+        /** @var \DOMElement $bodyElement */
+        $bodyElement = $bodyElements[0];
+        $text = $bodyElement->nodeValue;
+
+        // Note: It is not necessary to use some kind of "mb_trim()" function since trim() works with unicode chars
+        $text = str_replace("\n", ' - ', trim($text));
+
+        return $text;
     }
 
     /**
