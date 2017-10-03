@@ -132,7 +132,9 @@ class CurlHttpClient implements HttpClientInterface
         $bodyElement = $bodyElements[0];
         $text = $bodyElement->nodeValue;
 
-        // Note: It is not necessary to use some kind of "mb_trim()" function since trim() works with unicode chars
+        // Notes:
+        // - It is not necessary to use some kind of "mb_trim()" function since trim() works with unicode chars
+        // - We know that the server will add \n chars but no \r chars
         $text = str_replace("\n", ' - ', trim($text));
 
         return $text;
