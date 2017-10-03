@@ -377,7 +377,7 @@ class DeepLy
     }
 
     /**
-     * Pings the API server. Returns the duration in seconds
+     * Pings the API server. Returns the duration in seconds until the response arrives
      * or throws an exception if no valid response was received.
      *
      * @return float
