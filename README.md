@@ -34,7 +34,7 @@ $translatedText = $deepLy->translate('Hello world!', 'DE', 'EN');
 echo $translatedText; // Prints "Hallo Welt!"
 ```
 
-> An interactive PHP demo script is included. It is located at `demos/demo_translation.php`.
+> An interactive PHP demo script is included. It is located at `demos/demo_translate.php`.
 
 ### Sophisticated Example
 
