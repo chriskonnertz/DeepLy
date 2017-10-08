@@ -138,7 +138,7 @@ In Laravel 5.0-5.4 you manually have to register the service provider
 
 ## Current State
 
-I do not know when DeepL.com will officially release their API but I expect them to do it at some point. 
+I do not know when DeepL.com will officially release their API but I expect them to do it within the next few months. 
 Meanwhile you may use this PHP client on your own risk. Also note that their API responds quite slow. This might be intentional.
 Nevertheless the API is reliable. I had not a single issue amongst hundreds of API calls.
 
