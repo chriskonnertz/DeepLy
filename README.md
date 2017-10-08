@@ -90,6 +90,9 @@ DeepL(y) supports these languages:
 
 > Note that auto detection only is possible for the source language.
 
+DeepL says they will [add more languages](https://www.heise.de/newsticker/meldung/Maschinelles-Uebersetzen-Deutsches-Start-up-DeepL-will-230-Sprachkombinationen-unterstuetzen-3836533.html) 
+in the future, such as Chinese and Russian.
+
 ## Text Length Limit
 
 According to the DeepL.com website, the length of the text that has to be translated is limited to 5000 characters.
@@ -142,7 +145,8 @@ Nevertheless the API is reliable. I had not a single issue amongst hundreds of A
 ## Disclaimer
 
 This is not an official package. It is 100% open source and non-commercial. 
-The API of DeepL.com is free as well but this ~~might~~ [will](https://blog.wdr.de/digitalistan/bessere-uebersetzungen-dank-deeplearning/) change in the future.
+The API of DeepL.com is free as well but this [might](https://www.heise.de/newsticker/meldung/Maschinelles-Uebersetzen-Deutsches-Start-up-DeepL-will-230-Sprachkombinationen-unterstuetzen-3836533.html) change in the future.
+It remains unclear what this exactly means.
 
 DeepL is a product from DeepL GmbH. More info: [deepl.com/publisher.html](https://www.deepl.com/publisher.html)
 
