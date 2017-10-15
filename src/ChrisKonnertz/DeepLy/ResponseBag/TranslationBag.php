@@ -127,7 +127,11 @@ class TranslationBag extends AbstractBag
                 $translatedText .= PHP_EOL;
             }
 
-            if ($translatedText !== '') {
+            // Since we want to return one string we have to glue the sentences.
+            // We add a space between them if there is not space or line break at the end of the last sentence.
+            // Note that we can use \n here, because PHP_EOL always ends with a \n.
+            $lastChar = mb_substr($translatedText, -1);
+            if ($lastChar !== ' ' and mb_substr($translatedText, -1) !== "\n") {
                 $translatedText .= ' ';
             }
 
