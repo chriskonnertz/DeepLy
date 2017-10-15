@@ -232,13 +232,6 @@ class DeepLy
             throw new \InvalidArgumentException('The $from argument has to a valid language code');
         }
 
-        // We try to auto-detect which is the right line break
-        $lineBreak = "\r\n";
-        if (strpos($text, $lineBreak) === false and strpos($text, "\n") !== false) {
-            $lineBreak = "\n";
-        }
-        $lines = explode($lineBreak, $text);
-
         // Note that this array will be converted to a data structure of arrays AND objects later on
         $params = [
             'lang' => [
@@ -247,28 +240,28 @@ class DeepLy
             ]
         ];
 
-        if ($joinSentences) {
-            if (is_array($text)) {
-                $text = implode(' ', $text);
-            }
-
-            // We could add multiple items in the "jobs" item, this would result in multiple items
-            // in the "translations" array in the response
-            $params['jobs'] = [
-                [
-                    'kind' => 'default',
-                    'raw_en_sentence' => $text,
-                ]
-            ];
+        if (is_array($text)) {
+            $paragraphs = $text;
         } else {
+            // We try to auto-detect which is the right line break
+            $lineBreak = "\r\n";
+            if (strpos($text, $lineBreak) === false and strpos($text, "\n") !== false) {
+                $lineBreak = "\n";
+            }
+            $paragraphs = explode($lineBreak, $text);
+        }
+
+        $params['jobs'] = [];
+        $paragraphOffsets = [];
+        foreach ($paragraphs as $paragraph) {
             if (is_array($text)) {
-                $sentences = $text;
+                $sentences = [$paragraph];
             } else {
                 // Let the API split the text into sentences
                 $sentences = $this->splitText($text, $from);
             }
 
-            $params['jobs'] = [];
+            $paragraphOffsets = sizeof($params['jobs']);
             foreach ($sentences as $sentence) {
                 $params['jobs'][] =  [
                     'kind' => 'default',
