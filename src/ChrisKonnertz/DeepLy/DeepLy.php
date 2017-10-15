@@ -78,7 +78,7 @@ class DeepLy
     /**
      * Current version number
      */
-    const VERSION = '1.4.2';
+    const VERSION = '1.5.0';
 
     /**
      * If true, validate that the length of a translation text
@@ -180,14 +180,14 @@ class DeepLy
      * ATTENTION: The target language parameter is followed by the source language parameter!
      * This method might throw an exception so you should wrap it in a try-catch-block.
      *
-     * @param string|string[] $text          The text to translate. A single string or an array of sentences (strings)
-     * @param string          $to            Optional: A self::LANG_<code> constant
-     * @param string|null     $from          Optional: A self::LANG_<code> constant
-     * @param bool            $joinSentences If true, all sentences will be joined to one long sentence
+     * @param string|string[] $text           The text to translate. A single string or an array of sentences (strings)
+     * @param string          $to             Optional: A self::LANG_<code> constant
+     * @param string|null     $from           Optional: A self::LANG_<code> constant
+     * @param bool            $keepLineBreaks If true, line breaks will be kept, if false, they will be removed
      * @return TranslationBag
      * @throws \Exception
      */
-    protected function requestTranslation($text, $to = self::LANG_EN, $from = self::LANG_AUTO, $joinSentences = false)
+    protected function requestTranslation($text, $to = self::LANG_EN, $from = self::LANG_AUTO, $keepLineBreaks = true)
     {
         $this->translationBag = null;
 
@@ -231,6 +231,13 @@ class DeepLy
         if (! in_array($from, self::LANG_CODES)) {
             throw new \InvalidArgumentException('The $from argument has to a valid language code');
         }
+
+        // We try to auto-detect which is the right line break
+        $lineBreak = "\r\n";
+        if (strpos($text, $lineBreak) === false and strpos($text, "\n") !== false) {
+            $lineBreak = "\n";
+        }
+        $lines = explode($lineBreak, $text);
 
         // Note that this array will be converted to a data structure of arrays AND objects later on
         $params = [
@@ -288,15 +295,15 @@ class DeepLy
      * ATTENTION: The target language parameter is followed by the source language parameter!
      * This method might throw an exception so you should wrap it in a try-catch-block.
      *
-     * @param string      $text          The text you want to translate
-     * @param string      $to            Optional: A self::LANG_<code> constant
-     * @param string|null $from          Optional: A self::LANG_<code> constant
-     * @param bool        $joinSentences If true, all sentences will be joined to one long sentence
-     * @return null|string               Returns the translated text or null if there is no translation
+     * @param string      $text           The text you want to translate
+     * @param string      $to             Optional: A self::LANG_<code> constant
+     * @param string|null $from           Optional: A self::LANG_<code> constant
+     * @param bool        $keepLineBreaks If true, line breaks will be kept, if false, they will be removed
+     * @return null|string                Returns the translated text or null if there is no translation
      */
-    public function translate($text, $to = self::LANG_EN, $from = self::LANG_AUTO, $joinSentences = false)
+    public function translate($text, $to = self::LANG_EN, $from = self::LANG_AUTO, $keepLineBreaks = false)
     {
-        $translationBag = $this->requestTranslation($text, $to, $from, $joinSentences);
+        $translationBag = $this->requestTranslation($text, $to, $from, $keepLineBreaks);
 
         return $translationBag->getTranslation();
     }
@@ -349,14 +356,14 @@ class DeepLy
      * This method will throw an exception if reading the file or translating fails
      * so you should wrap it in a try-catch-block.
      *
-     * @param string      $filename      The name of the file you want to translate
-     * @param string      $to            Optional: A self::LANG_<code> constant
-     * @param string|null $from          Optional: A self::LANG_<code> constant
-     * @param bool        $joinSentences If true, all sentences will be joined to one long sentence
-     * @return string|null               Returns the translated text or null if there is no translation
+     * @param string      $filename       The name of the file you want to translate
+     * @param string      $to             Optional: A self::LANG_<code> constant
+     * @param string|null $from           Optional: A self::LANG_<code> constant
+     * @param bool        $keepLineBreaks If true, line breaks will be kept, if false, they will be removed
+     * @return string|null                Returns the translated text or null if there is no translation
      * @throws \Exception
      */
-    public function translateFile($filename, $to = self::LANG_EN, $from = self::LANG_AUTO, $joinSentences = false)
+    public function translateFile($filename, $to = self::LANG_EN, $from = self::LANG_AUTO, $keepLineBreaks = false)
     {
         if (! is_string($filename)) {
             throw new \InvalidArgumentException('The $filename argument has to be a string');
@@ -373,7 +380,7 @@ class DeepLy
             );
         }
 
-        return $this->translate($text, $to, $from, $joinSentences);
+        return $this->translate($text, $to, $from, $keepLineBreaks);
     }
 
     /**
