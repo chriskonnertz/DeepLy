@@ -15,37 +15,30 @@ class TranslationBag extends AbstractBag
      *
      * @var int[]
      */
-    protected $paragraphOffsets;
+    protected $lineBreaks;
 
     /**
      * SentencesBag constructor.
      *
      * @param \stdClass  $responseContent  The response content (payload) of a split text API call
-     * @param int[]      $paragraphOffsets Array with key-value-pairs. The key is the index of the paragraph,
-     *                                     the value is the index of the first sentence of this paragraph in the
+     * @param int[]      $lineBreaks       Array of integers. The value is the index of a sentence in the
      *                                     $this->responseContent->translations array
      * @throws BagException
      */
-    public function __construct(\stdClass $responseContent, $paragraphOffsets = array())
+    public function __construct(\stdClass $responseContent, $lineBreaks = array())
     {
         parent::__construct($responseContent);
 
-        foreach ($paragraphOffsets as $paragraphIndex => $sentenceOffset) {
-            if (! is_int($paragraphIndex)) {
-                throw new \InvalidArgumentException('$paragraphOffsets has to be an array with integer keys');
+        foreach ($lineBreaks as $sentenceIndex) {
+            if (! is_int($sentenceIndex)) {
+                throw new \InvalidArgumentException('$lineBreaks has to be an array with integer values');
             }
-            if ($paragraphIndex < 0) {
-                throw new \InvalidArgumentException('$paragraphOffsets has to be an array with integer keys >= 0');
-            }
-            if (! is_int($sentenceOffset)) {
-                throw new \InvalidArgumentException('$paragraphOffsets has to be an array with integer values');
-            }
-            if ($sentenceOffset < 0) {
-                throw new \InvalidArgumentException('$paragraphOffsets has to be an array with integer values >= 0');
+            if ($sentenceIndex < 0) {
+                throw new \InvalidArgumentException('$lineBreaks has to be an array with integer values >= 0');
             }
         }
 
-        $this->paragraphOffsets = $paragraphOffsets;
+        $this->lineBreaks = $lineBreaks;
     }
 
     /**
@@ -124,11 +117,15 @@ class TranslationBag extends AbstractBag
         }
 
         $translatedText = '';
-
-        foreach ($this->responseContent->translations as $translation) {
+        foreach ($this->responseContent->translations as $index => $translation) {
             // The beams array contains 1-n translation alternatives.
             // The first one (index 0) is the "best" one (best score)
             $beam = $translation->beams[0];
+
+            while (current($this->lineBreaks) == $index) {
+                array_shift($this->lineBreaks);
+                $translatedText .= PHP_EOL;
+            }
 
             if ($translatedText !== '') {
                 $translatedText .= ' ';

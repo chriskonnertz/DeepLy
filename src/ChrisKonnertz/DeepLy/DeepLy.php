@@ -241,29 +241,31 @@ class DeepLy
         ];
 
         if (is_array($text)) {
-            $paragraphs = $text;
+            $lines = $text;
         } else {
             // We try to auto-detect which is the right line break
             $lineBreak = "\r\n";
             if (strpos($text, $lineBreak) === false and strpos($text, "\n") !== false) {
                 $lineBreak = "\n";
             }
-            $paragraphs = explode($lineBreak, $text);
+            $lines = explode($lineBreak, $text);
         }
 
+        // $this->lineBreaks = [1, 1, 2];
+
         $params['jobs'] = [];
-        $paragraphOffsets = [];
-        foreach ($paragraphs as $index => $paragraph) {
+        $lineBreaks = [];
+        foreach ($lines as $index => $line) {
             if (is_array($text)) {
-                $sentences = [$paragraph];
+                $sentences = [$line];
             } else {
                 // Let the API split the text into sentences
-                $sentences = $this->splitText($paragraph, $from);
+                $sentences = $this->splitText($line, $from);
             }
 
             // The sentences array will be empty if the $paragraph was empty (=empty line)
-            if (sizeof($sentences) > 0) {
-                $paragraphOffsets[$index] = sizeof($params['jobs']);
+            if ($index > 0) {
+                $lineBreaks[] = sizeof($params['jobs']);
             }
 
             foreach ($sentences as $sentence) {
@@ -280,7 +282,7 @@ class DeepLy
 
         $responseContent = $this->protocol->processResponseData($rawResponseData);
 
-        $translationBag = new TranslationBag($responseContent, $paragraphOffsets);
+        $translationBag = new TranslationBag($responseContent, $lineBreaks);
 
         $this->translationBag = $translationBag;
 
