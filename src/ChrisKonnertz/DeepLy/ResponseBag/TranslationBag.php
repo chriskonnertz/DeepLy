@@ -11,11 +11,49 @@ class TranslationBag extends AbstractBag
 {
 
     /**
+     * Array with key-value-pairs that map sentences of the translation to paragraphs
+     *
+     * @var int[]
+     */
+    protected $paragraphOffsets;
+
+    /**
+     * SentencesBag constructor.
+     *
+     * @param \stdClass  $responseContent  The response content (payload) of a split text API call
+     * @param int[]      $paragraphOffsets Array with key-value-pairs. The key is the index of the paragraph,
+     *                                     the value is the index of the first sentence of this paragraph in the
+     *                                     $this->responseContent->translations array
+     * @throws BagException
+     */
+    public function __construct(\stdClass $responseContent, $paragraphOffsets = array())
+    {
+        parent::__construct($responseContent);
+
+        foreach ($paragraphOffsets as $paragraphIndex => $sentenceOffset) {
+            if (! is_int($paragraphIndex)) {
+                throw new \InvalidArgumentException('$paragraphOffsets has to be an array with integer keys');
+            }
+            if ($paragraphIndex < 0) {
+                throw new \InvalidArgumentException('$paragraphOffsets has to be an array with integer keys >= 0');
+            }
+            if (! is_int($sentenceOffset)) {
+                throw new \InvalidArgumentException('$paragraphOffsets has to be an array with integer values');
+            }
+            if ($sentenceOffset < 0) {
+                throw new \InvalidArgumentException('$paragraphOffsets has to be an array with integer values >= 0');
+            }
+        }
+
+        $this->paragraphOffsets = $paragraphOffsets;
+    }
+
+    /**
      * Verifies that the given response content (usually a \stdClass built by json_decode())
      * is a valid result from an API call to the DeepL API.
      * This method will not return true/false but throw an exception if something is invalid.
      *
-     * @param mixed|null $responseContent The response content (payload) of a translation API call
+     * @param mixed|null $responseContent  The response content (payload) of a translation API call
      * @throws BagException
      * @return void
      */

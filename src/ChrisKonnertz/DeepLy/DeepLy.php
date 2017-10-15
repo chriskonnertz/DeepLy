@@ -280,7 +280,7 @@ class DeepLy
 
         $responseContent = $this->protocol->processResponseData($rawResponseData);
 
-        $translationBag = new TranslationBag($responseContent);
+        $translationBag = new TranslationBag($responseContent, $paragraphOffsets);
 
         $this->translationBag = $translationBag;
 
