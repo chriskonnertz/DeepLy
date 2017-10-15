@@ -253,15 +253,19 @@ class DeepLy
 
         $params['jobs'] = [];
         $paragraphOffsets = [];
-        foreach ($paragraphs as $paragraph) {
+        foreach ($paragraphs as $index => $paragraph) {
             if (is_array($text)) {
                 $sentences = [$paragraph];
             } else {
                 // Let the API split the text into sentences
-                $sentences = $this->splitText($text, $from);
+                $sentences = $this->splitText($paragraph, $from);
             }
 
-            $paragraphOffsets = sizeof($params['jobs']);
+            // The sentences array will be empty if the $paragraph was empty (=empty line)
+            if (sizeof($sentences) > 0) {
+                $paragraphOffsets[$index] = sizeof($params['jobs']);
+            }
+
             foreach ($sentences as $sentence) {
                 $params['jobs'][] =  [
                     'kind' => 'default',
