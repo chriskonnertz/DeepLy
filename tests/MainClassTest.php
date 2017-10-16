@@ -175,7 +175,7 @@ class MainClassTest extends \PHPUnit\Framework\TestCase
 
         $supportsLang = $deepLy->supportsLangCode($langCode);
 
-        $this->assertEquals('true', $supportsLang);
+        $this->assertEquals(true, $supportsLang);
     }
 
     public function testGetLangName()
