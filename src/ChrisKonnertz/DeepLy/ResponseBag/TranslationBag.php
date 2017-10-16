@@ -123,8 +123,8 @@ class TranslationBag extends AbstractBag
             // The first one (index 0) is the "best" one (best score)
             $beam = $translation->beams[0];
 
-            // Add line breaks. Add multiple line breaks if there is a cluster of multiple empty lines.
-            while (current($lineBreaks) == $index) {
+            // Add line break. Add multiple line breaks if there is a cluster of multiple empty lines.
+            while (sizeof($lineBreaks) > 0 and current($lineBreaks) == $index) {
                 array_shift($lineBreaks);
                 $translatedText .= PHP_EOL;
             }
