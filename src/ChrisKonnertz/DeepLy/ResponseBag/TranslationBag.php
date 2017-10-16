@@ -117,13 +117,15 @@ class TranslationBag extends AbstractBag
         }
 
         $translatedText = '';
+        $lineBreaks = $this->lineBreaks; // Copy the array so we can modify it
         foreach ($this->responseContent->translations as $index => $translation) {
             // The beams array contains 1-n translation alternatives.
             // The first one (index 0) is the "best" one (best score)
             $beam = $translation->beams[0];
 
-            while (current($this->lineBreaks) == $index) {
-                array_shift($this->lineBreaks);
+            // Add line breaks. Add multiple line breaks if there is a cluster of multiple empty lines.
+            while (current($lineBreaks) == $index) {
+                array_shift($lineBreaks);
                 $translatedText .= PHP_EOL;
             }
 
