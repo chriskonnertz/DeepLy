@@ -90,7 +90,7 @@ class MainClassTest extends \PHPUnit\Framework\TestCase
         $deepLy = $this->getInstance();
 
         $translatedText = $deepLy->translate('Hello world!', 'DE', 'EN');
-        $this->assertEquals($translatedText, 'Hallo Welt!');
+        $this->assertEquals('Hallo Welt!', $translatedText);
 
         $translationBag = $deepLy->getTranslationBag();
         $this->assertInstanceOf(ChrisKonnertz\DeepLy\ResponseBag\TranslationBag::class, $translationBag);
@@ -163,7 +163,7 @@ class MainClassTest extends \PHPUnit\Framework\TestCase
 
         $this->assertNotNull($langCodes);
         $this->assertGreaterThan(0, sizeof($langCodes));
-        $this->assertEquals(current($langCodes), 'auto'); // The auto lang code must be the first item in the array
+        $this->assertEquals('auto', current($langCodes)); // The auto lang code must be the first item in the array
     }
 
     public function testSupportsLangCode()
@@ -175,7 +175,7 @@ class MainClassTest extends \PHPUnit\Framework\TestCase
 
         $supportsLang = $deepLy->supportsLangCode($langCode);
 
-        $this->assertEquals($supportsLang, true);
+        $this->assertEquals('true', $supportsLang);
     }
 
     public function testGetLangName()
@@ -224,7 +224,7 @@ class MainClassTest extends \PHPUnit\Framework\TestCase
 
         $translatedText = $deepLy->translate('Hello world!', 'DE', 'EN');
 
-        $this->assertEquals($translatedText, 'Hallo Welt!');
+        $this->assertEquals('Hallo Welt!', $translatedText);
     }
 
 }
