@@ -124,23 +124,31 @@ class DeepLy
     /**
      * Uses the DeepL API to split a text into a string array of sentences.
      *
-     * @param string $text The text you want to split into sentences
-     * @param string $from Optional: A self::LANG_<code> constant
+     * @param string|string[] $text The text you want to split into sentences. It can be a single string or string array
+     * @param string          $from Optional: A self::LANG_<code> constant
      * @return string[]
      * @throws \Exception
      */
     public function splitText($text, $from = self::LANG_AUTO)
     {
-        if (! is_string($text)) {
-            throw new \InvalidArgumentException('The $text argument has to be a string');
+        if (! is_string($text) and ! is_array($text)) {
+            throw new \InvalidArgumentException('The $text argument has to be a string or an array of strings');
+        }
+        if (is_array($text)) {
+            foreach ($text as $index => $part) {
+                if (! is_string($part)) {
+                    throw new \InvalidArgumentException(
+                        'If the $text argument is an array it ha to be an array of strings, but the '.($index + 1).
+                        ' item is not a string'
+                    );
+                }
+            }
+        } else {
+            $text = [$text];
         }
 
         $params = [
-            // We could add multiple items in the "texts" item, this would result in multiple items
-            // in the "splitted_texts" array in the response
-            'texts' => [
-                $text
-            ],
+            'texts' => $text,
             'lang' => [
                 'lang_user_selected' => $from
             ]
