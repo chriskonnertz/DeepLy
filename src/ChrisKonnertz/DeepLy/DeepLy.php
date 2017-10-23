@@ -139,7 +139,7 @@ class DeepLy
                 if (! is_string($part)) {
                     throw new \InvalidArgumentException(
                         'If the $text argument is an array it ha to be an array of strings, but the '.($index + 1).
-                        ' item is not a string'
+                        '. item is not a string'
                     );
                 }
             }
