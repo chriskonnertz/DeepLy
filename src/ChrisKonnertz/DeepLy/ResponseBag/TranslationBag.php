@@ -46,7 +46,7 @@ class TranslationBag extends AbstractBag
      * is a valid result from an API call to the DeepL API.
      * This method will not return true/false but throw an exception if something is invalid.
      *
-     * @param mixed|null $responseContent  The response content (payload) of a translation API call
+     * @param mixed|null $responseContent The response content (payload) of a translation API call
      * @throws BagException
      * @return void
      */
