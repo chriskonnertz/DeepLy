@@ -56,4 +56,15 @@ class SentencesBag extends AbstractBag
         return $sentences;
     }
 
+    /**
+     * Returns all sentences from the response, but the groups are kept,
+     * so this method returns an array of array of strings.
+     *
+     * @return string[][]
+     */
+    public function getAllSentencesGrouped()
+    {
+        return $this->responseContent->splitted_texts;
+    }
+
 }
