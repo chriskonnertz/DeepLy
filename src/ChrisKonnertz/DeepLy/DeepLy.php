@@ -122,14 +122,15 @@ class DeepLy
     }
 
     /**
-     * Uses the DeepL API to split a text into a string array of sentences.
+     * Uses the DeepL API to split a text into sentences. Stores them in a SentencesBag object and returns it.
+     * You may use the splitText() method if you want to get the result as a string array.
      *
      * @param string|string[] $text The text you want to split into sentences. It can be a single string or string array
      * @param string          $from Optional: A self::LANG_<code> constant
-     * @return string[]
+     * @return SentencesBag
      * @throws \Exception
      */
-    public function splitText($text, $from = self::LANG_AUTO)
+    public function requestSplitText($text, $from = self::LANG_AUTO)
     {
         if (! is_string($text) and ! is_array($text)) {
             throw new \InvalidArgumentException('The $text argument has to be a string or an array of strings');
@@ -160,6 +161,21 @@ class DeepLy
 
         $splitTextBag = new SentencesBag($responseContent);
 
+        return $splitTextBag;
+    }
+
+    /**
+     * Uses the DeepL API to split a text into a string array of sentences.
+     *
+     * @param string|string[] $text The text you want to split into sentences. It can be a single string or string array
+     * @param string          $from Optional: A self::LANG_<code> constant
+     * @return string[]
+     * @throws \Exception
+     */
+    public function splitText($text, $from = self::LANG_AUTO)
+    {
+        $splitTextBag = $this->requestSplitText($text, $from);
+
         $sentences = $splitTextBag->getAllSentences();
 
         return $sentences;
@@ -187,6 +203,7 @@ class DeepLy
      * Requests a translation from the API. Returns a TranslationBag object.
      * ATTENTION: The target language parameter is followed by the source language parameter!
      * This method might throw an exception so you should wrap it in a try-catch-block.
+     * You may use the translate() method if you want to get the result as a string.
      *
      * @param string|string[] $text           The text to translate. A single string or an array of sentences (strings)
      * @param string          $to             Optional: A self::LANG_<code> constant
@@ -258,8 +275,6 @@ class DeepLy
             }
             $lines = explode($lineBreak, $text);
         }
-
-        // $this->lineBreaks = [1, 1, 2];
 
         $params['jobs'] = [];
         $lineBreaks = [];
