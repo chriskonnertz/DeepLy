@@ -102,6 +102,14 @@ class MainClassTest extends \PHPUnit\Framework\TestCase
         $this->assertNotNull($translationAlternatives);
     }
 
+    public function testItalianTranslation()
+    {
+        $deepLy = $this->getInstance();
+
+        $translatedText = $deepLy->translate('ciao', 'EN', 'IT');
+        $this->assertEquals('hello', $translatedText);
+    }
+
     public function testProposeTranslations()
     {
         $deepLy = $this->getInstance();
