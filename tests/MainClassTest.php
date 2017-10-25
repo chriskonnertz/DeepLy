@@ -155,6 +155,17 @@ class MainClassTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals($expectedSentences, $sentences);
     }
 
+    public function testTranslationWithLineBreaks()
+    {
+        $deepLy = $this->getInstance();
+
+        $text = "Hallo Welt. Wie geht es dir?\r\n\r\nMir geht es gut. Ich habe viel Spaß beim Programmieren.";
+        $translated = $deepLy->translate($text, 'EN', 'DE');
+
+        $expectedTrans = "Hello, world. How are you feeling?\r\n\r\nI'm all right. I have a lot of fun programming.";
+        $this->assertEquals($expectedTrans, $translated);
+    }
+
     public function testGetTranslationBag()
     {
         $deepLy = $this->getInstance();
