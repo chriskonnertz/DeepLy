@@ -267,6 +267,11 @@ class DeepLy
 
         if (is_array($text)) {
             $lines = $text;
+            $sentences = [];
+
+            foreach ($text as $sentence) {
+                $sentences[] = [$sentence];
+            }
         } else {
             // We try to auto-detect which is the right line break
             $lineBreak = "\r\n";
@@ -274,27 +279,20 @@ class DeepLy
                 $lineBreak = "\n";
             }
             $lines = explode($lineBreak, $text);
-        }
 
-        #$sentencesBag = $this->requestSplitText($lines, $from);
-        #$sentences = $sentencesBag->getAllSentencesGrouped();
+            $sentencesBag = $this->requestSplitText($lines, $from);
+            $sentences = $sentencesBag->getAllSentencesGrouped();
+        }
 
         $params['jobs'] = [];
         $lineBreaks = [];
         foreach ($lines as $index => $line) {
-            if (is_array($text)) {
-                $sentences = [$line];
-            } else {
-                // Let the API split the text into sentences
-                $sentences = $this->splitText($line, $from);
-            }
-
             // The sentences array will be empty if the $paragraph was empty (=empty line)
             if ($index > 0) {
                 $lineBreaks[] = sizeof($params['jobs']);
             }
 
-            foreach ($sentences as $sentence) {
+            foreach ($sentences[$index] as $sentence) {
                 $params['jobs'][] =  [
                     'kind' => 'default',
                     'raw_en_sentence' => $sentence,
