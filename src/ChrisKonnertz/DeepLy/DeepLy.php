@@ -208,11 +208,10 @@ class DeepLy
      * @param string|string[] $text           The text to translate. A single string or an array of sentences (strings)
      * @param string          $to             Optional: A self::LANG_<code> constant
      * @param string|null     $from           Optional: A self::LANG_<code> constant
-     * @param bool            $keepLineBreaks If true, line breaks will be kept, if false, they will be removed
      * @return TranslationBag
      * @throws \Exception
      */
-    protected function requestTranslation($text, $to = self::LANG_EN, $from = self::LANG_AUTO, $keepLineBreaks = true)
+    protected function requestTranslation($text, $to = self::LANG_EN, $from = self::LANG_AUTO)
     {
         $this->translationBag = null;
 
@@ -278,6 +277,7 @@ class DeepLy
             if (strpos($text, $lineBreak) === false and strpos($text, "\n") !== false) {
                 $lineBreak = "\n";
             }
+
             $lines = explode($lineBreak, $text);
 
             $sentencesBag = $this->requestSplitText($lines, $from);
@@ -301,7 +301,7 @@ class DeepLy
         }
 
         // The API call might throw an exception but we do not want to catch it,
-        // the caller of this method should catch it instead.
+        // instesd the caller of this method has to catch it.
         $rawResponseData = $this->httpClient->callApi(self::API_BASE_URL, $params, self::METHOD_TRANSLATE);
 
         $responseContent = $this->protocol->processResponseData($rawResponseData);
@@ -321,12 +321,11 @@ class DeepLy
      * @param string      $text           The text you want to translate
      * @param string      $to             Optional: A self::LANG_<code> constant
      * @param string|null $from           Optional: A self::LANG_<code> constant
-     * @param bool        $keepLineBreaks If true, line breaks will be kept, if false, they will be removed
      * @return null|string                Returns the translated text or null if there is no translation
      */
-    public function translate($text, $to = self::LANG_EN, $from = self::LANG_AUTO, $keepLineBreaks = false)
+    public function translate($text, $to = self::LANG_EN, $from = self::LANG_AUTO)
     {
-        $translationBag = $this->requestTranslation($text, $to, $from, $keepLineBreaks);
+        $translationBag = $this->requestTranslation($text, $to, $from);
 
         return $translationBag->getTranslation();
     }
@@ -382,11 +381,10 @@ class DeepLy
      * @param string      $filename       The name of the file you want to translate
      * @param string      $to             Optional: A self::LANG_<code> constant
      * @param string|null $from           Optional: A self::LANG_<code> constant
-     * @param bool        $keepLineBreaks If true, line breaks will be kept, if false, they will be removed
      * @return string|null                Returns the translated text or null if there is no translation
      * @throws \Exception
      */
-    public function translateFile($filename, $to = self::LANG_EN, $from = self::LANG_AUTO, $keepLineBreaks = false)
+    public function translateFile($filename, $to = self::LANG_EN, $from = self::LANG_AUTO)
     {
         if (! is_string($filename)) {
             throw new \InvalidArgumentException('The $filename argument has to be a string');
@@ -403,7 +401,7 @@ class DeepLy
             );
         }
 
-        return $this->translate($text, $to, $from, $keepLineBreaks);
+        return $this->translate($text, $to, $from);
     }
 
     /**
