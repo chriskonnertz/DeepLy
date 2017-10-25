@@ -260,7 +260,7 @@ class DeepLy
         // Note that this array will be converted to a data structure of arrays AND objects later on
         $params = [
             'lang' => [
-                'source_lang' => $from,
+                'source_lang_user_selected' => $from, // Attention: source_lang does not work!
                 'target_lang' => $to,
             ]
         ];
@@ -275,6 +275,9 @@ class DeepLy
             }
             $lines = explode($lineBreak, $text);
         }
+
+        #$sentencesBag = $this->requestSplitText($lines, $from);
+        #$sentences = $sentencesBag->getAllSentencesGrouped();
 
         $params['jobs'] = [];
         $lineBreaks = [];
