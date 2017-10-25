@@ -194,7 +194,7 @@ class DeepLy
     {
         // Note: We always use English as the target language. if the source language is English as well,
         // DeepL automatically seems to set the target language to French so this is not a problem.
-        $translationBag = $this->requestTranslation($text, self::LANG_EN, self::LANG_AUTO, true);
+        $translationBag = $this->requestTranslation($text, self::LANG_EN, self::LANG_AUTO);
 
         return $translationBag->getSourceLanguage();
     }
@@ -343,7 +343,7 @@ class DeepLy
      */
     public function proposeTranslations($text, $to = self::LANG_EN, $from = self::LANG_AUTO)
     {
-        $translationBag = $this->requestTranslation($text, $to, $from, true);
+        $translationBag = $this->requestTranslation($text, $to, $from);
 
         return $translationBag->getTranslationAlternatives();
     }
