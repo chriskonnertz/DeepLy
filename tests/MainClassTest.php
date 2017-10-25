@@ -159,11 +159,13 @@ class MainClassTest extends \PHPUnit\Framework\TestCase
     {
         $deepLy = $this->getInstance();
 
-        $text = "Hallo Welt. Wie geht es dir?\r\n\r\nMir geht es gut. Ich habe viel Spaß beim Programmieren.";
+        $text = 'Hallo Welt. Wie geht es dir?'.PHP_EOL.PHP_EOL.
+            'Mir geht es gut. Ich habe viel Spaß beim Programmieren.';
         $translated = $deepLy->translate($text, 'EN', 'DE');
 
-        $expectedTrans = "Hello, world. How are you feeling?\r\n\r\nI'm all right. I have a lot of fun programming.";
-        $this->assertEquals($expectedTrans, $translated);
+        $expectedTranslated = 'Hello, world. How are you feeling?'.PHP_EOL.PHP_EOL.
+            'I\'m all right. I have a lot of fun programming.';
+        $this->assertEquals($expectedTranslated, $translated);
     }
 
     public function testGetTranslationBag()
