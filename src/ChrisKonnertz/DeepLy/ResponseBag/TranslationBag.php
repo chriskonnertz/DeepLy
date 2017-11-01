@@ -45,6 +45,8 @@ class TranslationBag extends AbstractBag
      * Verifies that the given response content (usually a \stdClass built by json_decode())
      * is a valid result from an API call to the DeepL API.
      * This method will not return true/false but throw an exception if something is invalid.
+     * Especially it will throw an exception if the API was not able to auto-detected the source language
+     * (if no language code was given).
      *
      * @param mixed|null $responseContent The response content (payload) of a translation API call
      * @throws BagException
@@ -57,6 +59,9 @@ class TranslationBag extends AbstractBag
 
         if (! property_exists($responseContent, 'source_lang')) {
             throw new BagException('DeepLy API call resulted in a malformed result - source_lang attribute is missing');
+        }
+        if ($responseContent->source_lang === '') {
+            throw new BagException('DeepL could not auto-detect the source language of the text');
         }
         if (! property_exists($responseContent, 'target_lang')) {
             throw new BagException('DeepLy API call resulted in a malformed result - target_lang attribute is missing');
