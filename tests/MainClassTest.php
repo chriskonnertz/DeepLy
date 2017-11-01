@@ -90,6 +90,18 @@ class MainClassTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals('DE', $languageCode);
     }
 
+    /**
+     * @expectedException     \ChrisKonnertz\DeepLy\ResponseBag\BagException
+     * @expectedExceptionCode 130
+     */
+    public function testExceptionDetectionFailed()
+    {
+        $deepLy = $this->getInstance();
+
+        // DeepL cannot detected the language for this "text" so an exception has to be thrown
+        $deepLy->detectLanguage('a');
+    }
+
     public function testTranslation()
     {
         $deepLy = $this->getInstance();

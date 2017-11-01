@@ -43,16 +43,16 @@ abstract class AbstractBag
     public function verifyResponseContent($responseContent)
     {
         if (! $responseContent instanceof \stdClass) {
-            throw new BagException('DeepLy API call did not return JSON that describes a \stdClass object');
+            throw new BagException('DeepLy API call did not return JSON that describes a \stdClass object', 10);
         }
 
         if (property_exists($responseContent, 'error')) {
             if ($responseContent->error instanceof \stdClass and property_exists($responseContent->error, 'message')) {
                 throw new BagException(
-                    'DeepLy API call resulted in this error: '.$responseContent->error->message
+                    'DeepLy API call resulted in this error: '.$responseContent->error->message, 20
                 );
             } else {
-                throw new BagException('DeepLy API call resulted in an unknown error');
+                throw new BagException('DeepLy API call resulted in an unknown error', 21);
             }
         }
     }

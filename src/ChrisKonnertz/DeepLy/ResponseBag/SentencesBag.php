@@ -28,19 +28,19 @@ class SentencesBag extends AbstractBag
 
         if (! property_exists($responseContent, 'splitted_texts')) {
             throw new BagException(
-                'DeepLy API call resulted in a malformed result - splitted_texts property is missing'
+                'DeepLy API call resulted in a malformed result - splitted_texts property is missing', 100
             );
         }
         if (! is_array($responseContent->splitted_texts)) {
             throw new BagException(
-                'DeepLy API call resulted in a malformed result - splitted_texts property is not an array'
+                'DeepLy API call resulted in a malformed result - splitted_texts property is not an array', 101
             );
         }
         if (! property_exists($responseContent, 'lang')) {
-            throw new BagException('DeepLy API call resulted in a malformed result - lang property is missing');
+            throw new BagException('DeepLy API call resulted in a malformed result - lang property is missing', 120);
         }
         if ($responseContent->lang === '') {
-            throw new BagException('DeepL could not auto-detect the language of the text');
+            throw new BagException('DeepL could not auto-detect the language of the text', 130);
         }
     }
 
