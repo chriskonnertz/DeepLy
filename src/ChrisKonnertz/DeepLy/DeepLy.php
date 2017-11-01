@@ -124,9 +124,11 @@ class DeepLy
     /**
      * Uses the DeepL API to split a text into sentences. Stores them in a SentencesBag object and returns it.
      * You may use the splitText() method if you want to get the result as a string array.
+     * Attention: If you choose to set $from to "auto", the API will not return a result if it is unable to
+     * detect the language.
      *
      * @param string|string[] $text The text you want to split into sentences. It can be a single string or string array
-     * @param string          $from Optional: A self::LANG_<code> constant
+     * @param string          $from Optional: The source language, a self::LANG_<code> constant
      * @return SentencesBag
      * @throws \Exception
      */
@@ -166,9 +168,10 @@ class DeepLy
 
     /**
      * Uses the DeepL API to split a text into a string array of sentences.
+     * This method might throw an exception so you should wrap it in a try-catch-block.
      *
      * @param string|string[] $text The text you want to split into sentences. It can be a single string or string array
-     * @param string          $from Optional: A self::LANG_<code> constant
+     * @param string          $from Optional: The source language, a self::LANG_<code> constant
      * @return string[]
      * @throws \Exception
      */
@@ -185,6 +188,7 @@ class DeepLy
      * Tries to detect the language of a text and returns its language code.
      * The language of the text has to be one of the supported languages or the result will be incorrect.
      * This method might throw an exception so you should wrap it in a try-catch-block.
+     * Especially it will throw an exception if the API was not able to auto-detected the language.
      *
      * @param string      $text The text you want to analyze
      * @return string|null      Returns a language code from the self::LANG_CODES array or null
@@ -206,8 +210,8 @@ class DeepLy
      * You may use the translate() method if you want to get the result as a string.
      *
      * @param string|string[] $text           The text to translate. A single string or an array of sentences (strings)
-     * @param string          $to             Optional: A self::LANG_<code> constant
-     * @param string|null     $from           Optional: A self::LANG_<code> constant
+     * @param string          $to             Optional: The target language, a self::LANG_<code> constant
+     * @param string|null     $from           Optional: The source language, a self::LANG_<code> constant
      * @return TranslationBag
      * @throws \Exception
      */
@@ -318,8 +322,8 @@ class DeepLy
      * This method might throw an exception so you should wrap it in a try-catch-block.
      *
      * @param string      $text           The text you want to translate
-     * @param string      $to             Optional: A self::LANG_<code> constant
-     * @param string|null $from           Optional: A self::LANG_<code> constant
+     * @param string      $to             Optional: The target language, a self::LANG_<code> constant
+     * @param string|null $from           Optional: The source language, a self::LANG_<code> constant
      * @return null|string                Returns the translated text or null if there is no translation
      */
     public function translate($text, $to = self::LANG_EN, $from = self::LANG_AUTO)
@@ -335,8 +339,8 @@ class DeepLy
      * This method might throw an exception so you should wrap it in a try-catch-block.
      *
      * @param string      $text The text you want to translate
-     * @param string      $to   Optional: A self::LANG_<code> constant
-     * @param string|null $from Optional: A self::LANG_<code> constant
+     * @param string      $to   Optional: The target language, a self::LANG_<code> constant
+     * @param string|null $from Optional: The source language, a self::LANG_<code> constant
      * @return string[]         Returns translation alternatives as a string array
      * @throws \Exception
      */
@@ -353,8 +357,8 @@ class DeepLy
      * This method might throw an exception so you should wrap it in a try-catch-block.
      *
      * @param string[]    $sentences The sentences you want to translate
-     * @param string      $to        Optional: A self::LANG_<code> constant
-     * @param string|null $from      Optional: A self::LANG_<code> constant
+     * @param string      $to        Optional: The target language, a self::LANG_<code> constant
+     * @param string|null $from      Optional: The source language, a self::LANG_<code> constant
      * @param bool        $join      If true, join all sentences to a single string
      * @return \string[] Returns a string array (might be empty)
      */
@@ -378,8 +382,8 @@ class DeepLy
      * so you should wrap it in a try-catch-block.
      *
      * @param string      $filename       The name of the file you want to translate
-     * @param string      $to             Optional: A self::LANG_<code> constant
-     * @param string|null $from           Optional: A self::LANG_<code> constant
+     * @param string      $to             Optional: The target language, a self::LANG_<code> constant
+     * @param string|null $from           Optional: The source language, a self::LANG_<code> constant
      * @return string|null                Returns the translated text or null if there is no translation
      * @throws \Exception
      */
