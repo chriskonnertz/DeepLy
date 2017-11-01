@@ -70,7 +70,7 @@ class MainClassTest extends \PHPUnit\Framework\TestCase
 
         $sentencesBag = $deepLy->requestSplitText('Hello world! What a wonderful world.', 'EN');
 
-        $lang = $sentencesBag->getLanguageCode();
+        $lang = $sentencesBag->getLanguage();
         $this->assertEquals('EN', $lang);
 
         $sentences = $sentencesBag->getAllSentences();

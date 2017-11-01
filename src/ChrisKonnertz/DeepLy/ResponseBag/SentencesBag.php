@@ -80,7 +80,7 @@ class SentencesBag extends AbstractBag
      *
      * @return string A DeepLy::LANG_<code> constant
      */
-    public function getLanguageCode()
+    public function getLanguage()
     {
         return $this->responseContent->lang;
     }
