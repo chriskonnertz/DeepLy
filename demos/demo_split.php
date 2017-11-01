@@ -38,69 +38,79 @@ $deepLy = new ChrisKonnertz\DeepLy\DeepLy();
         blockquote { margin-left: 0; margin-right: 0; }
         div.success { border: 1px solid #4ce276; margin: 20px 0; padding: 10px; border-top-width: 10px }
         div.error { border: 1px solid #f36362; margin: 20px 0; padding: 10px; border-top-width: 10px }
+        .button-group { margin-bottom: 20px }
     </style>
 </head>
 <body>
-<h1>DeepLy Demo</h1>
+    <h1>DeepLy Demo</h1>
 
-<form method="POST">
-
-    <div class="form-element">
-        <label for="text">Text:</label>
-        <textarea id="text" class="form-field" name="text" rows="4"><?php echo $text !== null ? $text : 'Hello world!' ?></textarea>
+    <div class="button-group">
+        <a class="button border" href="demo_translate.php">Translate</a>
+        <a class="button border" href="demo_detect.php">Detect</a>
+        <a class="button " href="demo_split.php">Split</a>
+        <a class="button border" href="demo_ping.php">Ping</a>
     </div>
 
-    <div id="ping-result"></div>
+    <form method="POST">
 
-    <input type="submit" value="Split Text" class="button">
-</form>
+        <div class="form-element">
+            <label for="text">Text:</label>
+            <textarea id="text" class="form-field" name="text" rows="4"><?php
+                echo $text !== null ? $text : 'Hello world! That\'s one small step for man, one giant leap for mankind.'
+            ?></textarea>
+        </div>
 
-<div class="block result">
-    <?php
+        <div id="ping-result"></div>
 
-    if ($text !== null) {
-        try {
-            $result = $deepLy->splitText($text);
-            $result = implode('<br>', $result);
+        <input type="submit" value="Split Text" class="button">
+    </form>
 
-            echo '<div class="success">Sentences: <blockquote><b>' . $result . '</b></blockquote></div>';
-        } catch (\Exception $exception) {
-            echo '<div class="error">'.$exception->getMessage().'</div>';
+    <div class="block result">
+        <?php
+
+        if ($text !== null) {
+            try {
+                $result = $deepLy->splitText($text);
+                $result = implode('<br>', $result);
+
+                echo '<div class="success">Sentences: <blockquote><b>' . $result . '</b></blockquote></div>';
+            } catch (\Exception $exception) {
+                echo '<div class="error">'.$exception->getMessage().'</div>';
+            }
         }
-    }
 
-    ?>
-</div>
+        ?>
+    </div>
 
-<div class="block info">
-    <small>
-        This is not an official package.
-        It is 100% open source and non-commercial.
-        DeepL is a product from DeepL GmbH. More info:
-        <a href="https://www.deepl.com/publisher.html">www.deepl.com/publisher.html</a>
-    </small>
-</div>
+    <div class="block info">
+        <small>
+            This is not an official package.
+            It is 100% open source and non-commercial.
+            DeepL is a product from DeepL GmbH. More info:
+            <a href="https://www.deepl.com/publisher.html">www.deepl.com/publisher.html</a>
+        </small>
+    </div>
 
-<script>
-    (
-        // Use DeepLy's ping method to check if the API server is reachable
-        function()
-        {
-            var request = new XMLHttpRequest();
+    <script>
+        (
+            // Use DeepLy's ping method to check if the API server is reachable
+            function()
+            {
+                var request = new XMLHttpRequest();
 
-            request.addEventListener('readystatechange', function() {
-                if (request.readyState === XMLHttpRequest.DONE) {
-                    if (request.status !== 200 || request.responseText !== '1') {
-                        document.getElementById('ping-result').innerHTML =
-                            '<div class="error"><b>WARNING:</b> API seems unreachable.</div>';
+                request.addEventListener('readystatechange', function() {
+                    if (request.readyState === XMLHttpRequest.DONE) {
+                        if (request.status !== 200 || request.responseText !== '1') {
+                            document.getElementById('ping-result').innerHTML =
+                                '<div class="error"><b>WARNING:</b> API seems unreachable.</div>';
+                        }
                     }
-                }
-            });
+                });
 
-            request.open('GET', 'demo_ping.php?simple=1', true);
-            request.send();
-        }
-    )();
-</script>
+                request.open('GET', 'demo_ping.php?simple=1', true);
+                request.send();
+            }
+        )();
+    </script>
 </body>
 </html>

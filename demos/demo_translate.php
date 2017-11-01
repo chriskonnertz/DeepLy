@@ -60,10 +60,18 @@
         div.success { border: 1px solid #4ce276; margin: 20px 0; padding: 10px; border-top-width: 10px }
         div.error { border: 1px solid #f36362; margin: 20px 0; padding: 10px; border-top-width: 10px }
         .form-select { max-width: 100px }
+        .button-group { margin-bottom: 20px }
     </style>
 </head>
 <body>
     <h1>DeepLy Demo</h1>
+
+    <div class="button-group">
+        <a class="button " href="demo_translate.php">Translate</a>
+        <a class="button border" href="demo_detect.php">Detect</a>
+        <a class="button border" href="demo_split.php">Split</a>
+        <a class="button border" href="demo_ping.php">Ping</a>
+    </div>
 
     <form method="POST">
 
