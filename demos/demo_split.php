@@ -73,9 +73,12 @@ $deepLy = new ChrisKonnertz\DeepLy\DeepLy();
             if ($text !== null) {
                 try {
                     $result = $deepLy->splitText($text);
-                    $result = implode('<br>', $result);
 
-                    echo '<div class="success">Sentences: <blockquote><b>' . $result . '</b></blockquote></div>';
+                    $wrapped = '<table class="table border stripe"><tr><td>'.
+                        implode('</td></tr><tr><td>', $result).
+                        "</td></tr></table>";
+
+                    echo '<div class="success">Sentences: <blockquote><b>' . $wrapped . '</b></blockquote></div>';
                 } catch (\Exception $exception) {
                     echo '<div class="error">'.$exception->getMessage().'</div>';
                 }
