@@ -33,12 +33,13 @@
         body { padding: 20px }
         h1 { margin-bottom: 40px }
         h4 { margin-top: 40px }
-        form { margin-bottom: 20px }
         textarea { resize: vertical; }
         blockquote { margin-left: 0; margin-right: 0; }
-        div.success { border: 1px solid #4ce276; margin: 20px 0; padding: 10px; border-top-width: 10px }
-        div.error { border: 1px solid #f36362; margin: 20px 0; padding: 10px; border-top-width: 10px }
+        footer { color: #aaa }
+        div.success { border: 1px solid #4ce276; margin-top: 20px; padding: 10px; border-top-width: 10px }
+        div.error { border: 1px solid #f36362; margin-top: 20px; padding: 10px; border-top-width: 10px }
         .button-group { margin-bottom: 20px }
+        .content { margin-bottom: 20px; padding: 20px; box-shadow: 0 1px 3px 0 #c8c8c8; }
     </style>
 </head>
 <body>
@@ -51,42 +52,44 @@
         <a class="button border" href="demo_ping.php">Ping</a>
     </div>
 
-    <form method="POST">
+    <div class="content">
+        <form method="POST">
 
-        <div class="form-element">
-            <label for="text">Text:</label>
-            <textarea id="text" class="form-field" name="text" rows="4"><?php echo $text !== null ? $text : 'Hello world!' ?></textarea>
-        </div>
+            <div class="form-element">
+                <label for="text">Text:</label>
+                <textarea id="text" class="form-field" name="text" rows="4"><?php echo $text !== null ? $text : 'Hello world!' ?></textarea>
+            </div>
 
-        <div id="ping-result"></div>
+            <div id="ping-result"></div>
 
-        <input type="submit" value="Detect Language" class="button">
-    </form>
+            <input type="submit" value="Detect Language" class="button">
+        </form>
 
-    <div class="block result">
-        <?php
+        <div class="block result">
+            <?php
 
-            if ($text !== null) {
-                try {
-                    $result = $deepLy->detectLanguage($text);
+                if ($text !== null) {
+                    try {
+                        $result = $deepLy->detectLanguage($text);
 
-                    echo '<div class="success">Language detected: <blockquote><b>' . $result . '</b></blockquote></div>';
-                } catch (\Exception $exception) {
-                    echo '<div class="error">'.$exception->getMessage().'</div>';
+                        echo '<div class="success">Language detected: <blockquote><b>' . $result . '</b></blockquote></div>';
+                    } catch (\Exception $exception) {
+                        echo '<div class="error">'.$exception->getMessage().'</div>';
+                    }
                 }
-            }
 
-        ?>
+            ?>
+        </div>
     </div>
 
-    <div class="block info">
+    <footer class="block">
         <small>
             This is not an official package.
             It is 100% open source and non-commercial.
             DeepL is a product from DeepL GmbH. More info:
             <a href="https://www.deepl.com/publisher.html">www.deepl.com/publisher.html</a>
         </small>
-    </div>
+    </footer>
 
     <script>
         (

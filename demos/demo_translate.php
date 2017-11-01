@@ -54,13 +54,14 @@
         body { padding: 20px }
         h1 { margin-bottom: 40px }
         h4 { margin-top: 40px }
-        form { margin-bottom: 20px }
         textarea { resize: vertical; }
         blockquote { margin-left: 0; margin-right: 0; }
-        div.success { border: 1px solid #4ce276; margin: 20px 0; padding: 10px; border-top-width: 10px }
-        div.error { border: 1px solid #f36362; margin: 20px 0; padding: 10px; border-top-width: 10px }
+        footer { color: #aaa }
+        div.success { border: 1px solid #4ce276; margin-top: 20px; padding: 10px; border-top-width: 10px }
+        div.error { border: 1px solid #f36362; margin-top: 20px; padding: 10px; border-top-width: 10px }
         .form-select { max-width: 100px }
         .button-group { margin-bottom: 20px }
+        .content { margin-bottom: 20px; padding: 20px; box-shadow: 0 1px 3px 0 #c8c8c8; }
     </style>
 </head>
 <body>
@@ -73,56 +74,57 @@
         <a class="button border" href="demo_ping.php">Ping</a>
     </div>
 
-    <form method="POST">
-
-        <div class="form-element">
-            <label for="text">Text:</label>
-            <textarea id="text" class="form-field" name="text" rows="4"><?php echo $text !== null ? $text : 'Hello world!' ?></textarea>
-        </div>
-
-        <div class="form-element">
-            <label for="from">From:</label>
-            <div class="form-select">
-                <?php createSelect('from', array_combine($deepLy->getLangCodes(), $deepLy->getLangCodes()), $from) ?>
+    <div class="content">
+        <form method="POST">
+            <div class="form-element">
+                <label for="text">Text:</label>
+                <textarea id="text" class="form-field" name="text" rows="4"><?php echo $text !== null ? $text : 'Hello world!' ?></textarea>
             </div>
-        </div>
 
-        <div class="form-element">
-            <label for="to">To:</label>
-            <div class="form-select">
-                <?php createSelect('to', array_combine($deepLy->getLangCodes(false), $deepLy->getLangCodes(false)), $to) ?>
+            <div class="form-element">
+                <label for="from">From:</label>
+                <div class="form-select">
+                    <?php createSelect('from', array_combine($deepLy->getLangCodes(), $deepLy->getLangCodes()), $from) ?>
+                </div>
             </div>
-        </div>
 
-        <div id="ping-result"></div>
+            <div class="form-element">
+                <label for="to">To:</label>
+                <div class="form-select">
+                    <?php createSelect('to', array_combine($deepLy->getLangCodes(false), $deepLy->getLangCodes(false)), $to) ?>
+                </div>
+            </div>
 
-        <input type="submit" value="Translate" class="button">
-    </form>
+            <div id="ping-result"></div>
 
-    <div class="block result">
-        <?php
+            <input type="submit" value="Translate" class="button">
+        </form>
 
-            if ($text !== null and $to !== null) {
-                try {
-                    $result = $deepLy->translate($text, $to, $from);
+        <div class="block result">
+            <?php
 
-                    echo '<div class="success">Translation: <pre><b>' . $result . '</b></pre></div>';
-                } catch (\Exception $exception) {
-                    echo '<div class="error">'.$exception->getMessage().'</div>';
+                if ($text !== null and $to !== null) {
+                    try {
+                        $result = $deepLy->translate($text, $to, $from);
+
+                        echo '<div class="success">Translation: <pre><b>' . $result . '</b></pre></div>';
+                    } catch (\Exception $exception) {
+                        echo '<div class="error">'.$exception->getMessage().'</div>';
+                    }
                 }
-            }
 
-        ?>
+            ?>
+        </div>
     </div>
 
-    <div class="block info">
+    <footer class="block">
         <small>
             This is not an official package.
             It is 100% open source and non-commercial.
             DeepL is a product from DeepL GmbH. More info:
             <a href="https://www.deepl.com/publisher.html">www.deepl.com/publisher.html</a>
         </small>
-    </div>
+    </footer>
 
     <script>
         (
