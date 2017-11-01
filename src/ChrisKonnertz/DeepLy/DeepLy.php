@@ -334,7 +334,7 @@ class DeepLy
     }
 
     /**
-     * Translates one text / sentence. Returns an array of translation proposals.
+     * Translates a short text / a sentence. Returns an array of translation proposals.
      * ATTENTION: The target language parameter is followed by the source language parameter!
      * This method might throw an exception so you should wrap it in a try-catch-block.
      *
@@ -562,7 +562,7 @@ class DeepLy
 
     /**
      * Getter for the TranslationBag object. Might return null!
-     * The translation bag contains the result of the API call.
+     * The translation bag contains the result of the last API call.
      *
      * @return TranslationBag|null
      */

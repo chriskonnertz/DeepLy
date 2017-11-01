@@ -68,7 +68,12 @@ class MainClassTest extends \PHPUnit\Framework\TestCase
     {
         $deepLy = $this->getInstance();
 
-        $sentences = $deepLy->splitText('Hello world! What a wonderful world.', 'EN');
+        $sentencesBag = $deepLy->requestSplitText('Hello world! What a wonderful world.', 'EN');
+
+        $lang = $sentencesBag->getLanguageCode();
+        $this->assertEquals('EN', $lang);
+
+        $sentences = $sentencesBag->getAllSentences();
 
         $expectedSentences = ['Hello world!', 'What a wonderful world.'];
         $this->assertEquals($expectedSentences, $sentences);
