@@ -31,10 +31,10 @@ class TranslationBag extends AbstractBag
 
         foreach ($lineBreaks as $sentenceIndex) {
             if (! is_int($sentenceIndex)) {
-                throw new \InvalidArgumentException('$lineBreaks has to be an array with integer values');
+                throw new \InvalidArgumentException('$lineBreaks has to be an array with integer values', 200);
             }
             if ($sentenceIndex < 0) {
-                throw new \InvalidArgumentException('$lineBreaks has to be an array with integer values >= 0');
+                throw new \InvalidArgumentException('$lineBreaks has to be an array with integer values >= 0', 201);
             }
         }
 
@@ -58,23 +58,27 @@ class TranslationBag extends AbstractBag
         parent::verifyResponseContent($responseContent);
 
         if (! property_exists($responseContent, 'source_lang')) {
-            throw new BagException('DeepLy API call resulted in a malformed result - source_lang attribute is missing');
+            throw new BagException(
+                'DeepLy API call resulted in a malformed result - source_lang attribute is missing', 210
+            );
         }
         if ($responseContent->source_lang === '') {
-            throw new BagException('DeepL could not auto-detect the source language of the text');
+            throw new BagException('DeepL could not auto-detect the source language of the text', 211);
         }
         if (! property_exists($responseContent, 'target_lang')) {
-            throw new BagException('DeepLy API call resulted in a malformed result - target_lang attribute is missing');
+            throw new BagException(
+                'DeepLy API call resulted in a malformed result - target_lang attribute is missing', 220
+            );
         }
 
         if (! property_exists($responseContent, 'translations')) {
             throw new BagException(
-                'DeepLy API call resulted in a malformed result - translations are missing'
+                'DeepLy API call resulted in a malformed result - translations are missing', 230
             );
         }
         if (! is_array($responseContent->translations)) {
             throw new BagException(
-                'DeepLy API call resulted in a malformed result - translations are not an array'
+                'DeepLy API call resulted in a malformed result - translations are not an array', 231
             );
         }
 
@@ -82,17 +86,21 @@ class TranslationBag extends AbstractBag
             foreach ($responseContent->translations as $index => $translation) {
                 if (! property_exists($translation, 'beams')) {
                     throw new BagException(
-                        'DeepLy API call resulted in a malformed result - beams are missing for translation '.$index
+                        'DeepLy API call resulted in a malformed result - beams are missing for translation '.$index,
+                        240
                     );
                 }
                 if (! is_array($translation->beams)) {
                     throw new BagException(
-                        'DeepLy API call resulted in a malformed result - beams are not an array in translation '.$index
+                        'DeepLy API call resulted in a malformed result - beams are not an array in translation '.
+                        $index,
+                        241
                     );
                 }
                 if (sizeof($translation->beams) == 0) {
                     throw new BagException(
-                        'DeepLy API call resulted in a malformed result - beams array is empty in translation '.$index
+                        'DeepLy API call resulted in a malformed result - beams array is empty in translation '.$index,
+                        242
                     );
                 }
 
@@ -100,7 +108,8 @@ class TranslationBag extends AbstractBag
                     if (! property_exists($beam, 'postprocessed_sentence')) {
                         throw new BagException(
                             'DeepLy API call resulted in a malformed result - '.
-                            'postprocessed_sentence property is missing in beam '.$index
+                            'postprocessed_sentence property is missing in beam '.$index,
+                            250
                         );
                     }
                 }
@@ -161,7 +170,7 @@ class TranslationBag extends AbstractBag
         }
 
         if (sizeof($this->responseContent->translations) > 1) {
-            throw new \LogicException('This method does not operate on more than one source text');
+            throw new \LogicException('This method does not operate on more than one source text', 290);
         }
 
         $beams = $this->responseContent->translations[0]->beams;
