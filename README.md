@@ -135,6 +135,16 @@ In Laravel 5.0-5.4 you manually have to register the service provider
  in your `config/app.php` config file.
  
  You can then access DeepLy like this: `$ping = \DeepLy::ping();`
+ 
+## Demos
+
+There are several demo scirpts included in the `demos` folder:
+
+* `demo_detect.php`: Demonstrates language detection. Write a text and the API will tell you which language it thinks it is.
+* `demo_translate.php`: Demonstrates language translation. Write a text and the API will try to translate it to a language of your choice.
+* `demo_split.php`: Demonstrates sentence detection. Write a text and the API will split it into sentences.
+* `demo_ping.php`: Demonstrates DeepLy's `ping()` method by pinging the API.
+
 
 ## Current State
 
