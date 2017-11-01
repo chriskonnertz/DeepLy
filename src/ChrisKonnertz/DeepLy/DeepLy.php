@@ -287,7 +287,6 @@ class DeepLy
         $params['jobs'] = [];
         $lineBreaks = [];
         foreach ($lines as $index => $line) {
-            // The sentences array will be empty if the $paragraph was empty (=empty line)
             if ($index > 0) {
                 $lineBreaks[] = sizeof($params['jobs']);
             }
@@ -301,7 +300,7 @@ class DeepLy
         }
 
         // The API call might throw an exception but we do not want to catch it,
-        // instesd the caller of this method has to catch it.
+        // instead the caller of this method has to catch it.
         $rawResponseData = $this->httpClient->callApi(self::API_BASE_URL, $params, self::METHOD_TRANSLATE);
 
         $responseContent = $this->protocol->processResponseData($rawResponseData);
