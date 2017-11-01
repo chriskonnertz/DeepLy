@@ -14,6 +14,8 @@ class SentencesBag extends AbstractBag
      * Verifies that the given response content (usually a \stdClass built by json_decode())
      * is a valid result from an API call to the DeepL API.
      * This method will not return true/false but throw an exception if something is invalid.
+     * Especially it will throw an exception if the API was not able to auto-detected the language
+     * (if no language code was given).
      *
      * @param mixed|null $responseContent The response content (payload) of a split text API call
      * @throws BagException
@@ -33,6 +35,12 @@ class SentencesBag extends AbstractBag
             throw new BagException(
                 'DeepLy API call resulted in a malformed result - splitted_texts property is not an array'
             );
+        }
+        if (! property_exists($responseContent, 'lang')) {
+            throw new BagException('DeepLy API call resulted in a malformed result - lang property is missing');
+        }
+        if ($responseContent->lang === '') {
+            throw new BagException('DeepL could not auto-detect the language of the text');
         }
     }
 
@@ -54,6 +62,27 @@ class SentencesBag extends AbstractBag
         }
 
         return $sentences;
+    }
+
+    /**
+     * Returns all sentences from the response, but the groups are kept,
+     * so this method returns an array of array of strings.
+     *
+     * @return string[][]
+     */
+    public function getAllSentencesGrouped()
+    {
+        return $this->responseContent->splitted_texts;
+    }
+
+    /**
+     * Returns the language code of the sentences. This is useful when the API auto-detected the language.
+     *
+     * @return string A DeepLy::LANG_<code> constant
+     */
+    public function getLanguage()
+    {
+        return $this->responseContent->lang;
     }
 
 }

@@ -98,7 +98,7 @@
                 try {
                     $result = $deepLy->translate($text, $to, $from);
 
-                    echo '<div class="success">Translation: <blockquote><b>' . $result . '</b></blockquote></div>';
+                    echo '<div class="success">Translation: <pre><b>' . $result . '</b></pre></div>';
                 } catch (\Exception $exception) {
                     echo '<div class="error">'.$exception->getMessage().'</div>';
                 }

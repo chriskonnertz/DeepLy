@@ -78,7 +78,7 @@ class DeepLy
     /**
      * Current version number
      */
-    const VERSION = '1.4.4';
+    const VERSION = '1.5.0';
 
     /**
      * If true, validate that the length of a translation text
@@ -122,25 +122,36 @@ class DeepLy
     }
 
     /**
-     * Uses the DeepL API to split a text into a string array of sentences.
+     * Uses the DeepL API to split a text into sentences. Stores them in a SentencesBag object and returns it.
+     * You may use the splitText() method if you want to get the result as a string array.
+     * Attention: If you choose to set $from to "auto", the API will not return a result if it is unable to
+     * detect the language.
      *
-     * @param string $text The text you want to split into sentences
-     * @param string $from Optional: A self::LANG_<code> constant
-     * @return string[]
+     * @param string|string[] $text The text you want to split into sentences. It can be a single string or string array
+     * @param string          $from Optional: The source language, a self::LANG_<code> constant
+     * @return SentencesBag
      * @throws \Exception
      */
-    public function splitText($text, $from = self::LANG_AUTO)
+    public function requestSplitText($text, $from = self::LANG_AUTO)
     {
-        if (! is_string($text)) {
-            throw new \InvalidArgumentException('The $text argument has to be a string');
+        if (! is_string($text) and ! is_array($text)) {
+            throw new \InvalidArgumentException('The $text argument has to be a string or an array of strings');
+        }
+        if (is_array($text)) {
+            foreach ($text as $index => $part) {
+                if (! is_string($part)) {
+                    throw new \InvalidArgumentException(
+                        'If the $text argument is an array it ha to be an array of strings, but the '.($index + 1).
+                        '. item is not a string'
+                    );
+                }
+            }
+        } else {
+            $text = [$text];
         }
 
         $params = [
-            // We could add multiple items in the "texts" item, this would result in multiple items
-            // in the "splitted_texts" array in the response
-            'texts' => [
-                $text
-            ],
+            'texts' => $text,
             'lang' => [
                 'lang_user_selected' => $from
             ]
@@ -152,6 +163,22 @@ class DeepLy
 
         $splitTextBag = new SentencesBag($responseContent);
 
+        return $splitTextBag;
+    }
+
+    /**
+     * Uses the DeepL API to split a text into a string array of sentences.
+     * This method might throw an exception so you should wrap it in a try-catch-block.
+     *
+     * @param string|string[] $text The text you want to split into sentences. It can be a single string or string array
+     * @param string          $from Optional: The source language, a self::LANG_<code> constant
+     * @return string[]
+     * @throws \Exception
+     */
+    public function splitText($text, $from = self::LANG_AUTO)
+    {
+        $splitTextBag = $this->requestSplitText($text, $from);
+
         $sentences = $splitTextBag->getAllSentences();
 
         return $sentences;
@@ -161,6 +188,7 @@ class DeepLy
      * Tries to detect the language of a text and returns its language code.
      * The language of the text has to be one of the supported languages or the result will be incorrect.
      * This method might throw an exception so you should wrap it in a try-catch-block.
+     * Especially it will throw an exception if the API was not able to auto-detected the language.
      *
      * @param string      $text The text you want to analyze
      * @return string|null      Returns a language code from the self::LANG_CODES array or null
@@ -170,7 +198,7 @@ class DeepLy
     {
         // Note: We always use English as the target language. if the source language is English as well,
         // DeepL automatically seems to set the target language to French so this is not a problem.
-        $translationBag = $this->requestTranslation($text, self::LANG_EN, self::LANG_AUTO, true);
+        $translationBag = $this->requestTranslation($text, self::LANG_EN, self::LANG_AUTO);
 
         return $translationBag->getSourceLanguage();
     }
@@ -179,15 +207,15 @@ class DeepLy
      * Requests a translation from the API. Returns a TranslationBag object.
      * ATTENTION: The target language parameter is followed by the source language parameter!
      * This method might throw an exception so you should wrap it in a try-catch-block.
+     * You may use the translate() method if you want to get the result as a string.
      *
-     * @param string|string[] $text          The text to translate. A single string or an array of sentences (strings)
-     * @param string          $to            Optional: A self::LANG_<code> constant
-     * @param string|null     $from          Optional: A self::LANG_<code> constant
-     * @param bool            $joinSentences If true, all sentences will be joined to one long sentence
+     * @param string|string[] $text           The text to translate. A single string or an array of sentences (strings)
+     * @param string          $to             Optional: The target language, a self::LANG_<code> constant
+     * @param string|null     $from           Optional: The source language, a self::LANG_<code> constant
      * @return TranslationBag
      * @throws \Exception
      */
-    protected function requestTranslation($text, $to = self::LANG_EN, $from = self::LANG_AUTO, $joinSentences = false)
+    protected function requestTranslation($text, $to = self::LANG_EN, $from = self::LANG_AUTO)
     {
         $this->translationBag = null;
 
@@ -240,29 +268,34 @@ class DeepLy
             ]
         ];
 
-        if ($joinSentences) {
-            if (is_array($text)) {
-                $text = implode(' ', $text);
-            }
+        if (is_array($text)) {
+            $lines = $text;
+            $sentences = [];
 
-            // We could add multiple items in the "jobs" item, this would result in multiple items
-            // in the "translations" array in the response
-            $params['jobs'] = [
-                [
-                    'kind' => 'default',
-                    'raw_en_sentence' => $text,
-                ]
-            ];
+            foreach ($text as $sentence) {
+                $sentences[] = [$sentence];
+            }
         } else {
-            if (is_array($text)) {
-                $sentences = $text;
-            } else {
-                // Let the API split the text into sentences
-                $sentences = $this->splitText($text, $from);
+            // We try to auto-detect which is the right line break
+            $lineBreak = "\r\n";
+            if (strpos($text, $lineBreak) === false and strpos($text, "\n") !== false) {
+                $lineBreak = "\n";
             }
 
-            $params['jobs'] = [];
-            foreach ($sentences as $sentence) {
+            $lines = explode($lineBreak, $text);
+
+            $sentencesBag = $this->requestSplitText($lines, $from);
+            $sentences = $sentencesBag->getAllSentencesGrouped();
+        }
+
+        $params['jobs'] = [];
+        $lineBreaks = [];
+        foreach ($lines as $index => $line) {
+            if ($index > 0) {
+                $lineBreaks[] = sizeof($params['jobs']);
+            }
+
+            foreach ($sentences[$index] as $sentence) {
                 $params['jobs'][] =  [
                     'kind' => 'default',
                     'raw_en_sentence' => $sentence,
@@ -271,12 +304,12 @@ class DeepLy
         }
 
         // The API call might throw an exception but we do not want to catch it,
-        // the caller of this method should catch it instead.
+        // instead the caller of this method has to catch it.
         $rawResponseData = $this->httpClient->callApi(self::API_BASE_URL, $params, self::METHOD_TRANSLATE);
 
         $responseContent = $this->protocol->processResponseData($rawResponseData);
 
-        $translationBag = new TranslationBag($responseContent);
+        $translationBag = new TranslationBag($responseContent, $lineBreaks);
 
         $this->translationBag = $translationBag;
 
@@ -288,33 +321,32 @@ class DeepLy
      * ATTENTION: The target language parameter is followed by the source language parameter!
      * This method might throw an exception so you should wrap it in a try-catch-block.
      *
-     * @param string      $text          The text you want to translate
-     * @param string      $to            Optional: A self::LANG_<code> constant
-     * @param string|null $from          Optional: A self::LANG_<code> constant
-     * @param bool        $joinSentences If true, all sentences will be joined to one long sentence
-     * @return null|string               Returns the translated text or null if there is no translation
+     * @param string      $text           The text you want to translate
+     * @param string      $to             Optional: The target language, a self::LANG_<code> constant
+     * @param string|null $from           Optional: The source language, a self::LANG_<code> constant
+     * @return null|string                Returns the translated text or null if there is no translation
      */
-    public function translate($text, $to = self::LANG_EN, $from = self::LANG_AUTO, $joinSentences = false)
+    public function translate($text, $to = self::LANG_EN, $from = self::LANG_AUTO)
     {
-        $translationBag = $this->requestTranslation($text, $to, $from, $joinSentences);
+        $translationBag = $this->requestTranslation($text, $to, $from);
 
         return $translationBag->getTranslation();
     }
 
     /**
-     * Translates one text / sentence. Returns an array of translation proposals.
+     * Translates a short text / a sentence. Returns an array of translation proposals.
      * ATTENTION: The target language parameter is followed by the source language parameter!
      * This method might throw an exception so you should wrap it in a try-catch-block.
      *
      * @param string      $text The text you want to translate
-     * @param string      $to   Optional: A self::LANG_<code> constant
-     * @param string|null $from Optional: A self::LANG_<code> constant
+     * @param string      $to   Optional: The target language, a self::LANG_<code> constant
+     * @param string|null $from Optional: The source language, a self::LANG_<code> constant
      * @return string[]         Returns translation alternatives as a string array
      * @throws \Exception
      */
     public function proposeTranslations($text, $to = self::LANG_EN, $from = self::LANG_AUTO)
     {
-        $translationBag = $this->requestTranslation($text, $to, $from, true);
+        $translationBag = $this->requestTranslation($text, $to, $from);
 
         return $translationBag->getTranslationAlternatives();
     }
@@ -325,8 +357,8 @@ class DeepLy
      * This method might throw an exception so you should wrap it in a try-catch-block.
      *
      * @param string[]    $sentences The sentences you want to translate
-     * @param string      $to        Optional: A self::LANG_<code> constant
-     * @param string|null $from      Optional: A self::LANG_<code> constant
+     * @param string      $to        Optional: The target language, a self::LANG_<code> constant
+     * @param string|null $from      Optional: The source language, a self::LANG_<code> constant
      * @param bool        $join      If true, join all sentences to a single string
      * @return \string[] Returns a string array (might be empty)
      */
@@ -349,14 +381,13 @@ class DeepLy
      * This method will throw an exception if reading the file or translating fails
      * so you should wrap it in a try-catch-block.
      *
-     * @param string      $filename      The name of the file you want to translate
-     * @param string      $to            Optional: A self::LANG_<code> constant
-     * @param string|null $from          Optional: A self::LANG_<code> constant
-     * @param bool        $joinSentences If true, all sentences will be joined to one long sentence
-     * @return string|null               Returns the translated text or null if there is no translation
+     * @param string      $filename       The name of the file you want to translate
+     * @param string      $to             Optional: The target language, a self::LANG_<code> constant
+     * @param string|null $from           Optional: The source language, a self::LANG_<code> constant
+     * @return string|null                Returns the translated text or null if there is no translation
      * @throws \Exception
      */
-    public function translateFile($filename, $to = self::LANG_EN, $from = self::LANG_AUTO, $joinSentences = false)
+    public function translateFile($filename, $to = self::LANG_EN, $from = self::LANG_AUTO)
     {
         if (! is_string($filename)) {
             throw new \InvalidArgumentException('The $filename argument has to be a string');
@@ -373,7 +404,7 @@ class DeepLy
             );
         }
 
-        return $this->translate($text, $to, $from, $joinSentences);
+        return $this->translate($text, $to, $from);
     }
 
     /**
@@ -531,7 +562,7 @@ class DeepLy
 
     /**
      * Getter for the TranslationBag object. Might return null!
-     * The translation bag contains the result of the API call.
+     * The translation bag contains the result of the last API call.
      *
      * @return TranslationBag|null
      */

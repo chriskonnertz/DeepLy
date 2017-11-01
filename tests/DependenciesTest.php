@@ -34,11 +34,11 @@ class DependenciesTest extends \PHPUnit\Framework\TestCase
 
         $curlHttpClient->setSslVerifyPeer(true);
         $sslVerifyPeer = $curlHttpClient->getSslVerifyPeer();
-        $this->assertEquals($sslVerifyPeer, true);
+        $this->assertEquals(true, $sslVerifyPeer);
 
         $curlHttpClient->setSslVerifyPeer(false);
         $sslVerifyPeer = $curlHttpClient->getSslVerifyPeer();
-        $this->assertEquals($sslVerifyPeer, false);
+        $this->assertEquals(false, $sslVerifyPeer);
     }
 
     public function testCreateRequestData()
@@ -55,11 +55,11 @@ class DependenciesTest extends \PHPUnit\Framework\TestCase
 
         $protocol->setValidateId(true);
         $validateId = $protocol->getValidateId();
-        $this->assertEquals($validateId, true);
+        $this->assertEquals(true, $validateId);
 
         $protocol->setValidateId(false);
         $validateId = $protocol->getValidateId();
-        $this->assertEquals($validateId, false);
+        $this->assertEquals(false, $validateId);
     }
 
     public function testTranslationAfterResponse()
@@ -83,7 +83,7 @@ class DependenciesTest extends \PHPUnit\Framework\TestCase
 
         $translation = $translationBag->getTranslation();
 
-        $this->assertEquals($translation, 'Hallo Welt!');
+        $this->assertEquals('Hallo Welt!', $translation);
     }
 
 

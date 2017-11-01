@@ -68,7 +68,12 @@ class MainClassTest extends \PHPUnit\Framework\TestCase
     {
         $deepLy = $this->getInstance();
 
-        $sentences = $deepLy->splitText('Hello world! What a wonderful world.', 'EN');
+        $sentencesBag = $deepLy->requestSplitText('Hello world! What a wonderful world.', 'EN');
+
+        $lang = $sentencesBag->getLanguage();
+        $this->assertEquals('EN', $lang);
+
+        $sentences = $sentencesBag->getAllSentences();
 
         $expectedSentences = ['Hello world!', 'What a wonderful world.'];
         $this->assertEquals($expectedSentences, $sentences);
@@ -90,7 +95,7 @@ class MainClassTest extends \PHPUnit\Framework\TestCase
         $deepLy = $this->getInstance();
 
         $translatedText = $deepLy->translate('Hello world!', 'DE', 'EN');
-        $this->assertEquals($translatedText, 'Hallo Welt!');
+        $this->assertEquals('Hallo Welt!', $translatedText);
 
         $translationBag = $deepLy->getTranslationBag();
         $this->assertInstanceOf(ChrisKonnertz\DeepLy\ResponseBag\TranslationBag::class, $translationBag);
@@ -155,6 +160,19 @@ class MainClassTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals($expectedSentences, $sentences);
     }
 
+    public function testTranslationWithLineBreaks()
+    {
+        $deepLy = $this->getInstance();
+
+        $text = 'Hallo Welt. Wie geht es dir?'.PHP_EOL.PHP_EOL.
+            'Mir geht es gut. Ich habe viel Spaß beim Programmieren.';
+        $translated = $deepLy->translate($text, 'EN', 'DE');
+
+        $expectedTranslated = 'Hello, world. How are you feeling?'.PHP_EOL.PHP_EOL.
+            'I\'m all right. I have a lot of fun programming.';
+        $this->assertEquals($expectedTranslated, $translated);
+    }
+
     public function testGetTranslationBag()
     {
         $deepLy = $this->getInstance();
@@ -171,7 +189,7 @@ class MainClassTest extends \PHPUnit\Framework\TestCase
 
         $this->assertNotNull($langCodes);
         $this->assertGreaterThan(0, sizeof($langCodes));
-        $this->assertEquals(current($langCodes), 'auto'); // The auto lang code must be the first item in the array
+        $this->assertEquals('auto', current($langCodes)); // The auto lang code must be the first item in the array
     }
 
     public function testSupportsLangCode()
@@ -183,7 +201,7 @@ class MainClassTest extends \PHPUnit\Framework\TestCase
 
         $supportsLang = $deepLy->supportsLangCode($langCode);
 
-        $this->assertEquals($supportsLang, true);
+        $this->assertEquals(true, $supportsLang);
     }
 
     public function testGetLangName()
@@ -232,7 +250,7 @@ class MainClassTest extends \PHPUnit\Framework\TestCase
 
         $translatedText = $deepLy->translate('Hello world!', 'DE', 'EN');
 
-        $this->assertEquals($translatedText, 'Hallo Welt!');
+        $this->assertEquals('Hallo Welt!', $translatedText);
     }
 
 }

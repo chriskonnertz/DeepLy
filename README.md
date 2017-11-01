@@ -71,6 +71,12 @@ $languageCode = $deepLy->detectLanguage('Hello world!');
 This will return 'EN'. The language of the text has to be one of the supported languages or the result will be incorrect.
 If you do not need the code of the language but its name, you may call the `$deepLy->getLangName($langCode)` method. 
 
+The API in general can handle and completely translate texts that contain parts with different languages, 
+if the language switch is not within a sentence. The `detectLanguage()` method will however 
+only return the code of _one_ language. It will throw an exception if it is unable to auto-detect the language. 
+This will rarely happen, it is more likely that the API will return a "false positive": It will rather detect the wrong
+language than no language at all.
+
 >  An interactive PHP demo script is included. It is located at `demos/demo_detect.php`.
 
 ## Supported Languages
@@ -88,7 +94,7 @@ DeepL(y) supports these languages:
 | NL   | Dutch         |
 | PL   | Polish        |
 
-> Note that auto detection only is possible for the source language.
+> Note that auto detection only is possible for the source language. 
 
 DeepL says they will [add more languages](https://www.heise.de/newsticker/meldung/Maschinelles-Uebersetzen-Deutsches-Start-up-DeepL-will-230-Sprachkombinationen-unterstuetzen-3836533.html) 
 in the future, such as Chinese and Russian.
@@ -97,7 +103,7 @@ in the future, such as Chinese and Russian.
 
 According to the DeepL.com website, the length of the text that has to be translated is limited to 5000 characters.
 Per default DeepLy will throw an exception if the length limit is exceeded. 
-You may call `$deepLy->setValidateTextLength(false)` to disable that validation.
+You may call `$deepLy->setValidateTextLength(false)` to disable this validation.
 
 ## HTTP Client
 
@@ -135,6 +141,16 @@ In Laravel 5.0-5.4 you manually have to register the service provider
  in your `config/app.php` config file.
  
  You can then access DeepLy like this: `$ping = \DeepLy::ping();`
+ 
+## Demos
+
+There are several demo scripts included in the `demos` folder:
+
+* `demo_detect.php`: Demonstrates language detection. Write a text and the API will tell you which language it thinks it is.
+* `demo_translate.php`: Demonstrates language translation. Write a text and the API will try to translate it to a language of your choice.
+* `demo_split.php`: Demonstrates sentence detection. Write a text and the API will split it into sentences.
+* `demo_ping.php`: Demonstrates DeepLy's `ping()` method by pinging the API.
+
 
 ## Current State
 
