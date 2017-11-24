@@ -60,7 +60,7 @@ better use the language code constants of the `DeepLy` class. The class also off
 You may use the `proposeTranslations` method if you want to get alternative translations for a text. 
 This method cannot operate on more than one sentence at once. 
 
-## Auto-detect language
+## Auto-Detect Language
 
 DeepLy has a method that uses the DeepL API to detect the language of a text:
 
