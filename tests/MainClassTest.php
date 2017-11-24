@@ -151,11 +151,11 @@ class MainClassTest extends \PHPUnit\Framework\TestCase
         // If the result will change for some reason,
         // of course the test will fail.
         // Unfortunately the result tends to alter.
-        $expectedProposals = [
-            'Der alte Mann am Meer',
+        $expectedProposals = [           
             'Der alte Mann und das Meer',
             'Der Alte und das Meer',
-            'Der Alte am Meer',
+            'Der alte Mann und die See',
+            'Der alte Mann am Meer',
         ];
 
         $this->assertEquals($expectedProposals, $proposals);
