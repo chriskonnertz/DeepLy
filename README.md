@@ -157,9 +157,9 @@ There seems to be a request limit. Someone reported that it is 2000 requests per
 
 ## Current State
 
-I do not know when DeepL.com will officially release their API but I expect them to do it within the next few months. 
+I do not know when DeepL.com will officially release their API but I expect them to do it within the next weeks. 
 Meanwhile you may use this PHP client on your own risk. Also note that their API responds quite slow. This might be intentional.
-Nevertheless the API is reliable. I had not a single issue amongst hundreds of API calls.
+Nevertheless the API is reliable. I had not a single faling call amongst hundreds of API calls.
 
 ## Disclaimer
 
