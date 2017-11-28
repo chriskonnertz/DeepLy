@@ -151,15 +151,15 @@ There are several demo scripts included in the `demos` folder:
 * `demo_split.php`: Demonstrates sentence detection. Write a text and the API will split it into sentences.
 * `demo_ping.php`: Demonstrates DeepLy's `ping()` method by pinging the API.
 
+## Request Limit
+
+There seems to be a request limit. Someone reported that it is 2000 requests per day but that is unconfirmed. (See also: https://github.com/chriskonnertz/DeepLy/issues/11)
+
 ## Current State
 
 I do not know when DeepL.com will officially release their API but I expect them to do it within the next few months. 
 Meanwhile you may use this PHP client on your own risk. Also note that their API responds quite slow. This might be intentional.
 Nevertheless the API is reliable. I had not a single issue amongst hundreds of API calls.
-
-## Request Limit
-
-There does not seem to be a request limit. [Linguee.com](https://linguee.com/) - which is made by the makers of DeepL - has a request limit, but it definitely is not coupled to DeepL.
 
 ## Disclaimer
 
