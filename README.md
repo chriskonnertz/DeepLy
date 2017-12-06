@@ -7,7 +7,7 @@
 
 [DeepL.com](https://www.deepl.com/) is a great, new translation service. 
 It provides better translations compared to other popular translation engines.
-DeepLy is a PHP package that implements a client to interact with DeepL via their _undocumented_ API. 
+DeepLy is a PHP package that implements a client to interact with DeepL via their _undocumented_ API and without an API key. Please switch to DeepLy 2 if you have an API key.
 
 ## Installation
 
@@ -153,13 +153,13 @@ There are several demo scripts included in the `demos` folder:
 
 ## Request Limit
 
-There seems to be a request limit. Someone reported that it is 2000 requests per day but that is unconfirmed. (See also: https://github.com/chriskonnertz/DeepLy/issues/11)
+There is a request limit. The threshold of this limit is unknown.
 
 ## Current State
 
-I do not know when DeepL.com will officially release their API but I expect them to do it within the next weeks. 
-Meanwhile you may use this PHP client on your own risk. Also note that their API responds quite slow. This might be intentional.
-Nevertheless the API is reliable. I had not a single faling call amongst hundreds of API calls.
+I do not know when DeepL.com will officially release their API (it is in beta state right now) but I expect them to do it within the next weeks. The API will require authentication with an API key. This will be supported by Deeply 2. Until then you may use DeepLy 1.x on your own risk. 
+
+Also note that their API responds quite slow. This might be intentional. Nevertheless the API is reliable. I had not a single faling call amongst hundreds of API calls.
 
 ## Disclaimer
 
