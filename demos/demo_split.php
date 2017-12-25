@@ -90,6 +90,7 @@ $deepLy = new ChrisKonnertz\DeepLy\DeepLy();
 
     <footer class="block">
         <small>
+            Version <?php echo ChrisKonnertz\DeepLy\DeepLy::VERSION ?>.
             This is not an official package.
             It is 100% open source and non-commercial.
             DeepL is a product from DeepL GmbH. More info:
