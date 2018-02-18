@@ -171,7 +171,7 @@ There are also some exception classes, interfaces, an alternative HTTP client im
 
 I do not know when DeepL.com will officially release their API (it is in beta state right now) but I expect them to do it within the next weeks. The API will require authentication with an API key. This will be supported by Deeply 2. Until then you may use DeepLy 1.x on your own risk. 
 
-Also note that their API responds quite slow. This might be intentional. Nevertheless the API is reliable. I had not a single faling call amongst hundreds of API calls.
+Also note that their API responds quite slow. This might be intentional. Nevertheless the API is reliable. I had not a single failing call amongst hundreds of API calls.
 
 ## Disclaimer
 
