@@ -154,6 +154,19 @@ There are several demo scripts included in the `demos` folder:
 
 There is a request limit. The threshold of this limit is unknown.
 
+
+## Internals
+
+The "core" of this library constists of these classes:
+* `DeepLy` - main class
+* `HttpClient\CurlHttpClient` - HTTP client class
+* `Protocol\JsonRpcProtocol` - JSON RPC is the protocol used by the DeepL API
+* `ResponseBag\AbstractBag` - base wrapper class for the responses of the DeepL API
+* `ResponseBag\SentencesBag` - concrete class for API responses to "split text" requests
+* `ResponseBag\TranslationBag` - concrete class for API responses to "translate" requests
+
+There are also some exception classes, interfaces, an alternative HTTP client implementation that uses Guzzle and classes for the Laravel integration.
+
 ## Current State
 
 I do not know when DeepL.com will officially release their API (it is in beta state right now) but I expect them to do it within the next weeks. The API will require authentication with an API key. This will be supported by Deeply 2. Until then you may use DeepLy 1.x on your own risk. 
