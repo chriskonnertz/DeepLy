@@ -180,7 +180,7 @@ class MainClassTest extends \PHPUnit\Framework\TestCase
             'Mir geht es gut. Ich habe viel Spaß beim Programmieren.';
         $translated = $deepLy->translate($text, 'EN', 'DE');
 
-        $expectedTranslated = 'Hello, world. How are you doing?'.PHP_EOL.PHP_EOL.
+        $expectedTranslated = 'Hello world. How are you doing?'.PHP_EOL.PHP_EOL.
             'I\'m all right. I have a lot of fun programming.';
         $this->assertEquals($expectedTranslated, $translated);
     }
