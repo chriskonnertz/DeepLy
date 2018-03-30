@@ -6,7 +6,8 @@
 
 [DeepL.com](https://www.deepl.com/) is a great, new translation service. 
 It provides better translations compared to other popular translation engines.
-DeepLy is a PHP package that implements a client to interact with DeepL via their _undocumented_ API and without an API key. Please switch to DeepLy 2 if you have an API key.
+DeepLy is a PHP package that implements a client to interact with DeepL via their _undocumented_ API and without an API key. 
+Please switch to DeepLy 2 if you have an API key.
 
 ## Installation
 
@@ -157,7 +158,7 @@ There is a request limit. The threshold of this limit is unknown.
 
 ## Internals
 
-The "core" of this library constists of these classes:
+The "core" of this library consists of these classes:
 * `DeepLy` - main class
 * `HttpClient\CurlHttpClient` - HTTP client class
 * `Protocol\JsonRpcProtocol` - JSON RPC is the protocol used by the DeepL API
@@ -169,9 +170,10 @@ There are also some exception classes, interfaces, an alternative HTTP client im
 
 ## Current State
 
-I do not know when DeepL.com will officially release their API (it is in beta state right now) but I expect them to do it within the next weeks. The API will require authentication with an API key. This will be supported by Deeply 2. Until then you may use DeepLy 1.x on your own risk. 
+DeepL.com has officially released their API. They offer a premium service that includes access to this API. 
+However, it is still possible to access the API without using this service at your own risk.
 
-Also note that their API responds quite slow. This might be intentional. Nevertheless the API is reliable. I had not a single failing call amongst hundreds of API calls.
+Premium API access requires authentication with an API key. This will be supported by Deeply 2. 
 
 ## Disclaimer
 
@@ -185,6 +187,8 @@ This package has been heavily inspired by [node-deepls](https://github.com/pbrln
 and [deeplator](https://github.com/uinput/deeplator). Thank you for your great work! Give these implementations a try if you are coding in Node.js or Python.
 
 ## Notes
+
+* Texts have to be UTF8-encoded
 
 * If you are looking for a real-world example application that uses DeepLy, you may take a look at [Translation Factory](https://github.com/chriskonnertz/translation-factory).
 
