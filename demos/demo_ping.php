@@ -7,7 +7,7 @@
  */
 function miniAutoloader($class)
 {
-    $class = str_replace('\', '/', $class);
+    $class = str_replace('\\', '/', $class);
     require __DIR__ . '/../src/' . $class . '.php';
 }
 
