@@ -178,17 +178,17 @@ Premium API access requires authentication with an API key. This will be support
 ## Disclaimer
 
 This is not an official package. It is 100% open source and non-commercial. 
-The API of DeepL.com is free as well but this [might](https://www.heise.de/newsticker/meldung/Maschinelles-Uebersetzen-Deutsches-Start-up-DeepL-will-230-Sprachkombinationen-unterstuetzen-3836533.html) change in the future.
-It remains unclear what this exactly means.
+The API of DeepL.com can be accessed without an API key but this might change in the future.
 
-DeepL is a product from DeepL GmbH. More info: [deepl.com/publisher.html](https://www.deepl.com/publisher.html)
+DeepL is a product of DeepL GmbH. More info: [deepl.com/publisher.html](https://www.deepl.com/publisher.html)
 
 This package has been heavily inspired by [node-deepls](https://github.com/pbrln/node-deepl)
-and [deeplator](https://github.com/uinput/deeplator). Thank you for your great work! Give these implementations a try if you are coding in Node.js or Python.
+and [deeplator](https://github.com/uinput/deeplator). Thank you for your great work! 
+Give these implementations a try if you are coding in Node.js or Python.
 
 ## Notes
 
-* Texts have to be UTF8-encoded
+* Texts have to be UTF8-encoded.
 
 * If you are looking for a real-world example application that uses DeepLy, you may take a look at [Translation Factory](https://github.com/chriskonnertz/translation-factory).
 

@@ -381,10 +381,10 @@ class DeepLy
      * This method will throw an exception if reading the file or translating fails
      * so you should wrap it in a try-catch-block.
      *
-     * @param string      $filename       The name of the file you want to translate
-     * @param string      $to             Optional: The target language, a self::LANG_<code> constant
-     * @param string|null $from           Optional: The source language, a self::LANG_<code> constant
-     * @return string|null                Returns the translated text or null if there is no translation
+     * @param string      $filename The name of the file you want to translate
+     * @param string      $to       Optional: The target language, a self::LANG_<code> constant
+     * @param string|null $from     Optional: The source language, a self::LANG_<code> constant
+     * @return string|null          Returns the translated text or null if there is no translation
      * @throws \Exception
      */
     public function translateFile($filename, $to = self::LANG_EN, $from = self::LANG_AUTO)
