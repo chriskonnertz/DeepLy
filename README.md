@@ -6,7 +6,7 @@
 
 [DeepL.com](https://www.deepl.com/) is a great, new translation service. 
 It provides better translations compared to other popular translation engines.
-DeepLy is a PHP package that implements a client to interact with DeepL via their API _ithout_an API key. 
+DeepLy is a PHP package that implements a client to interact with DeepL via their API _without_ an API key. 
 ~Please switch to DeepLy 2 if you have an API key.~
 
 > **IMPORTANT statement regarding DeepL Pro**: I asked DeepL if they offer any support for open source development. They did not even send me a reply. I'll take that as a no. I am not willing nor able to spend money to pay every month for a DeepLy pro account in order to maintain an open source software. Therefore I will not finish my work on DeepLy 2.0.
