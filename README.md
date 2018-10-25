@@ -4,12 +4,12 @@
 [![Version](https://img.shields.io/packagist/v/chriskonnertz/DeepLy.svg)](https://packagist.org/packages/chriskonnertz/deeply)
 [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://raw.githubusercontent.com/chriskonnertz/deeply/master/LICENSE)
 
-[DeepL.com](https://www.deepl.com/) is a next generation translation service. 
+[DeepL.com](https://www.deepl.com/) is a next-generation translation service. 
 It provides better translations compared to other popular translation engines.
 DeepLy is a PHP package that implements a client to interact with DeepL via their API _without_ an API key. 
 ~Please switch to DeepLy 2 if you have an API key.~
 
-> **IMPORTANT statement regarding DeepL Pro**: DeepLy 2 is under development and will be released soon. It will support DeepL Pro. I recommend to switch to DeepLy 2 as soon as possible. 
+> **IMPORTANT statement regarding DeepL Pro**: DeepLy 2 is under development and will be released soon. It will support DeepL Pro. I recommend switching to DeepLy 2 as soon as possible. 
 
 ## Installation
 
@@ -148,7 +148,7 @@ In Laravel 5.0-5.4 you manually have to register the service provider
 
 There are several demo scripts included in the `demos` folder:
 
-* `demo_translate.php`: Demonstrates language translation. Write a text and the API will try to translate it to a language of your choice.
+* `demo_translate.php`: Demonstrates language translation. Write a text and the API will try to translate it into a language of your choice.
 * `demo_detect.php`: Demonstrates language detection. Write a text and the API will tell you which language it thinks it is.
 * `demo_split.php`: Demonstrates sentence detection. Write a text and the API will split it into sentences.
 * `demo_ping.php`: Demonstrates DeepLy's `ping()` method by pinging the API.
