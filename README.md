@@ -73,7 +73,7 @@ $languageCode = $deepLy->detectLanguage('Hello world!');
 This will return 'EN'. The language of the text has to be one of the supported languages or the result will be incorrect.
 If you do not need the code of the language but its name, you may call the `$deepLy->getLangName($langCode)` method. 
 
-The API in general can handle and completely translate texts that contain parts with different languages, 
+The API, in general, can handle and completely translate texts that contain parts with different languages, 
 if the language switch is not within a sentence. The `detectLanguage()` method will however 
 only return the code of _one_ language. It will throw an exception if it is unable to auto-detect the language. 
 This will rarely happen, it is more likely that the API will return a "false positive": It will rather detect the wrong
@@ -96,7 +96,7 @@ DeepL(y) supports these languages:
 | NL   | Dutch         |
 | PL   | Polish        |
 
-> Note that auto detection only is possible for the source language. 
+> Note that auto-detection only is possible for the source language. 
 
 DeepL says they will [add more languages](https://www.heise.de/newsticker/meldung/Maschinelles-Uebersetzen-Deutsches-Start-up-DeepL-will-230-Sprachkombinationen-unterstuetzen-3836533.html) 
 in the future, such as Chinese and Russian.
