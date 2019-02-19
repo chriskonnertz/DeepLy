@@ -28,6 +28,8 @@ class DeepLy
     const LANG_IT = 'IT'; // Italian
     const LANG_NL = 'NL'; // Dutch
     const LANG_PL = 'PL'; // Polish
+    const LANG_PT = 'PT'; // Portuguese
+    const LANG_RU = 'RU'; // Russian
 
     /**
      * Array with all supported language codes
@@ -42,6 +44,8 @@ class DeepLy
         self::LANG_IT,
         self::LANG_NL,
         self::LANG_PL,
+        self::LANG_PT,
+        self::LANG_RU,
     ];
 
     /**
@@ -57,6 +61,8 @@ class DeepLy
         self::LANG_IT => 'Italian',
         self::LANG_NL => 'Dutch',
         self::LANG_PL => 'Polish',
+        self::LANG_PT => 'Portuguese',
+        self::LANG_RU => 'Russian',
     ];
 
     /**
