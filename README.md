@@ -175,7 +175,7 @@ There are also some exception classes, interfaces, an alternative HTTP client im
 DeepL.com has officially released their API. They offer a premium service that includes access to this API. 
 However, it is still possible (at your own risk) to access the API without using the premium service.
 
-Premium API access requires authentication with an API key. This will be supported by Deeply 2. 
+Premium API access requires authentication with an API key. This will be supported by DeepLy 2. 
 
 ## Disclaimer
 
