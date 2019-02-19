@@ -95,7 +95,7 @@ DeepL(y) supports these languages:
 | IT   | Italian       |
 | NL   | Dutch         |
 | PL   | Polish        |
-| PO   | Portuguese    |
+| PT   | Portuguese    |
 | RU   | Russian       |
 
 > Note that auto-detection only is possible for the source language. 
