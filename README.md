@@ -9,7 +9,7 @@ It provides better translations compared to other popular translation engines.
 DeepLy is a PHP package that implements a client to interact with DeepL via their API _without_ an API key. 
 ~Please switch to DeepLy 2 if you have an API key.~
 
-> **IMPORTANT statement regarding DeepL Pro**: DeepLy 2 is under development and will be released soon. It will support DeepL Pro. I recommend switching to DeepLy 2 as soon as possible. 
+> **IMPORTANT statement regarding DeepL Pro**: DeepLy 2 is under development but it is unkown when it will be released. It will support DeepL Pro.
 
 ## Installation
 
@@ -95,11 +95,13 @@ DeepL(y) supports these languages:
 | IT   | Italian       |
 | NL   | Dutch         |
 | PL   | Polish        |
+| PO   | Portuguese    |
+| RU   | Russian       |
 
 > Note that auto-detection only is possible for the source language. 
 
 DeepL says they will [add more languages](https://www.heise.de/newsticker/meldung/Maschinelles-Uebersetzen-Deutsches-Start-up-DeepL-will-230-Sprachkombinationen-unterstuetzen-3836533.html) 
-in the future, such as Chinese and Russian.
+in the future, such as Chinese.
 
 ## Text Length Limit
 
