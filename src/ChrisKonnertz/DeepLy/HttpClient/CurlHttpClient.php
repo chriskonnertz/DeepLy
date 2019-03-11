@@ -95,8 +95,7 @@ class CurlHttpClient implements HttpClientInterface
 
             throw new CallException('Server side error during DeepLy API call: HTTP code '.$code.$text);
         }
-
-        // TODO: Do not start a new session for each request?
+        
         curl_close($curl);
 
         return $rawResponseData;
@@ -166,7 +165,6 @@ class CurlHttpClient implements HttpClientInterface
         $result = curl_exec($curl);
         $duration = microtime(true) - $startedAt;
 
-        // TODO: Do not start a new session for each request?
         curl_close($curl);
 
         if ($result === false) {
