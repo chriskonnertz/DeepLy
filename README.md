@@ -26,7 +26,7 @@ It is possible to use this library without using Composer but then it is necessa
 
 > This library requires PHP 5.6 or higher and the cURL extension.
 
-## Usage Example
+## Example
 
 ```php
 $deepLy = new ChrisKonnertz\DeepLy\DeepLy();
