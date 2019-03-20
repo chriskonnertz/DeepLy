@@ -71,7 +71,7 @@ $languageCode = $deepLy->detectLanguage('Hello world!');
 ```
 
 This will return 'EN'. The language of the text has to be one of the supported languages or the result will be incorrect.
-If you do not need the code of the language but its name, you may call the `$deepLy->getLangName($langCode)` method. 
+If you do not need the code of the language but its English name, you may call the `$deepLy->getLangName($langCode)` method. 
 
 The API, in general, can handle and completely translate texts that contain parts with different languages, 
 if the language switch is not within a sentence. The `detectLanguage()` method will however 
