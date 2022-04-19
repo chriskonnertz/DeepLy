@@ -8,11 +8,9 @@
 > ⛔ ATTENTION: This is a beta branch. Ready to be tested, not ready to be used in production!
 
 [DeepL.com](https://www.deepl.com/) is a next-generation translation service. 
-It provides better translations compared to other popular translation engines.
-DeepLy is a dependency-free PHP library that implements a client to interact with DeepL via their API using an API key. 
-You can get an API key for free on their website. DeepLy supports both the free and the pro API and will 
-automatically target the correct API end point. There are several demo scripts included in the demos folder 
-that show how to use DeepLy.
+DeepLy is a dependency-free PHP library that implements a client to interact with the DeepL API using an API key. 
+You can get an API key for free on their website. DeepLy automatically supports both the free and the pro API.
+For interactive demo scripts take a look at the [demos](demos) folder.
 
 ## Installation
 
