@@ -1,3 +1,6 @@
+Version 2.0-beta
+===
+
 Differences to DeepLy version 1.x are:
 - Text length check has been removed (because the limit is now about 120000 letters which should be enough in most cases)
 - Texts can no longer be split into sentences, as the API does not seem to support this
