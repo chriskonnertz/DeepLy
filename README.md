@@ -55,9 +55,6 @@ Instead of using hardcoded strings as language arguments
 better use the language code constants of the `DeepLy` class. The class also offers methods such as
 `getLangCodes($withAuto = true)` and `supportsLangCode($langCode)`. 
 
-You may use the `proposeTranslations` method if you want to get alternative translations for a text. 
-This method cannot operate on more than one sentence at once. 
-
 ## Auto-Detect Language
 
 > ⚠️ ATTENTION: Using this method increases the usage statistics of your account!
@@ -112,7 +109,7 @@ You have to store your DeepL API key in the `.env` file like this:
 DEEPL_API_KEY = xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
 ```
  
-Afterwards can access DeepLy like this: `$ping = \DeepLy::ping();`
+Afterwards you can access DeepLy like this: `$ping = \DeepLy::ping();`
  
 ## Demos
 
@@ -120,7 +117,6 @@ There are several demo scripts included in the `demos` folder:
 
 * `demo_translate.php`: Demonstrates language translation. Write a text and the API will try to translate it into a language of your choice.
 * `demo_detect.php`: Demonstrates language detection. Write a text and the API will tell you which language it thinks it is.
-* `demo_split.php`: Demonstrates sentence detection. Write a text and the API will split it into sentences.
 * `demo_ping.php`: Demonstrates DeepLy's `ping()` method by pinging the API.
 
 ## Usage
@@ -129,6 +125,7 @@ To get usage statistics, do:
 
 ```php
 $usage = $deepLy->usage();
+
 echo $usage->character_count.'/'.$usage->character_limit
     . ' characters ('.ceil($usage->character_count / $usage->character_limit * 100).'%)';
 ```
@@ -154,12 +151,6 @@ The "core" of this library consists of these classes:
 
 There are also some exception classes, interfaces, and classes for the Laravel integration.
 
-## Disclaimer
-
-This is not an official package. It is 100% open source and non-commercial. 
-
-DeepL is a product of DeepL GmbH. More info: [deepl.com/publisher.html](https://www.deepl.com/publisher.html)
-
 ## Differences to V1
 
 Differences to DeepLy version 1.x are:
@@ -178,6 +169,12 @@ Differences to DeepLy version 1.x are:
 
 To upgrade from v1 to v2, make sure you specify the API key when instantiating the DeepLy object.
 Apart from the changes mentioned above your v1 code should still work with v2.
+
+## Disclaimer
+
+This is not an official package. It is 100% open source and non-commercial.
+
+DeepL is a product of DeepL GmbH. More info: [deepl.com/publisher.html](https://www.deepl.com/publisher.html)
 
 ## Notes
 
