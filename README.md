@@ -3,7 +3,7 @@
 [![Build Status](https://img.shields.io/travis/chriskonnertz/DeepLy.svg?style=flat-square)](https://travis-ci.org/chriskonnertz/DeepLy)
 [![Version](https://img.shields.io/packagist/v/chriskonnertz/DeepLy.svg?style=flat-square)](https://packagist.org/packages/chriskonnertz/deeply)
 [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg?style=flat-square)](https://raw.githubusercontent.com/chriskonnertz/deeply/master/LICENSE)
-[![Total Downloads][ico-downloads]][link-downloads]
+[![Version](https://img.shields.io/packagist/dt/chriskonnertz/deeply)](https://packagist.org/packages/chriskonnertz/deeply)
 
 > ⛔ ATTENTION: This is a beta branch. Ready to be tested, not ready to be used in production!
 
