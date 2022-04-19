@@ -4,6 +4,8 @@
 [![Version](https://img.shields.io/packagist/v/chriskonnertz/DeepLy.svg?style=flat-square)](https://packagist.org/packages/chriskonnertz/regex)
 [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg?style=flat-square)](https://raw.githubusercontent.com/chriskonnertz/deeply/master/LICENSE)
 
+> ⛔ ATTENTION: This is a beta branch. Ready to be tested, not ready to be used in production!
+
 [DeepL.com](https://www.deepl.com/) is a next-generation translation service. 
 It provides better translations compared to other popular translation engines.
 DeepLy is a PHP package that implements a client to interact with DeepL via their API with an API key. 
