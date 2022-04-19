@@ -52,14 +52,15 @@ class CurlHttpClient implements HttpClientInterface
      * @param  string $url     The full URL of the API endpoint
      * @param  string $apiKey  The DeepL.com API key
      * @param  array  $payload The payload of the request. Will be encoded as JSON
+     * @param  string $method  The request method ('GET', 'POST', 'DELETE')
      * @return string          The raw response data as string (usually contains stringified JSON)
      * @throws CallException   Throws a call exception if the call could not be executed
      */
-    public function callApi(string $url, string $apiKey, array $payload = []) : string
+    public function callApi(string $url, string $apiKey, array $payload = [], string $method = HttpClientInterface::METHOD_POST) : string
     {
         $curl = curl_init($url);
 
-        curl_setopt($curl, CURLOPT_CUSTOMREQUEST, 'POST');
+        curl_setopt($curl, CURLOPT_CUSTOMREQUEST, $method);
         curl_setopt($curl, CURLOPT_POSTFIELDS, http_build_query($payload));
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, $this->sslVerifyPeer);
@@ -79,7 +80,7 @@ class CurlHttpClient implements HttpClientInterface
         $code = curl_getinfo($curl, CURLINFO_HTTP_CODE);
 
         // Check if the API returned any error
-        if ($code !== 200) {
+        if ($code < 200 || $code >= 300) {
             $extraText = '';
 
             // Some errors make the API respond with an object that contains an error message
@@ -87,6 +88,9 @@ class CurlHttpClient implements HttpClientInterface
                 $decoded = json_decode($rawResponseData);
                 if ($decoded) { // Note: $decoded will is null if the JSON cannot be decoded / if there is no valid JSON
                     $extraText .= ' Error message: "'.$decoded->message.'"';
+                    if (isset($decoded->detail)) {
+                        $extraText .= ' Error details: "'.$decoded->detail.'"';
+                    }
                 }
             }
 
@@ -107,7 +111,7 @@ class CurlHttpClient implements HttpClientInterface
      * @return float
      * @throws CallException
      */
-    public function ping(string $url)
+    public function ping(string $url) : float
     {
         $curl = curl_init($url);
 

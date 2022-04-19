@@ -51,7 +51,7 @@
     <div class="button-group">
         <a class="button border" href="demo_translate.php">Translate</a>
         <a class="button " href="demo_detect.php">Detect</a>
-        <a class="button border" href="demo_split.php">Split</a>
+        <a class="button border" href="demo_glossaries.php">Glossaries</a>
         <a class="button border" href="demo_ping.php">Ping</a>
     </div>
 

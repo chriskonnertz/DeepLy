@@ -132,7 +132,7 @@ class DeepLy
     /**
      * Sets which kind of tags should be handled
      */
-    const TAG_HANDLING_UNSET = '';
+    const TAG_HANDLING_UNSET = null;
     const TAG_HANDLING_XML = 'xml';
     const TAG_HANDLING_HTML = 'html';
 
@@ -164,18 +164,18 @@ class DeepLy
     protected string $apiBaseUrl = '';
 
     /**
-     * ID of an existing glossary
+     * Unique identifier of an existing glossary (not to be confused with the name!)
      *
-     * @var int|null
+     * @var string|null
      */
-    protected int|null $glossaryId = null;
+    protected string|null $glossaryId = null;
 
     /**
      * Sets which kind of tags should be handled: xml/xhtml
      *
-     * @var string
+     * @var string|null
      */
-    protected string $tagHandling = '';
+    protected string|null $tagHandling = null;
 
     /**
      * Comma-seperated list of XML tags which never split sentences
@@ -215,14 +215,35 @@ class DeepLy
     /**
      * DeepLy object constructor.
      *
-     * @param string $apiKey
+     * @param string                   $apiKey     Initially set the API key
+     * @param HttpClientInterface|null $httpClient Inject your own HTTP client if necessary
      */
-    public function __construct(string $apiKey)
+    public function __construct(string $apiKey, HttpClientInterface $httpClient = null)
     {
+        // Initially set the API key. You can also use an empty string and call setApiKey() later.
         $this->setApiKey($apiKey);
 
-        // Create the default HTTP client. You may call setHttpClient() to set another HTTP client.
-        $this->httpClient = new CurlHttpClient();
+        // Create the default HTTP client if necessary.
+        // You may call setHttpClient() to set another HTTP client.
+        $this->httpClient = $httpClient ?? new CurlHttpClient();
+    }
+
+    /**
+     * Do a low-level API call to the DeepL.com API
+     *
+     * @param string $function The API function
+     * @param array  $params   The payload of the request. Will be encoded as JSON
+     * @param string $method   The request method ('GET', 'POST', 'DELETE')
+     * @param bool $parseJson  If true, parse the result of the API call and return a \stClass. If false, return string.
+     * @return \stdClass|string|null
+     */
+    protected function callApi(string $function, array $params = [], string $method = HttpClientInterface::METHOD_POST, bool $parseJson = true) : \stdClass|string|null
+    {
+        // Do the actual API call via HTTP client
+        $rawResponseData = $this->httpClient->callApi($this->apiBaseUrl . $function, $this->apiKey, $params, $method);
+
+        // Make an object from the raw JSON response
+        return $parseJson ? json_decode($rawResponseData) : $rawResponseData;
     }
 
     /**
@@ -290,10 +311,7 @@ class DeepLy
             $params['source_lang'] = $from;
         }
 
-        $rawResponseData = $this->httpClient->callApi($this->apiBaseUrl . 'translate', $this->apiKey, $params);
-
-        // Make an object from the raw JSON response
-        return json_decode($rawResponseData);
+        return $this->callApi('translate', $params);
     }
 
     /**
@@ -405,16 +423,130 @@ class DeepLy
     }
 
     /**
+     * Get a list with information about all your glossaries
+     *
+     * @return \stdClass[]
+     * @throws CallException
+     */
+    public function getGlossaries() : array
+    {
+        $glossaries = $this->callApi('glossaries', [], HttpClientInterface::METHOD_GET);
+
+        return $glossaries->glossaries;
+    }
+
+    /**
+     * Get information about a specific glossary
+     *
+     * @param string $glossaryId The unique identifier of an exising glossary (not to be confused with the name!)
+     * @return \stdClass         Information about the glossary
+     * @throws CallException     Especially thrown if no glossary with the given glossary exists
+     */
+    public function getGlossary(string $glossaryId) : \stdClass
+    {
+        return $this->callApi('glossaries/'.$glossaryId, [], HttpClientInterface::METHOD_GET);
+    }
+
+    /**
+     * Create a new glossary with entries.
+     * The entries array has to consist of items with the original text as item key and the translation as item value.
+     *
+     * @param string   $name    The name of the glossary (nopt to be confused with the unique identifier!)
+     * @param string   $to      The target language, a self::LANG_<code> constant
+     * @param string   $from    The source language, a self::LANG_<code> constant
+     * @param string[] $entries The entries of the glossary. Item key = original text, item value = translation
+     * @return \stdClass        Information about the glossary
+     * @throws CallException
+     */
+    public function createGlossary(string $name, string $to, string $from, array $entries) : \stdClass
+    {
+        // The API expects the entries in a "tab seperated" string format, so lets build that string
+        $entriesEncoded = '';
+        array_walk($entries, function($item, $key) use (&$entriesEncoded) {
+            if ($entriesEncoded) {
+                $entriesEncoded .= "\n"; // Separate entries by a new line character
+            }
+
+            // Leading/trailing whitespace is not allowed. Tabs are used to separate the translations.
+            $entriesEncoded .= trim($key)."\t".trim($item);
+        });
+
+        $params = [
+            'name' => $name,
+            'source_lang' => $from,
+            'target_lang' => $to,
+            'entries' => $entriesEncoded,
+            'entries_format' => 'tsv', // Note: currently 'tsv' is the only available format
+        ];
+
+        return $this->callApi('glossaries', $params);
+    }
+
+    /**
+     * Deletes an existing glossary
+     *
+     * @param string $glossaryId The unique identifier of an exising glossary (not to be confused with the name!)
+     * @throws CallException
+     */
+    public function deleteGlossary(string $glossaryId)
+    {
+        $this->callApi('glossaries/'.$glossaryId, [], HttpClientInterface::METHOD_DELETE);
+    }
+
+    /**
+     * Get the translation entries of a specific glossary.
+     * The result is an array of items, with the original text as item key and the translation as item value.
+     *
+     * @param string $glossaryId The unique identifier of an exising glossary (not to be confused with the name!)
+     * @return string[]
+     * @throws CallException     Especially thrown if no glossary with the given glossary exists
+     */
+    public function getGlossaryEntries(string $glossaryId) : array
+    {
+        $rawEntries = $this->callApi('glossaries/'.$glossaryId.'/entries', [], HttpClientInterface::METHOD_GET, false);
+
+        // The API provides the entries in a "tab seperated" string format, so lets parse that string
+        $entries = [];
+        $rawEntries = explode("\n", $rawEntries); // Entries are seperated by a new line character
+        foreach ($rawEntries as $rawEntry) {
+            $parts = explode("\t", $rawEntry); // Tabs are used to separate the translations.
+            $entries[$parts[0]] = $parts[1];
+        }
+
+        return $entries;
+    }
+
+    /**
      * Returns API usage information
      *
-     * @return \stdClass Character_count: Used characters, character_limit: max characters
+     * @return \stdClass Properties:
+     *                   characterCount = characters translated so far in the current billing period
+     *                   characterLimit = current maximum number of characters that can be translated per billing period
+     *                   characterQuota = usage (0-1 / null)
+     *                   documentCount = documents translated so far in the current billing period if unknown
+     *                   documentLimit = current maximum number of documents that can be translated per billing period
+     *                   documentQuota = usage (0-1 / null)
+     *                   teamDocumentCount = docs translated by all users in the team so far in the billing period
+     *                   teamDocumentLimit = max number of docs that can be translated by the team per billing period
+     *                   teamDocumentQuota = usage (0-1 / null)
      */
     public function usage(): \stdClass
     {
-        $rawResponseData = $this->httpClient->callApi($this->apiBaseUrl.'usage', $this->apiKey);
+        $usage = $this->callApi('usage');
 
-        // Make an object from the raw JSON response
-        return json_decode($rawResponseData);
+        $usage->characterCount = $usage->character_count ?? null;
+        $usage->characterLimit = $usage->character_limit ?? null;
+        $usage->documentCount = $usage->document_count ?? null;
+        $usage->documentLimit = $usage->document_limit ?? null;
+        $usage->teamDocumentCount = $usage->team_document_count ?? null;
+        $usage->teamDocumentLimit = $usage->team_document_limit ?? null;
+
+        // Calculate percentages
+        $usage->characterQuota = $usage->characterLimit !== null ? $usage->characterCount / $usage->characterLimit : null;
+        $usage->documentQuota = $usage->documentLimit !== null ? $usage->documentCount / $usage->documentLimit : null;
+        $usage->teamDocumentQuota = $usage->teamDocumentLimit !== null ? $usage->teamDocumentCount / $usage->teamDocumentLimit : null;
+
+        return $usage;
     }
 
     /**
@@ -424,7 +556,7 @@ class DeepLy
      * @return float
      * @throws CallException
      */
-    public function ping()
+    public function ping() : float
     {
         return $this->httpClient->ping($this->apiBaseUrl);
     }
@@ -485,17 +617,17 @@ class DeepLy
      * Change translation settings.
      * Note that these settings will be applied to EVERY request, this is not a one time thing!
      *
-     * @param int|null  $glossaryId ID of an existing glossary, or null
-     * @param string    $tagHandling Sets which kind of tags should be handled: "xml"/"xhtml"
-     * @param string[]  $nonSplittingTags List of XML tags which never split sentences
-     * @param bool      $outlineDetection To disable The automatic detection of the XML structure set this to false
-     * @param string[]  $splittingTags List of XML tags which always cause splits
-     * @param string[]  $ignoreTags List of XML tags that indicate text not to be translated
+     * @param string|null $glossaryId Unique identifier of an existing glossary, or null
+     * @param string|null $tagHandling Sets which kind of tags should be handled: "xml"/"xhtml"
+     * @param string[]    $nonSplittingTags List of XML tags which never split sentences
+     * @param bool        $outlineDetection To disable The automatic detection of the XML structure set this to false
+     * @param string[]    $splittingTags List of XML tags which always cause splits
+     * @param string[]    $ignoreTags List of XML tags that indicate text not to be translated
      * @return $this
      */
     public function setSettings(
-        int $glossaryId = null,
-        string $tagHandling = self::TAG_HANDLING_UNSET,
+        string $glossaryId = null,
+        string|null $tagHandling = self::TAG_HANDLING_UNSET,
         array $nonSplittingTags = [],
         bool $outlineDetection = true,
         array $splittingTags = [],

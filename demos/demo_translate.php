@@ -74,7 +74,7 @@
     <div class="button-group">
         <a class="button " href="demo_translate.php">Translate</a>
         <a class="button border" href="demo_detect.php">Detect</a>
-        <a class="button border" href="demo_split.php">Split</a>
+        <a class="button border" href="demo_glossaries.php">Glossaries</a>
         <a class="button border" href="demo_ping.php">Ping</a>
     </div>
 
@@ -130,8 +130,8 @@
             <?php
                 if ($key) {
                     $usage = $deepLy->usage();
-                    echo 'Usage: '.$usage->character_count.'/'.$usage->character_limit
-                        . ' characters ('.ceil($usage->character_count / $usage->character_limit * 100).'%)';
+                    echo 'Usage: '.$usage->characterCount.'/'.$usage->characterLimit
+                        . ' characters ('.round($usage->characterQuota * 100).'%)';
                 }
             ?>
         </small>

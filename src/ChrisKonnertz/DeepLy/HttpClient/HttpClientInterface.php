@@ -12,15 +12,23 @@ interface HttpClientInterface
 {
 
     /**
+     * Request methods
+     */
+    const METHOD_POST = 'POST';
+    const METHOD_GET = 'GET';
+    const METHOD_DELETE = 'DELETE';
+
+    /**
      * Executes an API call (a request) and returns the raw response data
      *
      * @param  string $url     The full URL of the API endpoint
      * @param  string $apiKey  The DeepL.com API key
      * @param  array  $payload The payload of the request. Will be encoded as JSON
+     * @param  string $method  The request method ('GET', 'POST', 'DELETE')
      * @return string          The raw response data as string (usually contains stringified JSON)
      * @throws CallException  Throws a call exception if the call could not be executed
      */
-    public function callApi(string $url, string $apiKey, array $payload = []) : string;
+    public function callApi(string $url, string $apiKey, array $payload = [], string $method = self::METHOD_POST) : string;
 
     /**
      * Pings the API server. Returns the duration in seconds
@@ -30,6 +38,6 @@ interface HttpClientInterface
      * @return float
      * @throws CallException
      */
-    public function ping(string $url);
+    public function ping(string $url) : float;
 
 }

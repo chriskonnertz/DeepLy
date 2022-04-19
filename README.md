@@ -8,21 +8,19 @@
 
 [DeepL.com](https://www.deepl.com/) is a next-generation translation service. 
 It provides better translations compared to other popular translation engines.
-DeepLy is a PHP package that implements a client to interact with DeepL via their API with an API key. 
-You can get an API key for free on their website. DeepLy supports the free and the pro API and will 
+DeepLy is a PHP package that implements a client to interact with DeepL via their API using an API key. 
+You can get an API key for free on their website. DeepLy supports both the free and the pro API and will 
 automatically target the correct API end point.
 
 ## Installation
 
-Through [Composer](https://getcomposer.org/):
+This library requires PHP 8.0 or higher and the cURL extension. Install trough [Composer](https://getcomposer.org/):
 
 ```
 composer require chriskonnertz/deeply
 ```
 
-From then on you may run `composer update` to get the latest version of this library.
 
-> This library requires PHP 8.0 or higher and the cURL extension.
 
 ## Example
 
@@ -34,7 +32,7 @@ $translatedText = $deepLy->translate('Hello world!', 'DE');
 echo $translatedText; // Prints "Hallo Welt!"
 ```
 
-> An interactive PHP demo script is included. It is located at [demos/demo_translate.php](demos/demo_translate.php).
+> 💡 An interactive PHP demo script is included. It is located at [demos/demo_translate.php](demos/demo_translate.php).
 
 ### Sophisticated Example
 
@@ -76,7 +74,7 @@ only return the code of _one_ language. It will throw an exception if it is unab
 This will rarely happen, it is more likely that the API will return a "false positive": It will rather detect the wrong
 language than no language at all.
 
->  An interactive PHP demo script is included. It is located at `demos/demo_detect.php`.
+> 💡 An interactive PHP demo script is included. It is located at [demos/demo_glossaries.demo_detect](demos/demo_detect.php).
 
 ## Supported Languages
 
@@ -98,7 +96,58 @@ DeepL(y) supports these languages:
 | PT   | French        |     | SV    | Swedish       |
 | HU   | Hungarian     |     | ZH    | Chinese       |
 
-> Note that auto-detection only is possible for the source language. 
+> 💡 Note that auto-detection only is possible for the source language.
+
+## Glossaries
+
+To get a list with information about all your glossaries, do:
+
+```php
+$glossaries = $deepLy->getGlossaries();
+print_r($glossaries); // Prints an array with \stdClass items
+```
+
+To get information about a specific glossary, do:
+
+```php
+$glossary = $deepLy->getGlossary('your-glossary-id');
+print_r($glossary); // Prints a \stdClass
+```
+
+To get the translation entries of a specific glossary, do:
+
+```php
+$entries = $deepLy->getGlossaryEntries('your-glossary-id');
+print_r($entries);  // Prints an array with string items
+```
+
+To create a new glossary with translation entries, do:
+
+```php
+$deepLy->createGlossary('test', 'de', 'en', ['Example DE' => 'Example EN']);
+```
+
+To delete a existing glossary, do:
+
+```php
+$deepLy->deleteGlossary('your-glossary-id');
+```
+
+> 💡 An interactive PHP demo script is included. It is located at [demos/demo_glossaries.php](demos/demo_glossaries.php).
+
+## Usage
+
+To get usage statistics, do:
+
+```php
+$usage = $deepLy->usage();
+
+echo $usage->characterCount.'/'.$usage->characterLimit
+    . ' characters ('.round($usage->characterQuota * 100).'%)';
+```
+
+Depending on the user account type, some usage types will be null.
+Learn more: https://www.deepl.com/de/docs-api/other-functions/monitoring-usage/
 
 ## Framework Integration
 
@@ -121,17 +170,6 @@ There are several demo scripts included in the `demos` folder:
 * `demo_detect.php`: Demonstrates language detection. Write a text and the API will tell you which language it thinks it is.
 * `demo_ping.php`: Demonstrates DeepLy's `ping()` method by pinging the API.
 
-## Usage
-
-To get usage statistics, do: 
-
-```php
-$usage = $deepLy->usage();
-
-echo $usage->character_count.'/'.$usage->character_limit
-    . ' characters ('.ceil($usage->character_count / $usage->character_limit * 100).'%)';
-```
-
 ## HTTP Client
 
 Per default DeepLy uses a minimalistic HTTP client based on cURL. If you want to use a different HTTP client,
@@ -139,7 +177,7 @@ such as [Guzzle](https://github.com/guzzle/guzzle), create a class that implemen
 and makes use of the methods of the alternative HTTP client. Then use `$deepLy->setHttpClient($yourHttpClient)`
 to inject it.
 
-> Note: If you experience issues with the integrated cURL client that could be solved by setting the
+> 💡 Note: If you experience issues with the integrated cURL client that could be solved by setting the
 > `CURLOPT_SSL_VERIFYPEER` to `false`, first read this:
 > [snippets.webaware.com.au/../](https://snippets.webaware.com.au/howto/stop-turning-off-curlopt_ssl_verifypeer-and-fix-your-php-config/)
 >
@@ -165,6 +203,7 @@ Differences to DeepLy version 1.x are:
 - No longer uses the unofficial API, but uses official v2 API
 - API key has been introduced
 - Updated API error handling, `CallException` now contains API HTTP error code
+- Glossary support has been introduced
 - Usage method has been introduced
 - Support for new languages added
 - The `translateFile()` method is now deprecated, please use `translateTextFile()` instead!
