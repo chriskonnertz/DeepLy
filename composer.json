@@ -9,14 +9,11 @@
     }
   ],
   "require": {
-    "php": ">=5.6.0"
+    "php": ">=8.0",
+    "ext-curl": "*"
   },
   "require-dev": {
-    "phpunit/phpunit": "5.7",
-    "guzzlehttp/guzzle": "^6.2@dev"
-  },
-  "suggest": {
-    "guzzlehttp/guzzle": "You might want to install Guzzle if you want to use it as the HTTP client for DeepLy"
+    "phpunit/phpunit": "5.7"
   },
   "autoload": {
     "psr-0": {

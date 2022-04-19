@@ -2,13 +2,27 @@
 
 namespace ChrisKonnertz\DeepLy\HttpClient;
 
-use ChrisKonnertz\DeepLy\Protocol\ProtocolInterface;
-
 /**
  * This class uses cURL to execute API calls.
  */
 class CurlHttpClient implements HttpClientInterface
 {
+
+    /**
+     * Maps HTTP error codes sent by the DeepL.com API to error messages according to
+     * https://www.deepl.com/de/docs-api/accessing-the-api/error-handling/
+     */
+    public const ERRORS = [
+        400 => 'Bad request. Please check error message and your parameters.',
+        403 => 'Authorization failed. Please supply a valid auth_key parameter.',
+        404 => 'The requested resource could not be found.',
+        413 => 'The request size exceeds the limit.',
+        414 => 'The request URL is too long. You can avoid this error by using a POST request instead of a GET request, and sending the parameters in the HTTP body.',
+        429 => 'Too many requests. Please wait and resend your request.',
+        456 => 'Quota exceeded. The character limit has been reached.',
+        503 => 'Resource currently unavailable. Try again later.',
+        529 => 'Too many requests. Please wait and resend your request.',
+    ];
 
     /**
      * Set this to false if you do not want cURL to
@@ -18,125 +32,71 @@ class CurlHttpClient implements HttpClientInterface
      *
      * @var bool
      */
-    protected $sslVerifyPeer = true;
-
-    /**
-     * The protocol object that represents the protocol used for communication with the API
-     *
-     * @var ProtocolInterface
-     */
-    protected $protocol;
+    protected bool $sslVerifyPeer = true;
 
     /**
      * CurlHttpClient constructor.
-     *
-     * @param ProtocolInterface $protocol
      */
-    public function __construct(ProtocolInterface $protocol)
+    public function __construct()
     {
         if (! $this->isCurlAvailable()) {
             throw new \LogicException(
-                'Cannot create instance of DeepLy\'s CurlHttpClient class, because the cURL PHP extension is not available'
+                'Cannot create instance of DeepLy\'s CurlHttpClient class, because the cURL PHP extension is not loaded'
             );
         }
-
-        $this->protocol = $protocol;
     }
 
     /**
      * Executes an API call (a request) and returns the raw response data
      *
-     * @param  string $url     The URL of the API endpoint
+     * @param  string $url     The full URL of the API endpoint
+     * @param  string $apiKey  The DeepL.com API key
      * @param  array  $payload The payload of the request. Will be encoded as JSON
-     * @param  string $method  The name of the method of the API call
      * @return string          The raw response data as string (usually contains stringified JSON)
      * @throws CallException   Throws a call exception if the call could not be executed
      */
-    public function callApi($url, array $payload, $method)
+    public function callApi(string $url, string $apiKey, array $payload = []) : string
     {
-        if (! is_string($url)) {
-            throw new \InvalidArgumentException('$url has to be a string');
-        }
-        if (! is_string($method)) {
-            throw new \InvalidArgumentException('$method has to be a string');
-        }
-
-        $jsonData = $this->protocol->createRequestData($payload, $method);
-
         $curl = curl_init($url);
 
         curl_setopt($curl, CURLOPT_CUSTOMREQUEST, 'POST');
-        curl_setopt($curl, CURLOPT_POSTFIELDS, $jsonData);
+        curl_setopt($curl, CURLOPT_POSTFIELDS, http_build_query($payload));
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, $this->sslVerifyPeer);
 
-        // Note: We assume that we always will use JSON to encode data
-        // so this is independent from the protocol that we actually use
-        curl_setopt($curl, CURLOPT_HTTPHEADER, array(
-            'Content-Type: application/json',
-            'Content-Length: ' . strlen($jsonData)) // Note: We do not need mb_strlen here since JSON encodes Unicode
-        );
+        // Set API key via header
+        curl_setopt($curl, CURLOPT_HTTPHEADER, [
+            'Authorization: DeepL-Auth-Key '.$apiKey
+        ]);
 
         $rawResponseData = curl_exec($curl);
 
+        // Check if cURL had any error
         if ($rawResponseData === false) {
-            $exception = new CallException('cURL error during DeepLy API call: '.curl_error($curl));
-            throw $exception;
+            throw new CallException('cURL error during DeepLy API call: '.curl_error($curl));
         }
 
         $code = curl_getinfo($curl, CURLINFO_HTTP_CODE);
+
+        // Check if the API returned any error
         if ($code !== 200) {
-            // Note that the response probably will contain an error description wrapped in a HTML page.
-            // We extract the text and display add it tot he exception message.
-            $text = $this->getTextFromHtml($rawResponseData);
-            if ($text !== null) {
-                $text = ', message: "'.$text.'"';
+            $extraText = '';
+
+            // Some errors make the API respond with an object that contains an error message
+            if ($rawResponseData) {
+                $decoded = json_decode($rawResponseData);
+                if ($decoded) { // Note: $decoded will is null if the JSON cannot be decoded / if there is no valid JSON
+                    $extraText .= ' Error message: "'.$decoded->message.'"';
+                }
             }
 
-            throw new CallException('Server side error during DeepLy API call: HTTP code '.$code.$text);
+            throw new CallException('Server side error during DeepLy API call: HTTP code '.$code
+                .', description: "'.(self::ERRORS[$code] ?? 'Internal error').'"'.$extraText, $code);
         }
         
         curl_close($curl);
 
         return $rawResponseData;
-    }
-
-    /**
-     * Returns the text from an HTML document (passed as an HTML code string).
-     * The text ist trimmed and line breaks are replaced by dashes.
-     * Returns null if extracting the text was not possible.
-     *
-     * @param string $htmlCode
-     * @return string|null
-     */
-    protected function getTextFromHtml($htmlCode)
-    {
-        $document = new \DOMDocument();
-
-        $okay = $document->loadHTML($htmlCode);
-
-        // Cannot load HTML document, not a valid HTML document
-        if (!$okay) {
-            return null;
-        }
-
-        $bodyElements = $document->getElementsByTagName('body');
-
-        // Cannot find body-Element, not a valid HTML-Document
-        if (sizeof($bodyElements) != 1) {
-            return null;
-        }
-
-        /** @var \DOMElement $bodyElement */
-        $bodyElement = $bodyElements[0];
-        $text = $bodyElement->nodeValue;
-
-        // Notes:
-        // - It is not necessary to use some kind of "mb_trim()" function since trim() works with unicode chars
-        // - We know that the server will add \n chars but no \r chars
-        $text = str_replace("\n", ' - ', trim($text));
-
-        return $text;
     }
 
     /**
@@ -147,16 +107,12 @@ class CurlHttpClient implements HttpClientInterface
      * @return float
      * @throws CallException
      */
-    public function ping($url)
+    public function ping(string $url)
     {
-        if (! is_string($url)) {
-            throw new \InvalidArgumentException('$url has to be a string');
-        }
-
         $curl = curl_init($url);
 
         // Do not "include the header in the output" (from the docs).
-        // Should make the response a little bit smaller.
+        // Should make the response a little smaller.
         curl_setopt($curl, CURLOPT_HEADER, 0);
         // Set this to true, because if it is set to false, curl will echo the result!
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
@@ -179,7 +135,7 @@ class CurlHttpClient implements HttpClientInterface
      *
      * @return bool
      */
-    public function getSslVerifyPeer()
+    public function getSslVerifyPeer(): bool
     {
         return $this->sslVerifyPeer;
     }
@@ -189,12 +145,8 @@ class CurlHttpClient implements HttpClientInterface
      *
      * @param bool $sslVerifyPeer
      */
-    public function setSslVerifyPeer($sslVerifyPeer)
+    public function setSslVerifyPeer(bool $sslVerifyPeer)
     {
-        if (! is_bool($sslVerifyPeer)) {
-            throw new \InvalidArgumentException('$sslVerifyPeer has to be boolean');
-        }
-        
         $this->sslVerifyPeer = $sslVerifyPeer;
     }
 
@@ -203,29 +155,9 @@ class CurlHttpClient implements HttpClientInterface
      *
      * @return bool
      */
-    public function isCurlAvailable()
+    public function isCurlAvailable(): bool
     {
         return (in_array('curl', get_loaded_extensions()));
-    }
-
-    /**
-     * Getter for the protocol object
-     *
-     * @return ProtocolInterface
-     */
-    public function getProtocol()
-    {
-        return $this->protocol;
-    }
-
-    /**
-     * Setter for the protocol object
-     *
-     * @param ProtocolInterface $protocol
-     */
-    public function setProtocol($protocol)
-    {
-        $this->protocol = $protocol;
     }
 
 }

@@ -5,7 +5,7 @@
  *
  * @param string $class Full qualified name of the class
  */
-function miniAutoloader($class)
+function miniAutoloader(string $class)
 {
     $class = str_replace('\\', '/', $class);
     require __DIR__ . '/../src/' . $class . '.php';
@@ -19,7 +19,7 @@ if (is_readable($composerAutoloader)) {
     spl_autoload_register('miniAutoloader');
 }
 
-$deepLy = new ChrisKonnertz\DeepLy\DeepLy();
+$deepLy = new ChrisKonnertz\DeepLy\DeepLy('');
 
 $simple = (isset($_GET['simple']) and $_GET['simple'] == 1);
 

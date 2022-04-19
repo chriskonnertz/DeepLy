@@ -14,13 +14,13 @@ interface HttpClientInterface
     /**
      * Executes an API call (a request) and returns the raw response data
      *
-     * @param  string $url     The URL of the API endpoint
+     * @param  string $url     The full URL of the API endpoint
+     * @param  string $apiKey  The DeepL.com API key
      * @param  array  $payload The payload of the request. Will be encoded as JSON
-     * @param  string $method  The name of the method of the API call
      * @return string          The raw response data as string (usually contains stringified JSON)
      * @throws CallException  Throws a call exception if the call could not be executed
      */
-    public function callApi($url, array $payload, $method);
+    public function callApi(string $url, string $apiKey, array $payload = []) : string;
 
     /**
      * Pings the API server. Returns the duration in seconds
@@ -30,6 +30,6 @@ interface HttpClientInterface
      * @return float
      * @throws CallException
      */
-    public function ping($url);
+    public function ping(string $url);
 
 }

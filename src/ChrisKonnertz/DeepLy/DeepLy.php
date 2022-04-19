@@ -5,10 +5,6 @@ namespace ChrisKonnertz\DeepLy;
 use ChrisKonnertz\DeepLy\HttpClient\CallException;
 use ChrisKonnertz\DeepLy\HttpClient\HttpClientInterface;
 use ChrisKonnertz\DeepLy\HttpClient\CurlHttpClient;
-use ChrisKonnertz\DeepLy\Protocol\JsonRpcProtocol;
-use ChrisKonnertz\DeepLy\Protocol\ProtocolInterface;
-use ChrisKonnertz\DeepLy\ResponseBag\SentencesBag;
-use ChrisKonnertz\DeepLy\ResponseBag\TranslationBag;
 
 /**
  * This is the main class. Call its translate() method to translate text.
@@ -21,15 +17,30 @@ class DeepLy
      * @see https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes
      */
     const LANG_AUTO = 'auto'; // Let DeepL decide which language it is (only works for the source language)
+    const LANG_BG = 'BG'; // Bulgarian
+    const LANG_CS = 'CS'; // Czech
+    const LANG_DA = 'DA'; // Danish
     const LANG_DE = 'DE'; // German
+    const LANG_EL = 'EL'; // Greek
     const LANG_EN = 'EN'; // English
-    const LANG_FR = 'FR'; // French
     const LANG_ES = 'ES'; // Spanish
+    const LANG_ET = 'ET'; // Estonian
+    const LANG_FI = 'FI'; // Finnish
+    const LANG_FR = 'FR'; // French
+    const LANG_HU = 'HU'; // Hungarian
     const LANG_IT = 'IT'; // Italian
+    const LANG_JA = 'JA'; // Japanese
+    const LANG_LT = 'LT'; // Lithuanian
+    const LANG_LV = 'LV'; // Latvian
     const LANG_NL = 'NL'; // Dutch
     const LANG_PL = 'PL'; // Polish
     const LANG_PT = 'PT'; // Portuguese
+    const LANG_RO = 'RO'; // Romanian
     const LANG_RU = 'RU'; // Russian
+    const LANG_SK = 'SK'; // Slovak
+    const LANG_SL = 'SL'; // Slovenian
+    const LANG_SV = 'SV'; // Swedish
+    const LANG_ZH = 'ZH'; // Chinese
 
     /**
      * Array with all supported language codes
@@ -37,15 +48,30 @@ class DeepLy
      */
     const LANG_CODES = [
         self::LANG_AUTO,
+        self::LANG_BG,
+        self::LANG_CS,
+        self::LANG_DA,
         self::LANG_DE,
+        self::LANG_EL,
         self::LANG_EN,
-        self::LANG_FR,
         self::LANG_ES,
+        self::LANG_ET,
+        self::LANG_FI,
+        self::LANG_FR,
+        self::LANG_HU,
         self::LANG_IT,
+        self::LANG_JA,
+        self::LANG_LT,
+        self::LANG_LV,
         self::LANG_NL,
         self::LANG_PL,
         self::LANG_PT,
+        self::LANG_RO,
         self::LANG_RU,
+        self::LANG_SK,
+        self::LANG_SL,
+        self::LANG_SV,
+        self::LANG_ZH,
     ];
 
     /**
@@ -54,350 +80,286 @@ class DeepLy
      */
     const LANG_NAMES = [
         self::LANG_AUTO => 'Auto',
+        self::LANG_BG => 'Bulgarian',
+        self::LANG_CS => 'Czech',
+        self::LANG_DA => 'Danish',
         self::LANG_DE => 'German',
+        self::LANG_EL => 'Greek',
         self::LANG_EN => 'English',
-        self::LANG_FR => 'French',
         self::LANG_ES => 'Spanish',
+        self::LANG_ET => 'Estonian',
+        self::LANG_FI => 'Finnish',
+        self::LANG_FR => 'French',
+        self::LANG_HU => 'Hungarian',
         self::LANG_IT => 'Italian',
+        self::LANG_JA => 'Japanese',
+        self::LANG_LT => 'Lithuanian',
+        self::LANG_LV => 'Latvian',
         self::LANG_NL => 'Dutch',
         self::LANG_PL => 'Polish',
         self::LANG_PT => 'Portuguese',
+        self::LANG_RO => 'Romanian',
         self::LANG_RU => 'Russian',
+        self::LANG_SK => 'Slovak',
+        self::LANG_SL => 'Slovenian',
+        self::LANG_SV => 'Swedish',
+        self::LANG_ZH => 'Chinese'
     ];
-
-    /**
-     * The length of the text for translations is limited by the API
-     */
-    const MAX_TRANSLATION_TEXT_LEN = 5000;
-
-    /**
-     * Constants that are names of methods that can be called via the API
-     */
-    const METHOD_TRANSLATE = 'LMT_handle_jobs'; // Translates a text
-    const METHOD_SPLIT = 'LMT_split_into_sentences'; // Splits a text into sentences
 
     /**
      * The base URL of the API endpoint
      */
-    const API_BASE_URL = 'https://www2.deepl.com/jsonrpc/';
+    const API_FREE_BASE_URL = 'https://api-free.deepl.com/v2/';
+    const API_PRO_BASE_URL = 'https://api.deepl.com/v2/';
+
+    /**
+     * How should the translation engine first split the text into sentences?
+     * NONE = No splitting
+     * ALL = Split on punctuation and new lines (default)
+     * NO_NEW_LINES = Only split on new lines
+     */
+    const SPLIT_NONE = 0;
+    const SPLIT_ALL = 1;
+    const SPLIT_NO_NEW_LINES = 1;
+
+    /**
+     * Sets whether the translated text should lean towards formal or informal language.
+     */
+    const FORMALITY_LESS = 'less';
+    const FORMALITY_DEFAULT = 'default';
+    const FORMALITY_MORE = 'more';
+
+    /**
+     * Sets which kind of tags should be handled
+     */
+    const TAG_HANDLING_UNSET = '';
+    const TAG_HANDLING_XML = 'xml';
+    const TAG_HANDLING_HTML = 'html';
 
     /**
      * Current version number
      */
-    const VERSION = '1.6.1';
+    const VERSION = '2.0.0-alpha';
 
     /**
-     * If true, validate that the length of a translation text
-     * is not greater than self::MAX_TRANSLATION_TEXT_LEN
+     * The DeepL.com API key
+     *
+     * @var string
+     */
+    protected string $apiKey = '';
+
+    /**
+     * DeepL.com differs between pro and free API.
+     * If true, the specified API key indicates that the free API has to be used.
      *
      * @var bool
      */
-    protected $validateTextLength = true;
+    protected bool $usesFreeApi = true;
 
     /**
-     * The protocol used for communication
+     * The API base URL according to the plan of the API user (free or pro)
      *
-     * @var ProtocolInterface
+     * @var string
      */
-    protected $protocol;
+    protected string $apiBaseUrl = '';
+
+    /**
+     * ID of an existing glossary
+     *
+     * @var int|null
+     */
+    protected int|null $glossaryId = null;
+
+    /**
+     * Sets which kind of tags should be handled: xml/xhtml
+     *
+     * @var string
+     */
+    protected string $tagHandling = '';
+
+    /**
+     * Comma-seperated list of XML tags which never split sentences
+     *
+     * @var string
+     */
+    protected string $nonSplittingTags = '';
+
+    /**
+     * To disable The automatic detection of the XML structure set this to false
+     *
+     * @var bool
+     */
+    protected bool $outlineDetection = true;
+
+    /**
+     * Comma-seperated list of XML tags which always cause splits
+     *
+     * @var string
+     */
+    protected string $splittingTags = '';
+
+    /**
+     * Comma-seperated list of XML tags that indicate text not to be translated
+     *
+     * @var string
+     */
+    protected string $ignoreTags = '';
 
     /**
      * The HTTP client used for communication
      *
      * @var HttpClientInterface
      */
-    protected $httpClient;
-
-    /**
-     * This property stores the result (object) of the last translation
-     *
-     * @var TranslationBag|null
-     */
-    protected $translationBag = null;
+    protected HttpClientInterface $httpClient;
 
     /**
      * DeepLy object constructor.
+     *
+     * @param string $apiKey
      */
-    public function __construct()
+    public function __construct(string $apiKey)
     {
-        // Create the default protocol object. You may call setProtocol() to switch it.
-        $this->protocol = new JsonRpcProtocol();
+        $this->setApiKey($apiKey);
 
         // Create the default HTTP client. You may call setHttpClient() to set another HTTP client.
-        $this->httpClient = new CurlHttpClient($this->protocol);
+        $this->httpClient = new CurlHttpClient();
     }
 
     /**
-     * Uses the DeepL API to split a text into sentences. Stores them in a SentencesBag object and returns it.
-     * You may use the splitText() method if you want to get the result as a string array.
-     * Attention: If you choose to set $from to "auto", the API will not return a result if it is unable to
-     * detect the language.
+     * Actually requests a translation from the DeepL.com API
      *
-     * @param string|string[] $text The text you want to split into sentences. It can be a single string or string array
-     * @param string          $from Optional: The source language, a self::LANG_<code> constant
-     * @return SentencesBag
-     * @throws \Exception
+     * @param string      $text             The text you want to translate
+     * @param string      $to               Optional: The target language, a self::LANG_<code> constant
+     * @param string|null $from             Optional: The source language, a self::LANG_<code> constant
+     * @param int         $splitSentences   How should the translation engine split the text into sentences?
+     * @param string      $formality        Set whether the translated text should lean towards formal/informal language
+     * @param bool        $keepFormatting   How should the translation engine should respect the original formatting?
+     * @return \stdClass
+     * @throws \Exception|CallException
      */
-    public function requestSplitText($text, $from = self::LANG_AUTO)
+    protected function requestTranslation(
+        string $text,
+        string $to,
+        ?string $from,
+        int $splitSentences = self::SPLIT_ALL,
+        string $formality = self::FORMALITY_DEFAULT,
+        bool $keepFormatting = false
+    ): mixed
     {
-        if (! is_string($text) and ! is_array($text)) {
-            throw new \InvalidArgumentException('The $text argument has to be a string or an array of strings');
-        }
-        if (is_array($text)) {
-            foreach ($text as $index => $part) {
-                if (! is_string($part)) {
-                    throw new \InvalidArgumentException(
-                        'If the $text argument is an array it ha to be an array of strings, but the '.($index + 1).
-                        '. item is not a string'
-                    );
-                }
-            }
-        } else {
-            $text = [$text];
-        }
-
         $params = [
-            'texts' => $text,
-            'lang' => [
-                'lang_user_selected' => $from
-            ]
+            'text' => $text,
+            'target_lang' => $to,
+            'split_sentences' => $splitSentences,
+            'formality' => $formality,
+            'preserve_formatting' => $keepFormatting
         ];
 
-        $rawResponseData = $this->httpClient->callApi(self::API_BASE_URL, $params, self::METHOD_SPLIT);
-
-        $responseContent = $this->protocol->processResponseData($rawResponseData);
-
-        $splitTextBag = new SentencesBag($responseContent);
-
-        return $splitTextBag;
-    }
-
-    /**
-     * Uses the DeepL API to split a text into a string array of sentences.
-     * This method might throw an exception so you should wrap it in a try-catch-block.
-     *
-     * @param string|string[] $text The text you want to split into sentences. It can be a single string or string array
-     * @param string          $from Optional: The source language, a self::LANG_<code> constant
-     * @return string[]
-     * @throws \Exception
-     */
-    public function splitText($text, $from = self::LANG_AUTO)
-    {
-        $splitTextBag = $this->requestSplitText($text, $from);
-
-        $sentences = $splitTextBag->getAllSentences();
-
-        return $sentences;
-    }
-
-    /**
-     * Tries to detect the language of a text and returns its language code.
-     * The language of the text has to be one of the supported languages or the result will be incorrect.
-     * This method might throw an exception so you should wrap it in a try-catch-block.
-     * Especially it will throw an exception if the API was not able to auto-detected the language.
-     *
-     * @param string      $text The text you want to analyze
-     * @return string|null      Returns a language code from the self::LANG_CODES array or null
-     * @throws \Exception
-     */
-    public function detectLanguage($text)
-    {
-        // Note: We always use English as the target language. If the source language is English as well,
-        // DeepL automatically seems to set the target language to French so this is not a problem.
-        $translationBag = $this->requestTranslation($text, self::LANG_EN, self::LANG_AUTO);
-
-        return $translationBag->getSourceLanguage();
-    }
-
-    /**
-     * Requests a translation from the API. Returns a TranslationBag object.
-     * ATTENTION: The target language parameter is followed by the source language parameter!
-     * This method might throw an exception so you should wrap it in a try-catch-block.
-     * You may use the translate() method if you want to get the result as a string.
-     *
-     * @param string|string[] $text           The text to translate. A single string or an array of sentences (strings)
-     * @param string          $to             Optional: The target language, a self::LANG_<code> constant
-     * @param string|null     $from           Optional: The source language, a self::LANG_<code> constant
-     * @return TranslationBag
-     * @throws \Exception
-     */
-    protected function requestTranslation($text, $to = self::LANG_EN, $from = self::LANG_AUTO)
-    {
-        $this->translationBag = null;
-
-        if (! is_string($text) and ! is_array($text)) {
-            throw new \InvalidArgumentException('The $text argument has to be a string or an array');
+        // Set additional parameters if they are not set to their default values
+        if ($splitSentences !== self::SPLIT_ALL) {
+            $params['split_sentences'] = $splitSentences;
         }
-        if (is_array($text)) {
-            foreach ($text as $index => $sentence) {
-                if (! is_string($sentence)) {
-                    throw new \InvalidArgumentException(
-                        'The $text argument has to be a string or an array of strings. '.
-                        'The '.(++$index).'. item of the array is not a string.'
-                    );
-                }
-                // TODO Ensure that the limit is per sentence
-                if ($this->validateTextLength and mb_strlen($sentence) > self::MAX_TRANSLATION_TEXT_LEN) {
-                    throw new \InvalidArgumentException(
-                        'The '.(++$index).'. sentence exceeds the maximum of '.self::MAX_TRANSLATION_TEXT_LEN.' chars'
-                    );
-                }
-            }
-        } else {
-            if ($this->validateTextLength and mb_strlen($text) > self::MAX_TRANSLATION_TEXT_LEN) {
-                throw new \InvalidArgumentException(
-                    'The text exceeds the maximum of '.self::MAX_TRANSLATION_TEXT_LEN.' chars'
-                );
-            }
+        if ($formality !== self::FORMALITY_DEFAULT) {
+            $params['formality'] = $formality;
         }
-        if (! is_string($to)) {
-            throw new \InvalidArgumentException('The $to argument has to be a string');
-        }
-        if (! in_array($to, self::LANG_CODES)) {
-            throw new \InvalidArgumentException('The $to argument has to be a valid language code');
-        }
-        if ($to === self::LANG_AUTO) {
-            throw new \InvalidArgumentException('The $to argument cannot be "'.self::LANG_AUTO.'"');
-        }
-        if (! is_string($from)) {
-            throw new \InvalidArgumentException('The $from argument has to be a string');
-        }
-        if (! in_array($from, self::LANG_CODES)) {
-            throw new \InvalidArgumentException('The $from argument has to a valid language code');
+        if ($keepFormatting !== false) {
+            $params['preserve_formatting'] = $keepFormatting;
         }
 
-        // Note that this array will be converted to a data structure of arrays AND objects later on
-        $params = [
-            'lang' => [
-                'source_lang_user_selected' => $from, // Attention: source_lang does not work!
-                'target_lang' => $to,
-            ]
-        ];
-
-        if (is_array($text)) {
-            $lines = $text;
-            $sentences = [];
-
-            foreach ($text as $sentence) {
-                $sentences[] = [$sentence];
-            }
-        } else {
-            // We try to auto-detect which is the right line break
-            $lineBreak = "\r\n";
-            if (strpos($text, $lineBreak) === false and strpos($text, "\n") !== false) {
-                $lineBreak = "\n";
-            }
-
-            $lines = explode($lineBreak, $text);
-
-            $sentencesBag = $this->requestSplitText($lines, $from);
-            $sentences = $sentencesBag->getAllSentencesGrouped();
+        // Add even more additional parameters that have been set via self::setSettings();
+        if ($this->glossaryId) {
+            $params['glossary_id'] = $this->glossaryId;
+        }
+        if ($this->tagHandling) {
+            $params['tag_handling'] = $this->tagHandling;
+        }
+        if ($this->nonSplittingTags) {
+            $params['non_splitting_tags'] = $this->nonSplittingTags;
+        }
+        if ($this->outlineDetection !== true) {
+            $params['outline_detection'] = $this->outlineDetection;
+        }
+        if ($this->splittingTags) {
+            $params['splitting_tags'] = $this->splittingTags;
+        }
+        if ($this->ignoreTags) {
+            $params['ignore_tags'] = $this->ignoreTags;
         }
 
-        $params['jobs'] = [];
-        $lineBreaks = [];
-        foreach ($lines as $index => $line) {
-            if ($index > 0) {
-                $lineBreaks[] = sizeof($params['jobs']);
-            }
-
-            foreach ($sentences[$index] as $sentence) {
-                $params['jobs'][] =  [
-                    'kind' => 'default',
-                    'raw_en_sentence' => $sentence,
-                ];
-            }
+        // API will attempt to detect the language automatically if the source_lang parameter is not set
+        if ($from && $from !== self::LANG_AUTO) {
+            $params['source_lang'] = $from;
         }
 
-        // The API call might throw an exception but we do not want to catch it,
-        // instead the caller of this method has to catch it.
-        $rawResponseData = $this->httpClient->callApi(self::API_BASE_URL, $params, self::METHOD_TRANSLATE);
+        $rawResponseData = $this->httpClient->callApi($this->apiBaseUrl . 'translate', $this->apiKey, $params);
 
-        $responseContent = $this->protocol->processResponseData($rawResponseData);
-
-        $translationBag = new TranslationBag($responseContent, $lineBreaks);
-
-        $this->translationBag = $translationBag;
-
-        return $translationBag;
+        // Make an object from the raw JSON response
+        return json_decode($rawResponseData);
     }
 
     /**
      * Translates a text.
      * ATTENTION: The target language parameter is followed by the source language parameter!
-     * This method might throw an exception so you should wrap it in a try-catch-block.
+     * This method might throw an exception, so you should wrap it in a try-catch-block.
      *
-     * @param string      $text           The text you want to translate
-     * @param string      $to             Optional: The target language, a self::LANG_<code> constant
-     * @param string|null $from           Optional: The source language, a self::LANG_<code> constant
-     * @return null|string                Returns the translated text or null if there is no translation
+     * @param string      $text             The text you want to translate
+     * @param string      $to               Optional: The target language, a self::LANG_<code> constant
+     * @param string|null $from             Optional: The source language, a self::LANG_<code> constant
+     * @param int         $splitSentences   How should the translation engine split the text into sentences?
+     * @param string      $formality        Set whether the translated text should lean towards formal/informal language
+     * @param bool        $keepFormatting   How should the translation engine should respect the original formatting?
+     * @return string                       Returns the translated text or null if there is no translation
+     * @throws \Exception|CallException
      */
-    public function translate($text, $to = self::LANG_EN, $from = self::LANG_AUTO)
+    public function translate(
+        string $text,
+        string $to = self::LANG_EN,
+        ?string $from = self::LANG_AUTO,
+        int $splitSentences = self::SPLIT_ALL,
+        string $formality = self::FORMALITY_DEFAULT,
+        bool $keepFormatting = false
+    ): string
     {
-        $translationBag = $this->requestTranslation($text, $to, $from);
+        $responseData = $this->requestTranslation($text, $to, $from, $splitSentences, $formality, $keepFormatting);
 
-        return $translationBag->getTranslation();
-    }
+        // We only return the translations object, the other properties are no longer important
+        $translations = $responseData->translations;
 
-    /**
-     * Translates a short text / a sentence. Returns an array of translation proposals.
-     * ATTENTION: The target language parameter is followed by the source language parameter!
-     * This method might throw an exception so you should wrap it in a try-catch-block.
-     *
-     * @param string      $text The text you want to translate
-     * @param string      $to   Optional: The target language, a self::LANG_<code> constant
-     * @param string|null $from Optional: The source language, a self::LANG_<code> constant
-     * @return string[]         Returns translation alternatives as a string array
-     * @throws \Exception
-     */
-    public function proposeTranslations($text, $to = self::LANG_EN, $from = self::LANG_AUTO)
-    {
-        $translationBag = $this->requestTranslation($text, $to, $from);
-
-        return $translationBag->getTranslationAlternatives();
-    }
-
-    /**
-     * Translates a text. Returns a string array of translation sentences.
-     * ATTENTION: The target language parameter is followed by the source language parameter!
-     * This method might throw an exception so you should wrap it in a try-catch-block.
-     *
-     * @param string[]    $sentences The sentences you want to translate
-     * @param string      $to        Optional: The target language, a self::LANG_<code> constant
-     * @param string|null $from      Optional: The source language, a self::LANG_<code> constant
-     * @param bool        $join      If true, join all sentences to a single string
-     * @return \string[] Returns a string array (might be empty)
-     */
-    public function translateSentences(array $sentences, $to = self::LANG_EN, $from = self::LANG_AUTO, $join = false)
-    {
-        $translationBag = $this->requestTranslation($sentences, $to, $from);
-
-        $translatedSentences = $translationBag->getTranslatedSentences();
-
-        if ($join) {
-            return implode(' ', $translatedSentences);
+        // Combine all translations to one text
+        $text = '';
+        foreach ($translations as $translation) {
+            if ($text) {
+                $text .= ' ';
+            }
+            $text .= $translation->text;
         }
 
-        return $translatedSentences;
+        return $text;
     }
 
     /**
-     * Translates a text file. The $from argument is optional.
+     * Translates a file that contains plain text (not a .docx or .pdf document!). The $from argument is optional.
      * ATTENTION: The target language parameter is followed by the source language parameter!
-     * This method will throw an exception if reading the file or translating fails
+     * This method will throw an exception if reading the file or translating fails,
      * so you should wrap it in a try-catch-block.
      *
-     * @param string      $filename The name of the file you want to translate
-     * @param string      $to       Optional: The target language, a self::LANG_<code> constant
-     * @param string|null $from     Optional: The source language, a self::LANG_<code> constant
-     * @return string|null          Returns the translated text or null if there is no translation
-     * @throws \Exception
+     * @param string      $filename         The name of the file you want to translate
+     * @param string      $to               Optional: The target language, a self::LANG_<code> constant
+     * @param string|null $from             Optional: The source language, a self::LANG_<code> constant
+     * @param int         $splitSentences   How should the translation engine split the text into sentences?
+     * @param string      $formality        Set whether the translated text should lean towards formal/informal language
+     * @param bool        $keepFormatting   How should the translation engine should respect the original formatting?
+     * @return string                       Returns the translated text or null if there is no translation
+     * @throws \Exception|CallException
      */
-    public function translateFile($filename, $to = self::LANG_EN, $from = self::LANG_AUTO)
+    public function translateTextFile(
+        string $filename,
+        string $to = self::LANG_EN,
+        ?string $from = self::LANG_AUTO,
+        int $splitSentences = self::SPLIT_ALL,
+        string $formality = self::FORMALITY_DEFAULT,
+        bool $keepFormatting = false
+    ): string
     {
-        if (! is_string($filename)) {
-            throw new \InvalidArgumentException('The $filename argument has to be a string');
-        }
         if (! is_readable($filename)) {
             throw new \InvalidArgumentException('Could not read file with the given filename');
         }
@@ -410,7 +372,49 @@ class DeepLy
             );
         }
 
-        return $this->translate($text, $to, $from);
+        return $this->translate($text, $to, $from, $splitSentences, $formality, $keepFormatting);
+    }
+
+    /**
+     * @deprecated Deprecated method for compatibility to version 1. Please use translateTextFile() instead!
+     * @throws \Exception
+     */
+    public function translateFile(string $filename, string $to = self::LANG_EN, ?string $from = self::LANG_AUTO): string
+    {
+        return $this->translateTextFile($filename,  $to, $from);
+    }
+
+    /**
+     * Tries to detect the language of a text and returns its language code.
+     * The language of the text has to be one of the supported languages or the result will be incorrect.
+     * This method might throw an exception, so you should wrap it in a try-catch-block.
+     * Especially it will throw an exception if the API was not able to auto-detect the language.
+     * ATTENTION: This request increases the usage statistics of your account!
+     *
+     * @param string       $text The text you want to analyze
+     * @return string|null       Returns a language code from the self::LANG_CODES array or null
+     * @throws \Exception
+     */
+    public function detectLanguage(string $text) :? string
+    {
+        // Note: We always use English as the target language. If the source language is English as well,
+        // DeepL automatically seems to set the target language to French so this is not a problem.
+        $result = $this->requestTranslation($text, self::LANG_EN, self::LANG_AUTO);
+
+        return $result->translations[0]->detected_source_language;
+    }
+
+    /**
+     * Returns API usage information
+     *
+     * @return \stdClass Character_count: Used characters, character_limit: max characters
+     */
+    public function usage(): \stdClass
+    {
+        $rawResponseData = $this->httpClient->callApi($this->apiBaseUrl.'usage', $this->apiKey);
+
+        // Make an object from the raw JSON response
+        return json_decode($rawResponseData);
     }
 
     /**
@@ -422,105 +426,16 @@ class DeepLy
      */
     public function ping()
     {
-        return $this->httpClient->ping(self::API_BASE_URL);
-    }
-
-    /**
-     * Setter for the validateTextLength property
-     * If true, validate that the length of a translation text
-     * is not greater than self::MAX_TRANSLATION_TEXT_LEN
-     *
-     * @return bool
-     */
-    public function getValidateTextLength()
-    {
-        return $this->validateTextLength;
-    }
-
-    /**
-     * Getter for the validateTextLength property.
-     * If true, validate that the length of a translation text
-     * is not greater than self::MAX_TRANSLATION_TEXT_LEN
-     *
-     * @param bool $validateTextLength
-     */
-    public function setValidateTextLength($validateTextLength)
-    {
-        if (! is_bool($validateTextLength)) {
-            throw new \InvalidArgumentException('$validateTextLength has to be boolean');
-        }
-
-        $this->validateTextLength = $validateTextLength;
-    }
-
-    /**
-     * Getter for the protocol object
-     *
-     * @return ProtocolInterface
-     */
-    public function getProtocol()
-    {
-        return $this->protocol;
-    }
-
-    /**
-     * Setter for the protocol object
-     *
-     * @param ProtocolInterface $protocol
-     */
-    public function setProtocol(ProtocolInterface $protocol)
-    {
-        $this->protocol = $protocol;
-    }
-
-    /**
-     * Getter for the HTTP client object
-     *
-     * @return HttpClientInterface
-     */
-    public function getHttpClient()
-    {
-        return $this->httpClient;
-    }
-
-    /**
-     * Setter for the HTTP client object. This allows you to use another HTTP client
-     * than the default cURL based HTTP client.
-     *
-     * @param HttpClientInterface $httpClient
-     */
-    public function setHttpClient(HttpClientInterface $httpClient)
-    {
-        $this->httpClient = $httpClient;
-    }
-
-    /**
-     * Decides if a language (code) is supported by DeepL(y).
-     * Note that 'auto' is not a valid value in this context
-     * except you explicitly set the $allowAuto param to true
-     *
-     * @param string $langCode  The language code, for example 'EN'
-     * @param bool   $allowAuto Optional: If false, 'auto' is not a valid language
-     * @return bool
-     */
-    public function supportsLangCode($langCode, $allowAuto = false)
-    {
-        if (! is_string($langCode)) {
-            throw new \InvalidArgumentException('The $langCode argument has to be a string');
-        }
-
-        $supported = in_array($langCode, $this->getLangCodes($allowAuto));
-
-        return $supported;
+        return $this->httpClient->ping($this->apiBaseUrl);
     }
 
     /**
      * Getter for the array with all supported language codes
      *
      * @param bool $withAuto Optional: If true, the 'auto' code will be in the returned array
-     * @return \string[]
+     * @return string[]
      */
-    public function getLangCodes($withAuto = true)
+    public function getLangCodes(bool $withAuto = true): array
     {
         if (! is_bool($withAuto)) {
             throw new \InvalidArgumentException('The $withAuto argument has to be boolean');
@@ -541,7 +456,7 @@ class DeepLy
      * @param string $langCode The code of the language
      * @return string
      */
-    public function getLangName($langCode)
+    public function getLangName(string $langCode): string
     {
         if (! in_array($langCode, self::LANG_CODES)) {
             throw new \InvalidArgumentException('The language code is unknown');
@@ -557,7 +472,7 @@ class DeepLy
      * @param string $langName The name of the language
      * @return string
      */
-    public function getLangCodeByName($langName)
+    public function getLangCodeByName(string $langName): string
     {
         if (! in_array($langName, self::LANG_NAMES)) {
             throw new \InvalidArgumentException('The language name is unknown');
@@ -567,14 +482,47 @@ class DeepLy
     }
 
     /**
-     * Getter for the TranslationBag object. Might return null!
-     * The translation bag contains the result of the last API call.
+     * Change translation settings.
+     * Note that these settings will be applied to EVERY request, this is not a one time thing!
      *
-     * @return TranslationBag|null
+     * @param int|null  $glossaryId ID of an existing glossary, or null
+     * @param string    $tagHandling Sets which kind of tags should be handled: "xml"/"xhtml"
+     * @param string[]  $nonSplittingTags List of XML tags which never split sentences
+     * @param bool      $outlineDetection To disable The automatic detection of the XML structure set this to false
+     * @param string[]  $splittingTags List of XML tags which always cause splits
+     * @param string[]  $ignoreTags List of XML tags that indicate text not to be translated
+     * @return $this
      */
-    public function getTranslationBag()
+    public function setSettings(
+        int $glossaryId = null,
+        string $tagHandling = self::TAG_HANDLING_UNSET,
+        array $nonSplittingTags = [],
+        bool $outlineDetection = true,
+        array $splittingTags = [],
+        array $ignoreTags = []): static
     {
-        return $this->translationBag;
+
+        $this->glossaryId = $glossaryId;
+        $this->tagHandling = $tagHandling;
+        $this->nonSplittingTags = join(',', $nonSplittingTags);
+        $this->outlineDetection = $outlineDetection;
+        $this->splittingTags = join(',', $splittingTags);
+        $this->ignoreTags = join(',', $ignoreTags);;
+
+        return $this;
+    }
+
+    /**
+     * Setter for the API key
+     *
+     * @param string $apiKey
+     * @return void
+     */
+    public function setApiKey(string $apiKey)
+    {
+        $this->apiKey = $apiKey;
+        $this->usesFreeApi = str_ends_with($this->apiKey, ':fx'); // Free API keys end with ":fx"
+        $this->apiBaseUrl = ($this->usesFreeApi ? self::API_FREE_BASE_URL : self::API_PRO_BASE_URL);
     }
 
 }

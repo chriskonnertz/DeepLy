@@ -1,4 +1,4 @@
-# DeepLy
+# DeepLy 2
 
 [![Build Status](https://img.shields.io/travis/chriskonnertz/DeepLy.svg?style=flat-square)](https://travis-ci.org/chriskonnertz/DeepLy)
 [![Version](https://img.shields.io/packagist/v/chriskonnertz/DeepLy.svg?style=flat-square)](https://packagist.org/packages/chriskonnertz/regex)
@@ -6,10 +6,9 @@
 
 [DeepL.com](https://www.deepl.com/) is a next-generation translation service. 
 It provides better translations compared to other popular translation engines.
-DeepLy is a PHP package that implements a client to interact with DeepL via their API _without_ an API key. 
-~Please switch to DeepLy 2 if you have an API key.~
-
-> **IMPORTANT statement regarding DeepL Pro**: DeepLy 2 is under development but it is unkown when it will be released. It will support DeepL Pro.
+DeepLy is a PHP package that implements a client to interact with DeepL via their API with an API key. 
+You can get an API key for free on their website. DeepLy supports the free and the pro API and will 
+automatically target the correct API end point.
 
 ## Installation
 
@@ -21,29 +20,24 @@ composer require chriskonnertz/deeply
 
 From then on you may run `composer update` to get the latest version of this library.
 
-It is possible to use this library without using Composer but then it is necessary to register an 
-[autoloader function](https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-0.md#example-implementation).
-
-> This library requires PHP 5.6 or higher and the cURL extension.
+> This library requires PHP 8.0 or higher and the cURL extension.
 
 ## Example
 
 ```php
-$deepLy = new ChrisKonnertz\DeepLy\DeepLy();
+$deepLy = new ChrisKonnertz\DeepLy\DeepLy('your-api-key');
 
-$translatedText = $deepLy->translate('Hello world!', 'DE', 'EN');
+$translatedText = $deepLy->translate('Hello world!', 'DE');
     
 echo $translatedText; // Prints "Hallo Welt!"
 ```
 
-> An interactive PHP demo script is included. It is located at `demos/demo_translate.php`.
+> An interactive PHP demo script is included. It is located at [demos/demo_translate.php](demos/demo_translate.php).
 
 ### Sophisticated Example
 
 ```php
-use ChrisKonnertz\DeepLy\DeepLy;
-
-$deepLy = new DeepLy();
+$deepLy = new ChrisKonnertz\DeepLy\DeepLy('your-api-key');
 
 try {
     $translatedText = $deepLy->translate('Hello world!', DeepLy::LANG_EN, DeepLy::LANG_AUTO);
@@ -55,7 +49,9 @@ try {
 ```
 
 Always wrap calls of the `translate` method in a try-catch-block, because they might throw an exception if the
-arguments are invalid or the API call fails. Instead of using hardcoded strings as language arguments 
+arguments are invalid or the API call fails. The exception will have an explanatory message and a specific error code. 
+
+Instead of using hardcoded strings as language arguments 
 better use the language code constants of the `DeepLy` class. The class also offers methods such as
 `getLangCodes($withAuto = true)` and `supportsLangCode($langCode)`. 
 
@@ -63,6 +59,8 @@ You may use the `proposeTranslations` method if you want to get alternative tran
 This method cannot operate on more than one sentence at once. 
 
 ## Auto-Detect Language
+
+> ⚠️ ATTENTION: Using this method increases the usage statistics of your account!
 
 DeepLy has a method that uses the DeepL API to detect the language of a text:
 
@@ -85,66 +83,36 @@ language than no language at all.
 
 DeepL(y) supports these languages:
 
-| Code | Language      |
-|------|---------------|
-| auto | _Auto detect_ |
-| DE   | German        |
-| EN   | English       |
-| FR   | French        |
-| ES   | Spanish       |
-| IT   | Italian       |
-| NL   | Dutch         |
-| PL   | Polish        |
-| PT   | Portuguese    |
-| RU   | Russian       |
+| Code | Language      |     | Code  | Language      |
+|------|---------------|-----|-------|---------------|
+| auto | _Auto detect_ |     |       |               |
+| IT   | Italian       |     | JA    | Japanese      |
+| BG   | Bulgarian     |     | LT    | Lithuanian    |
+| CS   | Czech         |     | LV    | Latvian       |
+| DA   | Danish        |     | NL    | Dutch         |
+| DE   | German        |     | PL    | Polish        |
+| EL   | Greek         |     | PT    | Portuguese    |
+| EN   | English       |     | RO    | Romanian      |
+| ES   | Spanish       |     | RU    | Russian       |
+| ET   | Estonian      |     | SK    | Slovak        |
+| FI   | Finnish       |     | SL    | Slovenian     |
+| PT   | French        |     | SV    | Swedish       |
+| HU   | Hungarian     |     | ZH    | Chinese       |
 
 > Note that auto-detection only is possible for the source language. 
 
-DeepL says they will [add more languages](https://www.heise.de/newsticker/meldung/Maschinelles-Uebersetzen-Deutsches-Start-up-DeepL-will-230-Sprachkombinationen-unterstuetzen-3836533.html) 
-in the future, such as Chinese.
-
-## Text Length Limit
-
-According to the DeepL.com website, the length of the text that has to be translated is limited to 5000 characters.
-Per default DeepLy will throw an exception if the length limit is exceeded. 
-You may call `$deepLy->setValidateTextLength(false)` to disable this validation.
-
-## HTTP Client
-
-Per default DeepLy uses a minimalistic HTTP client based on cURL. If you want to use a different HTTP client, 
-such as [Guzzle](https://github.com/guzzle/guzzle), create a class that implements the `HttpClient\HttpClientInterface`
- and makes use of the methods of the alternative HTTP client. Then use `$deepLy->setHttpClient($yourHttpClient)`
- to inject it.
- 
-> Note: If you experience issues with the integrated cURL client that could be solved by setting the
-> `CURLOPT_SSL_VERIFYPEER` to `false`, first read this: 
-> [snippets.webaware.com.au/../](https://snippets.webaware.com.au/howto/stop-turning-off-curlopt_ssl_verifypeer-and-fix-your-php-config/)
->
-> If it does not help try: `$deepLy->getHttpClient()->setSslVerifyPeer(false)`
-
-### Guzzle
- 
-If you want to use Guzzle as the HTTP client: Support for Guzzle is available out-of-the-box. 
-Make sure you have installed Guzzle (preferably via Composer), then copy this code and paste it right after you instantiate DeepLy:
-
-```php
-$protocol = $deepLy->getProtocol();
-$httpClient = new \ChrisKonnertz\DeepLy\HttpClient\GuzzleHttpClient($protocol);
-$deepLy->setHttpClient($httpClient);
-```
-
 ## Framework Integration
 
-DeepLy comes with support for Laravel 5.x and since it also supports 
+DeepLy comes with support for Laravel 5.5+ and since it also supports 
 [package auto-discovery](https://medium.com/@taylorotwell/package-auto-discovery-in-laravel-5-5-ea9e3ab20518) 
-it will be auto-detected in Laravel 5.5. 
+it will be auto-detected. 
 
-In Laravel 5.0-5.4 you manually have to register the service provider
- `ChrisKonnertz\DeepLy\Integrations\Laravel\DeepLyServiceProvider` in the "providers" array and the facade 
- `ChrisKonnertz\DeepLy\Integrations\Laravel\DeepLyFacade` as an alias in the "aliases" array 
- in your `config/app.php` config file.
+You have to store your DeepL API key in the `.env` file like this:
+```
+DEEPL_API_KEY = xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
+```
  
- You can then access DeepLy like this: `$ping = \DeepLy::ping();`
+Afterwards can access DeepLy like this: `$ping = \DeepLy::ping();`
  
 ## Demos
 
@@ -155,40 +123,61 @@ There are several demo scripts included in the `demos` folder:
 * `demo_split.php`: Demonstrates sentence detection. Write a text and the API will split it into sentences.
 * `demo_ping.php`: Demonstrates DeepLy's `ping()` method by pinging the API.
 
-## Request Limit
+## Usage
 
-There is a request limit. The threshold of this limit is unknown.
+To get usage statistics, do: 
 
+```php
+$usage = $deepLy->usage();
+echo $usage->character_count.'/'.$usage->character_limit
+    . ' characters ('.ceil($usage->character_count / $usage->character_limit * 100).'%)';
+```
+
+## HTTP Client
+
+Per default DeepLy uses a minimalistic HTTP client based on cURL. If you want to use a different HTTP client,
+such as [Guzzle](https://github.com/guzzle/guzzle), create a class that implements the `HttpClient\HttpClientInterface`
+and makes use of the methods of the alternative HTTP client. Then use `$deepLy->setHttpClient($yourHttpClient)`
+to inject it.
+
+> Note: If you experience issues with the integrated cURL client that could be solved by setting the
+> `CURLOPT_SSL_VERIFYPEER` to `false`, first read this:
+> [snippets.webaware.com.au/../](https://snippets.webaware.com.au/howto/stop-turning-off-curlopt_ssl_verifypeer-and-fix-your-php-config/)
+>
+> If it does not help try: `$deepLy->getHttpClient()->setSslVerifyPeer(false)`
 
 ## Internals
 
 The "core" of this library consists of these classes:
 * `DeepLy` - main class
 * `HttpClient\CurlHttpClient` - HTTP client class
-* `Protocol\JsonRpcProtocol` - JSON RPC is the protocol used by the DeepL API
-* `ResponseBag\AbstractBag` - base wrapper class for the responses of the DeepL API
-* `ResponseBag\SentencesBag` - concrete class for API responses to "split text" requests
-* `ResponseBag\TranslationBag` - concrete class for API responses to "translate" requests
 
-There are also some exception classes, interfaces, an alternative HTTP client implementation that uses Guzzle and classes for the Laravel integration.
-
-## Current State
-
-DeepL.com has officially released their API. They offer a premium service that includes access to this API. 
-However, it is still possible (at your own risk) to access the API without using the premium service.
-
-Premium API access requires authentication with an API key. This will be supported by DeepLy 2. 
+There are also some exception classes, interfaces, and classes for the Laravel integration.
 
 ## Disclaimer
 
 This is not an official package. It is 100% open source and non-commercial. 
-The API of DeepL.com can be accessed without an API key but this might change in the future.
 
 DeepL is a product of DeepL GmbH. More info: [deepl.com/publisher.html](https://www.deepl.com/publisher.html)
 
-This package has been heavily inspired by [node-deepls](https://github.com/pbrln/node-deepl)
-and [deeplator](https://github.com/uinput/deeplator). Thank you for your great work! 
-Give these implementations a try if you are coding in Node.js or Python.
+## Differences to V1
+
+Differences to DeepLy version 1.x are:
+- Text length check has been removed (because the limit is now about 120000 letters which should be enough in most cases)
+- Texts can no longer be split into sentences, as the API does not seem to support this
+- `proposeTranslations()` method has been removed
+- Guzzle implementation removed (you can still write your own though)
+- JSON RPC protocol support has been removed
+- All the bag classes have been removed
+- No longer uses the unofficial API, but uses official v2 API
+- API key has been introduced
+- Updated API error handling, `CallException` now contains API HTTP error code
+- Usage method has been introduced
+- Support for new languages added
+- The `translateFile()` method is now deprecated, please use `translateTextFile()` instead!
+
+To upgrade from v1 to v2, make sure you specify the API key when instantiating the DeepLy object.
+Apart from the changes mentioned above your v1 code should still work with v2.
 
 ## Notes
 

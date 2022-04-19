@@ -5,7 +5,7 @@
      *
      * @param string $class Full qualified name of the class
      */
-    function miniAutoloader($class)
+    function miniAutoloader(string $class)
     {
         $class = str_replace('\\', '/', $class);
         require __DIR__ . '/../src/' . $class . '.php';
@@ -19,20 +19,21 @@
         spl_autoload_register('miniAutoloader');
     }
 
-    $text = isset($_POST['text']) ? $_POST['text'] : null;
-    $to = isset($_POST['to']) ? $_POST['to'] : 'DE';
-    $from = isset($_POST['from']) ? $_POST['from'] : 'auto';
+    $key = $_POST['key'] ?? null;
+    $text = $_POST['text'] ?? null;
+    $to = $_POST['to'] ?? 'DE';
+    $from = $_POST['from'] ?? 'auto';
 
-    $deepLy = new ChrisKonnertz\DeepLy\DeepLy();
+    $deepLy = new ChrisKonnertz\DeepLy\DeepLy($key ?? '');
 
     /**
      * Prints HTML code for a select element. Does not use htmlspecialchars() or whatsoever.
      *
-     * @param string $name
-     * @param array  $options The options - key => option value, value => option name
-     * @param null   $default
+     * @param string      $name
+     * @param array       $options The options - key => option value, value => option name
+     * @param string|null $default
      */
-    function createSelect($name, array $options, $default = null)
+    function createSelect(string $name, array $options, string $default = null)
     {
         echo '<select class="form-field" name="'.$name.'">';
 
@@ -50,6 +51,7 @@
 <head>
     <meta charset="utf-8">
     <title>DeepLy Demo - Translation</title>
+    <link rel="shortcut icon" href="https://www.google.com/s2/favicons?domain=deepl.com">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/framy/latest/css/framy.min.css">
     <style>
         body { padding: 20px }
@@ -63,6 +65,7 @@
         .form-select { max-width: 100px }
         .button-group { margin-bottom: 20px }
         .content { margin-bottom: 20px; padding: 20px; box-shadow: 0 1px 3px 0 #c8c8c8; }
+        .result { margin-bottom: 10px }
     </style>
 </head>
 <body>
@@ -77,6 +80,11 @@
 
     <div class="content">
         <form method="POST">
+            <div class="form-element">
+                <label for="key">API Key:</label>
+                <input type="text" id="key" class="form-field" name="key" value="<?php echo $key?? '' ?>" placeholder="Get your API key from DeepL.com">
+            </div>
+
             <div class="form-element">
                 <label for="text">Text:</label>
                 <textarea id="text" class="form-field" name="text" rows="4"><?php echo $text !== null ? $text : 'Hello world!' ?></textarea>
@@ -111,11 +119,22 @@
                         echo '<div class="success">Translation: <pre><b>' . $result . '</b></pre></div>';
                     } catch (\Exception $exception) {
                         echo '<div class="error">'.$exception->getMessage().'</div>';
+                        die();
                     }
                 }
 
             ?>
         </div>
+
+        <small>
+            <?php
+                if ($key) {
+                    $usage = $deepLy->usage();
+                    echo 'Usage: '.$usage->character_count.'/'.$usage->character_limit
+                        . ' characters ('.ceil($usage->character_count / $usage->character_limit * 100).'%)';
+                }
+            ?>
+        </small>
     </div>
 
     <footer class="block">
@@ -133,7 +152,7 @@
             // Use DeepLy's ping method to check if the API server is reachable
             function()
             {
-                var request = new XMLHttpRequest();
+                const request = new XMLHttpRequest();
 
                 request.addEventListener('readystatechange', function() {
                     if (request.readyState === XMLHttpRequest.DONE) {

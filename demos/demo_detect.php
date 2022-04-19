@@ -5,7 +5,7 @@
      *
      * @param string $class Full qualified name of the class
      */
-    function miniAutoloader($class)
+    function miniAutoloader(string $class)
     {
         $class = str_replace('\\', '/', $class);
         require __DIR__ . '/../src/' . $class . '.php';
@@ -19,9 +19,10 @@
         spl_autoload_register('miniAutoloader');
     }
 
-    $text = isset($_POST['text']) ? $_POST['text'] : null;
+    $key = $_POST['key'] ?? null;
+    $text = $_POST['text'] ?? null;
 
-    $deepLy = new ChrisKonnertz\DeepLy\DeepLy();
+    $deepLy = new ChrisKonnertz\DeepLy\DeepLy($key ?? '');
 
 ?>
 <!DOCTYPE html>
@@ -29,6 +30,7 @@
 <head>
     <meta charset="utf-8">
     <title>DeepLy Demo - Language Detection</title>
+    <link rel="shortcut icon" href="https://www.google.com/s2/favicons?domain=deepl.com">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/framy/latest/css/framy.min.css">
     <style>
         body { padding: 20px }
@@ -55,6 +57,10 @@
 
     <div class="content">
         <form method="POST">
+            <div class="form-element">
+                <label for="key">API Key:</label>
+                <input type="text" id="key" class="form-field" name="key" value="<?php echo $key?? '' ?>" placeholder="Get your API key from DeepL.com">
+            </div>
 
             <div class="form-element">
                 <label for="text">Text:</label>
@@ -76,6 +82,7 @@
                         echo '<div class="success">Language detected: <blockquote><b>' . $result . '</b></blockquote></div>';
                     } catch (\Exception $exception) {
                         echo '<div class="error">'.$exception->getMessage().'</div>';
+                        die();
                     }
                 }
 
@@ -98,7 +105,7 @@
             // Use DeepLy's ping method to check if the API server is reachable
             function()
             {
-                var request = new XMLHttpRequest();
+                const request = new XMLHttpRequest();
 
                 request.addEventListener('readystatechange', function() {
                     if (request.readyState === XMLHttpRequest.DONE) {
