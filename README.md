@@ -10,7 +10,8 @@
 It provides better translations compared to other popular translation engines.
 DeepLy is a PHP package that implements a client to interact with DeepL via their API using an API key. 
 You can get an API key for free on their website. DeepLy supports both the free and the pro API and will 
-automatically target the correct API end point.
+automatically target the correct API end point. There are several demo scripts included in the demos folder 
+that show how to use DeepLy.
 
 ## Installation
 
@@ -19,8 +20,6 @@ This library requires PHP 8.0 or higher and the cURL extension. Install trough [
 ```
 composer require chriskonnertz/deeply
 ```
-
-
 
 ## Example
 
@@ -127,7 +126,7 @@ To create a new glossary with translation entries, do:
 $deepLy->createGlossary('test', 'de', 'en', ['Example DE' => 'Example EN']);
 ```
 
-To delete a existing glossary, do:
+To delete an existing glossary, do:
 
 ```php
 $deepLy->deleteGlossary('your-glossary-id');
@@ -161,14 +160,6 @@ DEEPL_API_KEY = xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
 ```
  
 Afterwards you can access DeepLy like this: `$ping = \DeepLy::ping();`
- 
-## Demos
-
-There are several demo scripts included in the `demos` folder:
-
-* `demo_translate.php`: Demonstrates language translation. Write a text and the API will try to translate it into a language of your choice.
-* `demo_detect.php`: Demonstrates language detection. Write a text and the API will tell you which language it thinks it is.
-* `demo_ping.php`: Demonstrates DeepLy's `ping()` method by pinging the API.
 
 ## HTTP Client
 
@@ -182,14 +173,6 @@ to inject it.
 > [snippets.webaware.com.au/../](https://snippets.webaware.com.au/howto/stop-turning-off-curlopt_ssl_verifypeer-and-fix-your-php-config/)
 >
 > If it does not help try: `$deepLy->getHttpClient()->setSslVerifyPeer(false)`
-
-## Internals
-
-The "core" of this library consists of these classes:
-* `DeepLy` - main class
-* `HttpClient\CurlHttpClient` - HTTP client class
-
-There are also some exception classes, interfaces, and classes for the Laravel integration.
 
 ## Differences to V1
 
