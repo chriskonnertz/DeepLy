@@ -1,14 +1,15 @@
 # DeepLy 2
 
 [![Build Status](https://img.shields.io/travis/chriskonnertz/DeepLy.svg?style=flat-square)](https://travis-ci.org/chriskonnertz/DeepLy)
-[![Version](https://img.shields.io/packagist/v/chriskonnertz/DeepLy.svg?style=flat-square)](https://packagist.org/packages/chriskonnertz/regex)
+[![Version](https://img.shields.io/packagist/v/chriskonnertz/DeepLy.svg?style=flat-square)](https://packagist.org/packages/chriskonnertz/deeply)
 [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg?style=flat-square)](https://raw.githubusercontent.com/chriskonnertz/deeply/master/LICENSE)
+[![Total Downloads][ico-downloads]][link-downloads]
 
 > ⛔ ATTENTION: This is a beta branch. Ready to be tested, not ready to be used in production!
 
 [DeepL.com](https://www.deepl.com/) is a next-generation translation service. 
 It provides better translations compared to other popular translation engines.
-DeepLy is a PHP package that implements a client to interact with DeepL via their API using an API key. 
+DeepLy is a dependency-free PHP library that implements a client to interact with DeepL via their API using an API key. 
 You can get an API key for free on their website. DeepLy supports both the free and the pro API and will 
 automatically target the correct API end point. There are several demo scripts included in the demos folder 
 that show how to use DeepLy.
@@ -21,7 +22,7 @@ This library requires PHP 8.0 or higher and the cURL extension. Install trough [
 composer require chriskonnertz/deeply
 ```
 
-## Example
+## Examples
 
 ```php
 $deepLy = new ChrisKonnertz\DeepLy\DeepLy('your-api-key');
@@ -53,6 +54,8 @@ arguments are invalid or the API call fails. The exception will have an explanat
 Instead of using hardcoded strings as language arguments 
 better use the language code constants of the `DeepLy` class. The class also offers methods such as
 `getLangCodes($withAuto = true)` and `supportsLangCode($langCode)`. 
+
+If you need to specify advanced settings, use the `setSettings()` method: `$deepLy->setSettings($glossaryId);`
 
 ## Auto-Detect Language
 
@@ -134,7 +137,7 @@ $deepLy->deleteGlossary('your-glossary-id');
 
 > 💡 An interactive PHP demo script is included. It is located at [demos/demo_glossaries.php](demos/demo_glossaries.php).
 
-## Usage
+## Usage Statistic
 
 To get usage statistics, do:
 
@@ -152,9 +155,7 @@ Learn more: https://www.deepl.com/de/docs-api/other-functions/monitoring-usage/
 
 DeepLy comes with support for Laravel 5.5+ and since it also supports 
 [package auto-discovery](https://medium.com/@taylorotwell/package-auto-discovery-in-laravel-5-5-ea9e3ab20518) 
-it will be auto-detected. 
-
-You have to store your DeepL API key in the `.env` file like this:
+it will be auto-detected. However, you have to store your DeepL API key manually in the `.env` file, like this:
 ```
 DEEPL_API_KEY = xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
 ```
