@@ -231,10 +231,10 @@ class DeepLy
     /**
      * Do an API call to the DeepL.com API
      *
-     * @param string $function The API function
-     * @param array  $params   The payload of the request. Will be encoded as JSON
-     * @param string $method   The request method ('GET', 'POST', 'DELETE')
-     * @param bool $parseJson  If true, parse the result of the API call and return a \stClass. If false, return string.
+     * @param string $function  The API function
+     * @param array  $params    The payload of the request. Will be encoded as JSON
+     * @param string $method    The request method ('GET', 'POST', 'DELETE')
+     * @param bool   $parseJson If true, parse the result of the API call and return a \stClass. If false, return string.
      * @return \stdClass|string|null
      */
     protected function callApi(string $function, array $params = [], string $method = HttpClientInterface::METHOD_POST, bool $parseJson = true) : \stdClass|string|null
@@ -255,7 +255,7 @@ class DeepLy
      * @param int         $splitSentences   How should the translation engine split the text into sentences?
      * @param string      $formality        Set whether the translated text should lean towards formal/informal language
      * @param bool        $keepFormatting   How should the translation engine should respect the original formatting?
-     * @return \stdClass
+     * @return \stdClass|string|null
      * @throws \Exception|CallException
      */
     protected function requestTranslation(
@@ -265,14 +265,11 @@ class DeepLy
         int $splitSentences = self::SPLIT_ALL,
         string $formality = self::FORMALITY_DEFAULT,
         bool $keepFormatting = false
-    ): mixed
+    ): \stdClass|string|null
     {
         $params = [
             'text' => $text,
-            'target_lang' => $to,
-            'split_sentences' => $splitSentences,
-            'formality' => $formality,
-            'preserve_formatting' => $keepFormatting
+            'target_lang' => $to
         ];
 
         // Set additional parameters if they are not set to their default values
@@ -360,6 +357,11 @@ class DeepLy
      * This method will throw an exception if reading the file or translating fails,
      * so you should wrap it in a try-catch-block.
      *
+     * @deprecated ⚠️ Deprecated method for compatibility to version 1. Will be removed in the future!
+     *             Please replace with:
+     *                 $text = file_get_contents($filename);
+     *                 $this->translate($text);
+     *
      * @param string      $filename         The name of the file you want to translate
      * @param string      $to               Optional: The target language, a self::LANG_<code> constant
      * @param string|null $from             Optional: The source language, a self::LANG_<code> constant
@@ -369,7 +371,7 @@ class DeepLy
      * @return string                       Returns the translated text or null if there is no translation
      * @throws \Exception|CallException
      */
-    public function translateTextFile(
+    public function translateFile(
         string $filename,
         string $to = self::LANG_EN,
         ?string $from = self::LANG_AUTO,
@@ -391,15 +393,6 @@ class DeepLy
         }
 
         return $this->translate($text, $to, $from, $splitSentences, $formality, $keepFormatting);
-    }
-
-    /**
-     * @deprecated Deprecated method for compatibility to version 1. Please use translateTextFile() instead!
-     * @throws \Exception
-     */
-    public function translateFile(string $filename, string $to = self::LANG_EN, ?string $from = self::LANG_AUTO): string
-    {
-        return $this->translateTextFile($filename,  $to, $from);
     }
 
     /**
