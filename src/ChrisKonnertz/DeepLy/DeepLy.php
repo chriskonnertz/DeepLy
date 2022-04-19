@@ -139,7 +139,7 @@ class DeepLy
     /**
      * Current version number
      */
-    const VERSION = '2.0.0-alpha';
+    const VERSION = '2.0.0-beta';
 
     /**
      * The DeepL.com API key
@@ -229,7 +229,7 @@ class DeepLy
     }
 
     /**
-     * Do a low-level API call to the DeepL.com API
+     * Do an API call to the DeepL.com API
      *
      * @param string $function The API function
      * @param array  $params   The payload of the request. Will be encoded as JSON

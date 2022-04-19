@@ -47,7 +47,7 @@ class CurlHttpClient implements HttpClientInterface
     }
 
     /**
-     * Executes an API call (a request) and returns the raw response data
+     * Executes a low level API call (a request) and returns the raw response data
      *
      * @param  string $url     The full URL of the API endpoint
      * @param  string $apiKey  The DeepL.com API key

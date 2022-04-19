@@ -7,14 +7,16 @@
 
 > ⛔ ATTENTION: This is a beta branch. Ready to be tested, not ready to be used in production!
 
-[DeepL.com](https://www.deepl.com/) is a next-generation translation service. 
-DeepLy is a dependency-free PHP library that implements a client to interact with the DeepL API using an API key. 
-You can get an API key for free on their website. DeepLy automatically supports both the free and the pro API.
-For interactive demo scripts take a look at the [demos](demos) folder.
+[DeepL](https://www.deepl.com/) is a next-generation translation service. 
+DeepLy is a dependency-free PHP library that implements a client to interact with the 
+[DeepL API](https://www.deepl.com/docs-api) using an API key. 
+You can get an API key for free on their [website](https://www.deepl.com/). 
+DeepLy automatically supports both the free and the pro API.
+For interactive demo scripts take a look at the [demos folder](demos).
 
 ## Installation
 
-This library requires PHP 8.0 or higher and the cURL extension. Install trough [Composer](https://getcomposer.org/):
+This library requires PHP 8.0 or higher and the cURL extension. Install DeepLy trough [Composer](https://getcomposer.org/):
 
 ```
 composer require chriskonnertz/deeply
@@ -96,7 +98,7 @@ DeepL(y) supports these languages:
 | PT   | French        |     | SV    | Swedish       |
 | HU   | Hungarian     |     | ZH    | Chinese       |
 
-> 💡 Note that auto-detection only is possible for the source language.
+> 💡 Note that auto-detection is only possible for the source language.
 
 ## Glossaries
 
@@ -175,23 +177,10 @@ to inject it.
 
 ## Differences to V1
 
-Differences to DeepLy version 1.x are:
-- Text length check has been removed (because the limit is now about 120000 letters which should be enough in most cases)
-- Texts can no longer be split into sentences, as the API does not seem to support this
-- `proposeTranslations()` method has been removed
-- Guzzle implementation removed (you can still write your own though)
-- JSON RPC protocol support has been removed
-- All the bag classes have been removed
-- No longer uses the unofficial API, but uses official v2 API
-- API key has been introduced
-- Updated API error handling, `CallException` now contains API HTTP error code
-- Glossary support has been introduced
-- Usage method has been introduced
-- Support for new languages added
-- The `translateFile()` method is now deprecated, please use `translateTextFile()` instead!
-
 To upgrade from v1 to v2, make sure you specify the API key when instantiating the DeepLy object.
-Apart from the changes mentioned above your v1 code should still work with v2.
+Apart from the changes mentioned above your v1 code should still work with v2 as long 
+as you did not write your own HTTP client or extended the DeepLy class with a custom class.
+To learn more about the changes, please take a look at the [changelog](CHANGELOG.md).
 
 ## Disclaimer
 
