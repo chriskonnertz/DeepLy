@@ -142,7 +142,8 @@ class DeepLy
     const VERSION = '2.0.0-beta';
 
     /**
-     * The DeepL.com API key
+     * The DeepL.com API key.
+     * @see setApiKey()
      *
      * @var string
      */
@@ -151,6 +152,7 @@ class DeepLy
     /**
      * DeepL.com differs between pro and free API.
      * If true, the specified API key indicates that the free API has to be used.
+     * @see getApiKeyType()
      *
      * @var bool
      */
@@ -220,7 +222,8 @@ class DeepLy
      */
     public function __construct(string $apiKey, HttpClientInterface $httpClient = null)
     {
-        // Initially set the API key. You can also use an empty string and call setApiKey() later.
+        // Initially set the API key. You can also use an empty string and call setApiKey() later,
+        // but that's not not recommended.
         $this->setApiKey($apiKey);
 
         // Create the default HTTP client if necessary.
@@ -234,13 +237,18 @@ class DeepLy
      * @param string $function  The API function
      * @param array  $params    The payload of the request. Will be encoded as JSON
      * @param string $method    The request method ('GET', 'POST', 'DELETE')
-     * @param bool   $parseJson If true, parse the result of the API call and return a \stClass. If false, return string.
+     * @param bool   $parseJson If true, parse the result of the API call and return a \stClass. If false, return string
      * @return \stdClass|string|null
      */
-    protected function callApi(string $function, array $params = [], string $method = HttpClientInterface::METHOD_POST, bool $parseJson = true) : \stdClass|string|null
+    protected function callApi(
+        string $function,
+        array $params = [],
+        string $method = HttpClientInterface::METHOD_POST,
+        bool $parseJson = true
+    ) : \stdClass|string|null
     {
         // Do the actual API call via HTTP client
-        $rawResponseData = $this->httpClient->callApi($this->apiBaseUrl . $function, $this->apiKey, $params, $method);
+        $rawResponseData = $this->httpClient->callApi($this->apiBaseUrl.$function, $this->apiKey, $params, $method);
 
         // Make an object from the raw JSON response
         return $parseJson ? json_decode($rawResponseData) : $rawResponseData;
@@ -535,9 +543,9 @@ class DeepLy
         $usage->teamDocumentLimit = $usage->team_document_limit ?? null;
 
         // Calculate percentages
-        $usage->characterQuota = $usage->characterLimit !== null ? $usage->characterCount / $usage->characterLimit : null;
-        $usage->documentQuota = $usage->documentLimit !== null ? $usage->documentCount / $usage->documentLimit : null;
-        $usage->teamDocumentQuota = $usage->teamDocumentLimit !== null ? $usage->teamDocumentCount / $usage->teamDocumentLimit : null;
+        $usage->characterQuota = $usage->characterLimit !== null ? ($usage->characterCount / $usage->characterLimit) : null;
+        $usage->documentQuota = $usage->documentLimit !== null ? ($usage->documentCount / $usage->documentLimit) : null;
+        $usage->teamDocumentQuota = $usage->teamDocumentLimit !== null ? ($usage->teamDocumentCount / $usage->teamDocumentLimit) : null;
 
         return $usage;
     }
@@ -609,6 +617,7 @@ class DeepLy
     /**
      * Change translation settings.
      * Note that these settings will be applied to EVERY request, this is not a one time thing!
+     * To reset all settings to their defaults, simply call this method without any arguments.
      *
      * @param string|null $glossaryId Unique identifier of an existing glossary, or null
      * @param string|null $tagHandling Sets which kind of tags should be handled: "xml"/"xhtml"
@@ -646,8 +655,19 @@ class DeepLy
     public function setApiKey(string $apiKey)
     {
         $this->apiKey = $apiKey;
-        $this->usesFreeApi = str_ends_with($this->apiKey, ':fx'); // Free API keys end with ":fx"
+        $this->usesFreeApi = $this->getApiKeyType();
         $this->apiBaseUrl = ($this->usesFreeApi ? self::API_FREE_BASE_URL : self::API_PRO_BASE_URL);
+    }
+
+    /**
+     * Returns true if the provided key is a key for the free API, and returns false if it is a key for the pro API.
+     *
+     * @return bool
+     */
+    public function getApiKeyType() : bool
+    {
+        // Free API keys end with ":fx"
+        return str_ends_with($this->apiKey, ':fx');
     }
 
 }
