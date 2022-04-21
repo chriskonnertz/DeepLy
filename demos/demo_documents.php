@@ -20,7 +20,7 @@
     }
 
     $key = $_POST['key'] ?? null;
-    $text = $_POST['text'] ?? null;
+    $text = $_POST['file'] ?? null;
 
     $deepLy = new ChrisKonnertz\DeepLy\DeepLy($key ?? '');
 
@@ -29,7 +29,7 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <title>DeepLy Demo - Language Detection</title>
+    <title>DeepLy Demo - Translation</title>
     <link rel="shortcut icon" href="https://www.google.com/s2/favicons?domain=deepl.com">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/framy/latest/css/framy.min.css">
     <style>
@@ -41,8 +41,10 @@
         footer { color: #aaa }
         div.success { border: 1px solid #4ce276; margin-top: 20px; padding: 10px; border-top-width: 10px }
         div.error { border: 1px solid #f36362; margin-top: 20px; padding: 10px; border-top-width: 10px }
+        .form-select { max-width: 100px }
         .button-group { margin-bottom: 20px }
         .content { margin-bottom: 20px; padding: 20px; box-shadow: 0 1px 3px 0 #c8c8c8; }
+        .result { margin-bottom: 10px }
     </style>
 </head>
 <body>
@@ -50,9 +52,9 @@
 
     <div class="button-group">
         <a class="button border" href="demo_translate.php">Translate</a>
-        <a class="button " href="demo_detect.php">Detect</a>
+        <a class="button border" href="demo_detect.php">Detect</a>
         <a class="button border" href="demo_glossaries.php">Glossaries</a>
-        <a class="button border" href="demo_documents.php">Documents</a>
+        <a class="button " href="demo_documents.php">Documents</a>
         <a class="button border" href="demo_ping.php">Ping</a>
     </div>
 
@@ -63,24 +65,20 @@
                 <input type="text" id="key" class="form-field" name="key" value="<?php echo $key?? '' ?>" placeholder="Get your API key from DeepL.com">
             </div>
 
-            <div class="form-element">
-                <label for="text">Text:</label>
-                <textarea id="text" class="form-field" name="text" rows="4"><?php echo $text !== null ? $text : 'Hello world!' ?></textarea>
-            </div>
-
             <div id="ping-result"></div>
 
-            <input type="submit" value="Detect Language" class="button">
+            <input type="submit" name="upload" value="Upload Test Document" class="button">
         </form>
 
         <div class="block result">
             <?php
 
-                if ($text !== null) {
+                if (isset($_POST['upload'])) {
                     try {
-                        $result = $deepLy->detectLanguage($text);
+                        $filename = __DIR__.'/test_document.pdf';
+                        $result = $deepLy->uploadDocument($filename, 'DE');
 
-                        echo '<div class="success">Language detected: <blockquote><b>' . $result . '</b></blockquote></div>';
+                        echo '<div class="success">Result: <pre><b>' . print_r($result) . '</b></pre></div>';
                     } catch (\Exception $exception) {
                         echo '<div class="error">'.$exception->getMessage().'</div>';
                         die();
@@ -89,6 +87,16 @@
 
             ?>
         </div>
+
+        <small>
+            <?php
+                if ($key) {
+                    $usage = $deepLy->usage();
+                    echo 'Usage: '.$usage->characterCount.'/'.$usage->characterLimit
+                        . ' characters ('.round($usage->characterQuota * 100).'%)';
+                }
+            ?>
+        </small>
     </div>
 
     <footer class="block">

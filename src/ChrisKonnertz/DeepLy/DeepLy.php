@@ -518,6 +518,78 @@ class DeepLy
     }
 
     /**
+     * Upload a document for translation.
+     * Afterwards it will be processed (translated).
+     * Note: The maximum upload limit for any document is 10 MB and 1.000.000 characters.
+     *
+     * @param string      $filename  The name of the file
+     * @param string      $to        The target language, a self::LANG_<code> constant
+     * @param string|null $from      The source language, a self::LANG_<code> constant
+     * @param string      $formality Set whether the translated text should lean towards formal/informal language
+     * @return \stdClass             Properties: document_id, document_key
+     * @throws CallException
+     */
+    public function uploadDocument(
+        string $filename,
+        string $to,
+        ?string $from = self::LANG_AUTO,
+        string $formality = self::FORMALITY_DEFAULT
+    ) : \stdClass
+    {
+        $params = [
+             'target_lang' => $to
+        ];
+
+        if ($formality !== self::FORMALITY_DEFAULT) {
+            $params['formality'] = $formality;
+        }
+
+        // Add even more additional parameters that have been set via self::setSettings();
+        if ($this->glossaryId) {
+            $params['glossary_id'] = $this->glossaryId;
+        }
+
+        // API will attempt to detect the language automatically if the source_lang parameter is not set
+        if ($from && $from !== self::LANG_AUTO) {
+            $params['source_lang'] = $from;
+        }
+
+        //$documentInfo = $this->callApi('document', $params, HttpClientInterface::METHOD_POST, $filename);
+
+        $documentInfo = $this->httpClient->callApi($this->apiBaseUrl.'document', $this->apiKey, $params, HttpClientInterface::METHOD_POST, $filename);
+
+        return $documentInfo;
+    }
+
+    /**
+     * Get information about an uploaded document, especially the state of the translation.
+     *
+     * @param string $documentId The unique identifier of the document
+     * @return \stdClass         Properties: document_id, status, seconds_remaining
+     * @throws CallException
+     */
+    public function getDocumentState(string $documentId) : \stdClass
+    {
+        return $this->callApi('document/'.$documentId, []);
+    }
+
+    /**
+     * Download an uploaded document after it has been processed (translated).
+     *
+     * @param string $documentId The unique identifier of the document
+     * @return string
+     * @throws CallException
+     */
+    public function downloadDocument(string $documentId) : string
+    {
+        $data = $this->callApi('document/'.$documentId.'/result', [], HttpClientInterface::METHOD_POST, false);
+
+        die(var_dump($data));
+
+        return $data;
+    }
+
+    /**
      * Returns API usage information
      *
      * @return \stdClass Properties:

@@ -53,6 +53,7 @@
         <a class="button border" href="demo_translate.php">Translate</a>
         <a class="button border" href="demo_detect.php">Detect</a>
         <a class="button " href="demo_glossaries.php">Glossaries</a>
+        <a class="button border" href="demo_documents.php">Documents</a>
         <a class="button border" href="demo_ping.php">Ping</a>
     </div>
 

@@ -8,6 +8,8 @@ namespace ChrisKonnertz\DeepLy\HttpClient;
 class CurlHttpClient implements HttpClientInterface
 {
 
+    const LOGFILE_NAME = 'curl_log.txt';
+
     /**
      * Set this to false if you do not want cURL to
      * try to verify the SSL certificate - it could fail
@@ -19,15 +21,26 @@ class CurlHttpClient implements HttpClientInterface
     protected bool $sslVerifyPeer = true;
 
     /**
-     * CurlHttpClient constructor.
+     * If true, log cURL request to a logfile (self:: LOGFILE_NAME)
+     *
+     * @var bool
      */
-    public function __construct()
+    private bool $logging;
+
+    /**
+     * CurlHttpClient constructor.
+     *
+     * @param bool $logging If true, log cURL request to a logfile (self:: LOGFILE_NAME)
+     */
+    public function __construct(bool $logging = false)
     {
         if (! $this->isCurlAvailable()) {
             throw new \LogicException(
                 'Cannot create instance of DeepLy\'s CurlHttpClient class, because the cURL PHP extension is not loaded'
             );
         }
+
+        $this->logging = $logging;
     }
 
     /**
@@ -40,9 +53,27 @@ class CurlHttpClient implements HttpClientInterface
      * @return string          The raw response data as string (usually contains stringified JSON)
      * @throws CallException   Throws a call exception if the call could not be executed
      */
-    public function callApi(string $url, string $apiKey, array $payload = [], string $method = HttpClientInterface::METHOD_POST) : string
+    public function callApi(
+        string $url,
+        string $apiKey,
+        array $payload = [],
+        string $method = HttpClientInterface::METHOD_POST,
+        string $filename = null) : string
     {
         $curl = curl_init($url);
+
+        $headers = ['Authorization: DeepL-Auth-Key '.$apiKey];
+
+        if ($filename) {
+            $fileData = curl_file_create($filename, 'application/pdf', 'test.pdf');
+            $payload['file'] = $fileData;
+            curl_setopt($curl, CURLOPT_POST, true);
+
+            $headers[] = 'Content-Type: multipart/form-data';
+
+
+            curl_setopt($curl, CURLOPT_VERBOSE, 1);
+        }
 
         curl_setopt($curl, CURLOPT_CUSTOMREQUEST, $method);
         curl_setopt($curl, CURLOPT_POSTFIELDS, http_build_query($payload));
@@ -50,9 +81,13 @@ class CurlHttpClient implements HttpClientInterface
         curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, $this->sslVerifyPeer);
 
         // Set API key via header
-        curl_setopt($curl, CURLOPT_HTTPHEADER, [
-            'Authorization: DeepL-Auth-Key '.$apiKey
-        ]);
+        curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
+
+        // Log cURL request to a logfile
+        if ($this->logging) {
+            $logfile = fopen(__DIR__.'/'.self::LOGFILE_NAME, 'w');
+            curl_setopt($curl, CURLOPT_STDERR, $logfile);
+        }
 
         $rawResponseData = curl_exec($curl);
 
@@ -159,6 +194,17 @@ class CurlHttpClient implements HttpClientInterface
     public function isCurlAvailable(): bool
     {
         return (in_array('curl', get_loaded_extensions()));
+    }
+
+    /**
+     * Enable or disable logging to a logfile (self::LOGFILE_NAME)
+     *
+     * @param bool $enable
+     * @return void
+     */
+    public function setLogging(bool $enable)
+    {
+        $this->logging = $enable;
     }
 
 }
