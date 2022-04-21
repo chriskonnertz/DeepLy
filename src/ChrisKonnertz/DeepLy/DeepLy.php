@@ -584,7 +584,7 @@ class DeepLy
 
         // Ensure property always exists
         if (! isset($meta->seconds_remaining)) {
-            $meta->seconds_remaining = 0;
+            $meta->seconds_remaining = null;
         }
 
         return $meta;

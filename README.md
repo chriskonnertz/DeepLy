@@ -172,11 +172,13 @@ stdClass Object
     [document_id] => D014F316B7A173079074BE76F530F846
     [status] => done
     [billed_characters] => 50000
-    [seconds_remaining] => 0
+    [seconds_remaining] => null
 )
 ```
 In this case the document has been processed. 
-This is indicated by "status" being "done" and "seconds_remaining" being 0.
+This is indicated by "status" being "done" and "seconds_remaining" being *null*.
+
+> The document life cycle is: queued ➜ translating ➜ done
 
 The third step is to download the document:
 ```php

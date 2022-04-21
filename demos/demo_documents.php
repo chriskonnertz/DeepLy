@@ -125,16 +125,15 @@
                 if (isset($_POST['download'])) {
                     try {
                         if (! $documentKey) {
-                            echo '<div class="error">Upload a document, then try again.</div>';
+                            echo '<div class="error">Upload a document or specify document ID & key, then try again.</div>';
                             die();
                         }
 
                         $filename = __DIR__.'/test_document_translated.pdf';
                         $result = $deepLy->downloadDocument($documentId, $documentKey, 'test_document_translated.pdf');
 
-                        echo '<div class="success">Document: <pre>';
-                        print_r($result);
-                        echo '</pre></div>';
+                        echo '<div class="success">Document saved to file '.basename($filename).': <pre>';
+                        echo '<a class="button" href="download.php" download>Download</a>';
                     } catch (\Exception $exception) {
                         echo '<div class="error">'.$exception->getMessage().'</div>';
                         die();
