@@ -59,6 +59,7 @@
         h4 { margin-top: 40px }
         textarea { resize: vertical; }
         blockquote { margin-left: 0; margin-right: 0; }
+        pre { white-space: pre; }
         footer { color: #aaa }
         div.success { border: 1px solid #4ce276; margin-top: 20px; padding: 10px; border-top-width: 10px }
         div.error { border: 1px solid #f36362; margin-top: 20px; padding: 10px; border-top-width: 10px }
@@ -108,10 +109,9 @@
             <div id="ping-result"></div>
 
             <input type="submit" value="Translate" class="button">
-        </form>
 
-        <div class="block result">
-            <?php
+            <div class="block result">
+                <?php
 
                 if ($text !== null and $to !== null) {
                     try {
@@ -124,8 +124,9 @@
                     }
                 }
 
-            ?>
-        </div>
+                ?>
+            </div>
+        </form>
 
         <small>
             <?php

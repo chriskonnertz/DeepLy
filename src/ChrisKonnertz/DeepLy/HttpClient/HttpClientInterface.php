@@ -41,6 +41,7 @@ interface HttpClientInterface
      * @param  string $apiKey  The DeepL.com API key
      * @param  array  $payload The payload of the request. Will be encoded as JSON
      * @param  string $method  The request method ('GET', 'POST', 'DELETE')
+     * @param  ?string $filename The filename of a file that should be uploaded
      * @return string          The raw response data as string (usually contains stringified JSON)
      * @throws CallException  Throws a call exception if the call could not be executed
      */
@@ -48,8 +49,8 @@ interface HttpClientInterface
         string $url,
         string $apiKey,
         array $payload = [],
-        string $method =
-        self::METHOD_POST
+        string $method = self::METHOD_POST,
+        string $filename = null
     ) : string;
 
     /**

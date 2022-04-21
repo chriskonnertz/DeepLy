@@ -21,7 +21,8 @@ class CurlHttpClient implements HttpClientInterface
     protected bool $sslVerifyPeer = true;
 
     /**
-     * If true, log cURL request to a logfile (self:: LOGFILE_NAME)
+     * If true, log cURL request to a logfile (self:: LOGFILE_NAME).
+     * To get even more info about the actual request, send it to requestcatcher.com!
      *
      * @var bool
      */
@@ -46,12 +47,13 @@ class CurlHttpClient implements HttpClientInterface
     /**
      * Executes a low level API call (a request) and returns the raw response data
      *
-     * @param  string $url     The full URL of the API endpoint
-     * @param  string $apiKey  The DeepL.com API key
-     * @param  array  $payload The payload of the request. Will be encoded as JSON
-     * @param  string $method  The request method ('GET', 'POST', 'DELETE')
-     * @return string          The raw response data as string (usually contains stringified JSON)
-     * @throws CallException   Throws a call exception if the call could not be executed
+     * @param  string  $url      The full URL of the API endpoint
+     * @param  string  $apiKey   The DeepL.com API key
+     * @param  array   $payload  The payload of the request. Will be encoded as JSON
+     * @param  string  $method   The request method ('GET', 'POST', 'DELETE')
+     * @param  ?string $filename The filename of a file that should be uploaded
+     * @return string            The raw response data as string (usually contains stringified JSON)
+     * @throws CallException     Throws a call exception if the call could not be executed
      */
     public function callApi(
         string $url,
@@ -65,18 +67,14 @@ class CurlHttpClient implements HttpClientInterface
         $headers = ['Authorization: DeepL-Auth-Key '.$apiKey];
 
         if ($filename) {
-            $fileData = curl_file_create($filename, 'application/pdf', 'test.pdf');
-            $payload['file'] = $fileData;
+            $payload['file'] = curl_file_create($filename);
             curl_setopt($curl, CURLOPT_POST, true);
 
             $headers[] = 'Content-Type: multipart/form-data';
-
-
-            curl_setopt($curl, CURLOPT_VERBOSE, 1);
         }
 
         curl_setopt($curl, CURLOPT_CUSTOMREQUEST, $method);
-        curl_setopt($curl, CURLOPT_POSTFIELDS, http_build_query($payload));
+        curl_setopt($curl, CURLOPT_POSTFIELDS, $filename ? $payload : http_build_query($payload));
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, $this->sslVerifyPeer);
 
@@ -86,6 +84,7 @@ class CurlHttpClient implements HttpClientInterface
         // Log cURL request to a logfile
         if ($this->logging) {
             $logfile = fopen(__DIR__.'/'.self::LOGFILE_NAME, 'w');
+            curl_setopt($curl, CURLOPT_VERBOSE, 1);
             curl_setopt($curl, CURLOPT_STDERR, $logfile);
         }
 
@@ -94,6 +93,9 @@ class CurlHttpClient implements HttpClientInterface
         $this->handleError($curl, $rawResponseData);
         
         curl_close($curl);
+        if ($this->logging) {
+            fclose($logfile);
+        }
 
         return $rawResponseData;
     }

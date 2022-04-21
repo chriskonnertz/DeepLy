@@ -234,21 +234,25 @@ class DeepLy
     /**
      * Do an API call to the DeepL.com API
      *
-     * @param string $function  The API function
-     * @param array  $params    The payload of the request. Will be encoded as JSON
-     * @param string $method    The request method ('GET', 'POST', 'DELETE')
-     * @param bool   $parseJson If true, parse the result of the API call and return a \stClass. If false, return string
+     * @param string  $function  The API function
+     * @param array   $params    The payload of the request. Will be encoded as JSON
+     * @param string  $method    The request method ('GET', 'POST', 'DELETE')
+     * @param ?string $filename  The filename of a file that should be uploaded
+     * @param bool    $parseJson If true, parse the result of the API call and return a \sdtClass. Else: return string
      * @return \stdClass|string|null
      */
     protected function callApi(
         string $function,
         array $params = [],
         string $method = HttpClientInterface::METHOD_POST,
+        string $filename = null,
         bool $parseJson = true
     ) : \stdClass|string|null
     {
         // Do the actual API call via HTTP client
-        $rawResponseData = $this->httpClient->callApi($this->apiBaseUrl.$function, $this->apiKey, $params, $method);
+        $rawResponseData = $this->httpClient->callApi(
+            $this->apiBaseUrl.$function, $this->apiKey, $params, $method, $filename
+        );
 
         // Make an object from the raw JSON response
         return $parseJson ? json_decode($rawResponseData) : $rawResponseData;
@@ -504,7 +508,9 @@ class DeepLy
      */
     public function getGlossaryEntries(string $glossaryId) : array
     {
-        $rawEntries = $this->callApi('glossaries/'.$glossaryId.'/entries', [], HttpClientInterface::METHOD_GET, false);
+        $rawEntries = $this->callApi(
+            'glossaries/'.$glossaryId.'/entries', [], HttpClientInterface::METHOD_GET, null, false
+        );
 
         // The API provides the entries in a "tab seperated" string format, so lets parse that string
         $entries = [];
@@ -521,12 +527,13 @@ class DeepLy
      * Upload a document for translation.
      * Afterwards it will be processed (translated).
      * Note: The maximum upload limit for any document is 10 MB and 1.000.000 characters.
+     * ATTENTION: Every file upload is at least billed with 50.000 characters!
      *
      * @param string      $filename  The name of the file
      * @param string      $to        The target language, a self::LANG_<code> constant
      * @param string|null $from      The source language, a self::LANG_<code> constant
      * @param string      $formality Set whether the translated text should lean towards formal/informal language
-     * @return \stdClass             Properties: document_id, document_key
+     * @return \stdClass             Properties: documentId and documentKey
      * @throws CallException
      */
     public function uploadDocument(
@@ -554,39 +561,60 @@ class DeepLy
             $params['source_lang'] = $from;
         }
 
-        //$documentInfo = $this->callApi('document', $params, HttpClientInterface::METHOD_POST, $filename);
+        $meta = $this->callApi('document', $params, HttpClientInterface::METHOD_POST, $filename);
 
-        $documentInfo = $this->httpClient->callApi($this->apiBaseUrl.'document', $this->apiKey, $params, HttpClientInterface::METHOD_POST, $filename);
+        $newMeta = new \stdClass();
+        $newMeta->documentId = $meta->document_id;
+        $newMeta->documentKey = $meta->document_key;
 
-        return $documentInfo;
+        return $newMeta;
     }
 
     /**
      * Get information about an uploaded document, especially the state of the translation.
      *
-     * @param string $documentId The unique identifier of the document
-     * @return \stdClass         Properties: document_id, status, seconds_remaining
+     * @param string $documentId  The unique identifier of the document
+     * @param string $documentKey The document encryption key that was sent to the client after uploading the document
+     * @return \stdClass          Properties: document_id, status, seconds_remaining, billed_characters
      * @throws CallException
      */
-    public function getDocumentState(string $documentId) : \stdClass
+    public function getDocumentState(string $documentId, string $documentKey) : \stdClass
     {
-        return $this->callApi('document/'.$documentId, []);
+        $meta =  $this->callApi('document/'.$documentId, ['document_key' => $documentKey]);
+
+        // Ensure property always exists
+        if (! isset($meta->seconds_remaining)) {
+            $meta->seconds_remaining = 0;
+        }
+
+        return $meta;
     }
 
     /**
      * Download an uploaded document after it has been processed (translated).
+     * ATTENTION: A document can be downloaded only once!
      *
-     * @param string $documentId The unique identifier of the document
-     * @return string
+     * @param string  $documentId  The unique identifier of the document
+     * @param string  $documentKey The document encryption key that was sent to the client after uploading the document
+     * @param ?string $filename    Optional: Specify a filename if you want to save the file contents to a file
+     * @return string              Returns the raw file contents
      * @throws CallException
      */
-    public function downloadDocument(string $documentId) : string
+    public function downloadDocument(string $documentId, string $documentKey, string $filename = null) : string
     {
-        $data = $this->callApi('document/'.$documentId.'/result', [], HttpClientInterface::METHOD_POST, false);
+        $contents = $this->callApi(
+            'document/'.$documentId.'/result',
+            ['document_key' => $documentKey],
+            HttpClientInterface::METHOD_POST,
+            null,
+            false
+        );
 
-        die(var_dump($data));
+        if ($filename) {
+            file_put_contents($filename, $contents);
+        }
 
-        return $data;
+        return $contents;
     }
 
     /**

@@ -137,6 +137,59 @@ $deepLy->deleteGlossary('your-glossary-id');
 
 > 💡 An interactive PHP demo script is included. It is located at [demos/demo_glossaries.php](demos/demo_glossaries.php).
 
+## Documents
+
+Translating documents consists of three steps. The first step is to upload a document.
+```php
+$filename = __DIR__.'/test_document_original.pdf';
+$result = $deepLy->uploadDocument($filename, 'DE');
+
+var_dump($result);
+```
+Output:
+```
+stdClass Object
+(
+  [documentId] => D014F316B7A173079074BE76F530F846
+  [documentKey] => 39FF8B10D20621096F23BF96CC103E12074727007C62963CF49AE8A9965D7695
+)
+```
+> Note: The maximum upload limit for any document is 10 MB and 1.000.000 characters.
+> 
+> ATTENTION: Every file upload is at least billed with 50.000 characters!
+
+The second step is to wait for the DeepL.com API to finish processing (translating) the document.
+You can check the state:
+```php
+$result = $deepLy->getDocumentState($result->documentId, $result->documentKey);
+
+var_dump($result);
+```
+Output:
+```
+stdClass Object
+(
+    [document_id] => D014F316B7A173079074BE76F530F846
+    [status] => done
+    [billed_characters] => 50000
+    [seconds_remaining] => 0
+)
+```
+In this case the document has been processed. 
+This is indicated by "status" being "done" and "seconds_remaining" being 0.
+
+The third step is to download the document:
+```php
+$filename = __DIR__.'/test_document_translated.pdf';
+$deepLy->downloadDocument($documentId, $documentKey, 'test_document_translated.pdf');
+```
+If you do not want to store the file, do:
+```php
+$contents = $deepLy->downloadDocument($documentId, $documentKey);
+```
+
+> ATTENTION: A document can be downloaded only once!
+
 ## Usage Statistic
 
 To get usage statistics, do:

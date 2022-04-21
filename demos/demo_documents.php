@@ -20,7 +20,8 @@
     }
 
     $key = $_POST['key'] ?? null;
-    $text = $_POST['file'] ?? null;
+    $documentId = $_POST['document_id'] ?? null;
+    $documentKey = $_POST['document_key'] ?? null;
 
     $deepLy = new ChrisKonnertz\DeepLy\DeepLy($key ?? '');
 
@@ -38,6 +39,7 @@
         h4 { margin-top: 40px }
         textarea { resize: vertical; }
         blockquote { margin-left: 0; margin-right: 0; }
+        pre { white-space: pre; }
         footer { color: #aaa }
         div.success { border: 1px solid #4ce276; margin-top: 20px; padding: 10px; border-top-width: 10px }
         div.error { border: 1px solid #f36362; margin-top: 20px; padding: 10px; border-top-width: 10px }
@@ -65,28 +67,83 @@
                 <input type="text" id="key" class="form-field" name="key" value="<?php echo $key?? '' ?>" placeholder="Get your API key from DeepL.com">
             </div>
 
+            <div class="form-element">
+                <label for="key">Document ID:</label>
+                <input type="input" name="document_id" class="form-field" value="<?php echo $_POST['document_id'] ?? '' ?>">
+                <label for="key">Document Key:</label>
+                <input type="input" name="document_key" class="form-field" value="<?php echo $_POST['document_key'] ?? '' ?>">
+            </div>
+
             <div id="ping-result"></div>
 
             <input type="submit" name="upload" value="Upload Test Document" class="button">
-        </form>
+            <input type="submit" name="check" value="Check Document" class="button">
+            <input type="submit" name="download" value="Download Document" class="button">
 
-        <div class="block result">
-            <?php
+            <div class="block result">
+                <?php
 
                 if (isset($_POST['upload'])) {
                     try {
-                        $filename = __DIR__.'/test_document.pdf';
+                        $filename = __DIR__.'/test_document_original.pdf';
                         $result = $deepLy->uploadDocument($filename, 'DE');
 
-                        echo '<div class="success">Result: <pre><b>' . print_r($result) . '</b></pre></div>';
+                        echo '<script>document.querySelector("[name=document_id]").value = "'.$result->documentId.'"; '.
+                            'document.querySelector("[name=document_key]").value = "'.$result->documentKey.'";</script>';
+
+                        echo '<div class="success">Document uploaded: <pre>';
+                        print_r($result);
+                        echo '</pre></div>';
                     } catch (\Exception $exception) {
                         echo '<div class="error">'.$exception->getMessage().'</div>';
                         die();
                     }
                 }
 
-            ?>
-        </div>
+                if (isset($_POST['check'])) {
+                    try {
+                        if (! $documentId) {
+                            $documentId = '8C834BE19D19DE2020898E69C2A403C7';
+                            $documentKey = '8F204C77282A48352D4CA982BEE9B97A36BDF386EEE0AD6123E5DB9F8EB2606D';
+                            echo '<div class="success">No document uploaded. Using an example document ID/key.</div>';
+
+                            echo '<script>document.querySelector("[name=document_id]").value = "'.$documentId.'"; '.
+                                'document.querySelector("[name=document_key]").value = "'.$documentKey.'";</script>';
+                        }
+
+                        $result = $deepLy->getDocumentState($documentId, $documentKey);
+
+                        echo '<div class="success">Document Info: <pre>';
+                        print_r($result);
+                        echo '</pre></div>';
+                    } catch (\Exception $exception) {
+                        echo '<div class="error">'.$exception->getMessage().'</div>';
+                        die();
+                    }
+                }
+
+                if (isset($_POST['download'])) {
+                    try {
+                        if (! $documentKey) {
+                            echo '<div class="error">Upload a document, then try again.</div>';
+                            die();
+                        }
+
+                        $filename = __DIR__.'/test_document_translated.pdf';
+                        $result = $deepLy->downloadDocument($documentId, $documentKey, 'test_document_translated.pdf');
+
+                        echo '<div class="success">Document: <pre>';
+                        print_r($result);
+                        echo '</pre></div>';
+                    } catch (\Exception $exception) {
+                        echo '<div class="error">'.$exception->getMessage().'</div>';
+                        die();
+                    }
+                }
+
+                ?>
+            </div>
+        </form>
 
         <small>
             <?php

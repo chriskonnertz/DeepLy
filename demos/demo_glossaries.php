@@ -71,10 +71,9 @@
             <input type="submit" name="entries" value="Get Glossary Entries" class="button">
             <input type="submit" name="create" value="Create Test Glossary" class="button">
             <input type="submit" name="delete" value="Delete Last Test Glossary" class="button">
-        </form>
 
-        <div class="block result">
-            <?php
+            <div class="block result">
+                <?php
 
                 if (isset($_POST['list'])) {
                     try {
@@ -167,8 +166,10 @@
                     }
                 }
 
-            ?>
-        </div>
+                ?>
+            </div>
+        </form>
+
     </div>
 
     <footer class="block">
