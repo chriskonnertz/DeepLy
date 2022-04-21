@@ -106,7 +106,25 @@ To get a list with information about all your glossaries, do:
 
 ```php
 $glossaries = $deepLy->getGlossaries();
-print_r($glossaries); // Prints an array with \stdClass items
+print_r($glossaries); // Prints an array with Glossary objects
+```
+Output:
+```
+Array
+(
+    [0] => ChrisKonnertz\DeepLy\Models\Glossary Object
+        (
+            [glossaryId] => 56cab399-ac8e-4a57-aadc-fa95103f2de5
+            [entryCount] => 2
+            ...
+        )
+    [2] => ChrisKonnertz\DeepLy\Models\Glossary Object
+        (
+            [glossaryId] => d9eb53b5-3929-49a1-b5e1-df1eb8be93c9
+            [entryCount] => 5
+            ...
+        )
+)
 ```
 
 To get information about a specific glossary, do:
@@ -115,6 +133,20 @@ To get information about a specific glossary, do:
 $glossary = $deepLy->getGlossary('your-glossary-id');
 print_r($glossary); // Prints a \stdClass
 ```
+Output:
+```
+ChrisKonnertz\DeepLy\Models\Glossary Object
+(
+    [glossaryId] => d9eb53b5-3929-49a1-b5e1-df1eb8be93c9
+    [name] => DeepLy Test
+    [ready] => 1
+    [from] => en
+    [to] => de
+    [creationTimeIso] => 2022-04-21T17:46:31.83913+00:00
+    [creationDateTime] => DateTime Object
+    [entryCount] => 2
+)
+```
 
 To get the translation entries of a specific glossary, do:
 
@@ -122,11 +154,19 @@ To get the translation entries of a specific glossary, do:
 $entries = $deepLy->getGlossaryEntries('your-glossary-id');
 print_r($entries);  // Prints an array with string items
 ```
+Output:
+```
+Array
+(
+    [Entry 1 DE] => Entry 1 EN
+    [Entry 2 DE] => Entry 2 EN
+)
+```
 
 To create a new glossary with translation entries, do:
 
 ```php
-$deepLy->createGlossary('test', 'de', 'en', ['Example DE' => 'Example EN']);
+$glossary = $deepLy->createGlossary('test', 'de', 'en', ['Example DE' => 'Example EN']);
 ```
 
 To delete an existing glossary, do:
@@ -148,7 +188,7 @@ var_dump($result);
 ```
 Output:
 ```
-stdClass Object
+ChrisKonnertz\DeepLy\Models\DocumentHandle Object
 (
   [documentId] => D014F316B7A173079074BE76F530F846
   [documentKey] => 39FF8B10D20621096F23BF96CC103E12074727007C62963CF49AE8A9965D7695
@@ -167,18 +207,18 @@ var_dump($result);
 ```
 Output:
 ```
-stdClass Object
+ChrisKonnertz\DeepLy\Models\DocumentState Object
 (
-    [document_id] => D014F316B7A173079074BE76F530F846
+    [documentId] => D014F316B7A173079074BE76F530F846
     [status] => done
-    [billed_characters] => 50000
-    [seconds_remaining] => null
+    [billedCharacters] => 50000
+    [secondsRemaining] => null
 )
 ```
 In this case the document has been processed. 
 This is indicated by "status" being "done" and "seconds_remaining" being *null*.
 
-> 💡The document life cycle is: queued ➜ translating ➜ done
+> 💡 The document life cycle is: queued ➜ translating ➜ done
 
 The third step is to download the document:
 ```php
@@ -197,7 +237,7 @@ $contents = $deepLy->downloadDocument($documentId, $documentKey);
 To get usage statistics, do:
 
 ```php
-$usage = $deepLy->usage();
+$usage = $deepLy->usage(); // Returns an object of type "Usage"
 
 echo $usage->characterCount.'/'.$usage->characterLimit
     . ' characters ('.round($usage->characterQuota * 100).'%)';

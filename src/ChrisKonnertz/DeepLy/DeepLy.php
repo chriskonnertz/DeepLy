@@ -5,6 +5,10 @@ namespace ChrisKonnertz\DeepLy;
 use ChrisKonnertz\DeepLy\HttpClient\CallException;
 use ChrisKonnertz\DeepLy\HttpClient\HttpClientInterface;
 use ChrisKonnertz\DeepLy\HttpClient\CurlHttpClient;
+use ChrisKonnertz\DeepLy\Models\DocumentHandle;
+use ChrisKonnertz\DeepLy\Models\DocumentState;
+use ChrisKonnertz\DeepLy\Models\Glossary;
+use ChrisKonnertz\DeepLy\Models\Usage;
 
 /**
  * This is the main class. Call its translate() method to translate text.
@@ -238,7 +242,7 @@ class DeepLy
      * @param array   $params    The payload of the request. Will be encoded as JSON
      * @param string  $method    The request method ('GET', 'POST', 'DELETE')
      * @param ?string $filename  The filename of a file that should be uploaded
-     * @param bool    $parseJson If true, parse the result of the API call and return a \sdtClass. Else: return string
+     * @param bool    $parseJson If true, parse the result of the API call and return a \stdClass. Else: return string
      * @return \stdClass|string|null
      */
     protected function callApi(
@@ -430,26 +434,33 @@ class DeepLy
     /**
      * Get a list with information about all your glossaries
      *
-     * @return \stdClass[]
+     * @return Glossary[]
      * @throws CallException
      */
     public function getGlossaries() : array
     {
-        $glossaries = $this->callApi('glossaries', [], HttpClientInterface::METHOD_GET);
+        $originalGlossaries = $this->callApi('glossaries', [], HttpClientInterface::METHOD_GET);
 
-        return $glossaries->glossaries;
+        $glossaries = [];
+        foreach ($originalGlossaries->glossaries as $originalGlossary) {
+            $glossaries[] = new Glossary($originalGlossary);
+        }
+
+        return $glossaries;
     }
 
     /**
      * Get information about a specific glossary
      *
      * @param string $glossaryId The unique identifier of an exising glossary (not to be confused with the name!)
-     * @return \stdClass         Information about the glossary
+     * @return Glossary          Information about the glossary
      * @throws CallException     Especially thrown if no glossary with the given glossary exists
      */
-    public function getGlossary(string $glossaryId) : \stdClass
+    public function getGlossary(string $glossaryId) : Glossary
     {
-        return $this->callApi('glossaries/'.$glossaryId, [], HttpClientInterface::METHOD_GET);
+        $data = $this->callApi('glossaries/'.$glossaryId, [], HttpClientInterface::METHOD_GET);
+
+        return new Glossary($data);
     }
 
     /**
@@ -460,10 +471,10 @@ class DeepLy
      * @param string   $to      The target language, a self::LANG_<code> constant
      * @param string   $from    The source language, a self::LANG_<code> constant
      * @param string[] $entries The entries of the glossary. Item key = original text, item value = translation
-     * @return \stdClass        Information about the glossary
+     * @return Glossary         Information about the glossary
      * @throws CallException
      */
-    public function createGlossary(string $name, string $to, string $from, array $entries) : \stdClass
+    public function createGlossary(string $name, string $to, string $from, array $entries) : Glossary
     {
         // The API expects the entries in a "tab seperated" string format, so lets build that string
         $entriesEncoded = '';
@@ -484,7 +495,9 @@ class DeepLy
             'entries_format' => 'tsv', // Note: currently 'tsv' is the only available format
         ];
 
-        return $this->callApi('glossaries', $params);
+        $data = $this->callApi('glossaries', $params);
+
+        return new Glossary($data);
     }
 
     /**
@@ -533,7 +546,7 @@ class DeepLy
      * @param string      $to        The target language, a self::LANG_<code> constant
      * @param string|null $from      The source language, a self::LANG_<code> constant
      * @param string      $formality Set whether the translated text should lean towards formal/informal language
-     * @return \stdClass             Properties: documentId and documentKey
+     * @return DocumentHandle        Properties: documentId and documentKey
      * @throws CallException
      */
     public function uploadDocument(
@@ -541,7 +554,7 @@ class DeepLy
         string $to,
         ?string $from = self::LANG_AUTO,
         string $formality = self::FORMALITY_DEFAULT
-    ) : \stdClass
+    ) : DocumentHandle
     {
         $params = [
              'target_lang' => $to
@@ -561,13 +574,9 @@ class DeepLy
             $params['source_lang'] = $from;
         }
 
-        $meta = $this->callApi('document', $params, HttpClientInterface::METHOD_POST, $filename);
+        $data = $this->callApi('document', $params, HttpClientInterface::METHOD_POST, $filename);
 
-        $newMeta = new \stdClass();
-        $newMeta->documentId = $meta->document_id;
-        $newMeta->documentKey = $meta->document_key;
-
-        return $newMeta;
+        return new DocumentHandle($data);
     }
 
     /**
@@ -575,19 +584,14 @@ class DeepLy
      *
      * @param string $documentId  The unique identifier of the document
      * @param string $documentKey The document encryption key that was sent to the client after uploading the document
-     * @return \stdClass          Properties: document_id, status, seconds_remaining, billed_characters
+     * @return DocumentState      Properties: documentId, status, secondsRemaining, billedCharacters
      * @throws CallException
      */
-    public function getDocumentState(string $documentId, string $documentKey) : \stdClass
+    public function getDocumentState(string $documentId, string $documentKey) : DocumentState
     {
-        $meta =  $this->callApi('document/'.$documentId, ['document_key' => $documentKey]);
+        $data = $this->callApi('document/'.$documentId, ['document_key' => $documentKey]);
 
-        // Ensure property always exists
-        if (! isset($meta->seconds_remaining)) {
-            $meta->seconds_remaining = null;
-        }
-
-        return $meta;
+        return new DocumentState($data);
     }
 
     /**
@@ -620,7 +624,7 @@ class DeepLy
     /**
      * Returns API usage information
      *
-     * @return \stdClass Properties:
+     * @return Usage Properties:
      *                   characterCount = characters translated so far in the current billing period
      *                   characterLimit = current maximum number of characters that can be translated per billing period
      *                   characterQuota = usage (0-1 / null)
@@ -631,23 +635,11 @@ class DeepLy
      *                   teamDocumentLimit = max number of docs that can be translated by the team per billing period
      *                   teamDocumentQuota = usage (0-1 / null)
      */
-    public function usage(): \stdClass
+    public function usage(): Usage
     {
-        $usage = $this->callApi('usage');
+        $data = $this->callApi('usage');
 
-        $usage->characterCount = $usage->character_count ?? null;
-        $usage->characterLimit = $usage->character_limit ?? null;
-        $usage->documentCount = $usage->document_count ?? null;
-        $usage->documentLimit = $usage->document_limit ?? null;
-        $usage->teamDocumentCount = $usage->team_document_count ?? null;
-        $usage->teamDocumentLimit = $usage->team_document_limit ?? null;
-
-        // Calculate percentages
-        $usage->characterQuota = $usage->characterLimit !== null ? ($usage->characterCount / $usage->characterLimit) : null;
-        $usage->documentQuota = $usage->documentLimit !== null ? ($usage->documentCount / $usage->documentLimit) : null;
-        $usage->teamDocumentQuota = $usage->teamDocumentLimit !== null ? ($usage->teamDocumentCount / $usage->teamDocumentLimit) : null;
-
-        return $usage;
+        return new Usage($data);
     }
 
     /**

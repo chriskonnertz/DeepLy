@@ -93,7 +93,7 @@
                         $glossaries = $deepLy->getGlossaries();
 
                         if (count($glossaries) > 0) {
-                            $glossary = $deepLy->getGlossary($glossaries[count($glossaries) - 1]->glossary_id);
+                            $glossary = $deepLy->getGlossary($glossaries[count($glossaries) - 1]->glossaryId);
                             echo '<div class="success">Glossary: <pre>';
                             print_r($glossary);
                             echo '</pre></div>';
@@ -112,7 +112,7 @@
                         $glossaries = $deepLy->getGlossaries();
 
                         if (count($glossaries) > 0) {
-                            $entries = $deepLy->getGlossaryEntries($glossaries[count($glossaries) - 1]->glossary_id);
+                            $entries = $deepLy->getGlossaryEntries($glossaries[count($glossaries) - 1]->glossaryId);
                             echo '<div class="success">Glossary Entries: <pre>';
                             print_r($entries);
                             echo '</pre></div>';
@@ -150,8 +150,8 @@
                                 }
                             }
                             if ($candidate) {
-                                $deepLy->deleteGlossary($candidate->glossary_id);
-                                echo '<div class="success">Glossary '.$candidate->glossary_id.' deleted!</div>';
+                                $deepLy->deleteGlossary($candidate->glossaryId);
+                                echo '<div class="success">Glossary '.$candidate->glossaryId.' deleted!</div>';
                             } else {
                                 echo '<div class="error">No test glossaries found!
                                         Click on the create button to create a test glossary, then try again!</div>';

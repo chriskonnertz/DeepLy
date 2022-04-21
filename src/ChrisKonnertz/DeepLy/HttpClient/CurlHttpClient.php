@@ -31,16 +31,16 @@ class CurlHttpClient implements HttpClientInterface
     /**
      * Proxy IP (and port): '123.123.123.133:8888'
      *
-     * @var string
+     * @var string|null
      */
-    private string $proxyIp;
+    private string|null $proxyIp = null;
 
     /**
      * Proxy credentials: 'user:password'
      *
-     * @var string
+     * @var string|null
      */
-    private string $proxyCredentials;
+    private string|null $proxyCredentials;
 
     /**
      * CurlHttpClient constructor.
