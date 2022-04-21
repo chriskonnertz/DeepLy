@@ -6,6 +6,7 @@ Differences to DeepLy version 1.x are:
 - Texts can no longer be split into sentences, as the API does not seem to support this
 - `proposeTranslations()` method has been removed
 - Guzzle implementation removed (you can still write your own though)
+- `HttpClientInterface` has been modified
 - JSON RPC protocol support has been removed
 - All the bag classes have been removed
 - No longer uses the unofficial API, but uses official v2 API

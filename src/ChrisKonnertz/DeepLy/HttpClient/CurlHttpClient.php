@@ -29,6 +29,20 @@ class CurlHttpClient implements HttpClientInterface
     private bool $logging;
 
     /**
+     * Proxy IP (and port): '123.123.123.133:8888'
+     *
+     * @var string
+     */
+    private string $proxyIp;
+
+    /**
+     * Proxy credentials: 'user:password'
+     *
+     * @var string
+     */
+    private string $proxyCredentials;
+
+    /**
      * CurlHttpClient constructor.
      *
      * @param bool $logging If true, log cURL request to a logfile (self:: LOGFILE_NAME)
@@ -77,6 +91,13 @@ class CurlHttpClient implements HttpClientInterface
         curl_setopt($curl, CURLOPT_POSTFIELDS, $filename ? $payload : http_build_query($payload));
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, $this->sslVerifyPeer);
+
+        if ($this->proxyIp) {
+            curl_setopt($curl, CURLOPT_PROXY, $this->proxyIp);
+            if ($this->proxyCredentials) {
+                curl_setopt($curl, CURLOPT_PROXYUSERPWD, $this->proxyCredentials);
+            }
+        }
 
         // Set API key via header
         curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
@@ -186,6 +207,18 @@ class CurlHttpClient implements HttpClientInterface
     public function setSslVerifyPeer(bool $sslVerifyPeer)
     {
         $this->sslVerifyPeer = $sslVerifyPeer;
+    }
+
+    /**
+     * Set up a proxy to be used by cURL in all requests
+     *
+     * @param string $ip          Proxy IP (and port): '123.123.123.133:8888'
+     * @param string $credentials Proxy credentials: 'user:password'
+     */
+    public function setProxy(string $ip, string $credentials = '')
+    {
+        $this->proxyIp = $ip;
+        $this->proxyCredentials = $credentials;
     }
 
     /**

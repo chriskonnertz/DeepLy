@@ -154,9 +154,9 @@ stdClass Object
   [documentKey] => 39FF8B10D20621096F23BF96CC103E12074727007C62963CF49AE8A9965D7695
 )
 ```
-> Note: The maximum upload limit for any document is 10 MB and 1.000.000 characters.
+> 💡 The maximum upload limit for any document is 10 MB and 1.000.000 characters.
 > 
-> ATTENTION: Every file upload is at least billed with 50.000 characters!
+> ⚡ Every file upload is at least billed with 50.000 characters!
 
 The second step is to wait for the DeepL.com API to finish processing (translating) the document.
 You can check the state:
@@ -178,7 +178,7 @@ stdClass Object
 In this case the document has been processed. 
 This is indicated by "status" being "done" and "seconds_remaining" being *null*.
 
-> The document life cycle is: queued ➜ translating ➜ done
+> 💡The document life cycle is: queued ➜ translating ➜ done
 
 The third step is to download the document:
 ```php
@@ -190,7 +190,7 @@ If you do not want to store the file, do:
 $contents = $deepLy->downloadDocument($documentId, $documentKey);
 ```
 
-> ATTENTION: A document can be downloaded only once!
+> ⚡ A document can be downloaded only once!
 
 ## Usage Statistic
 
@@ -229,6 +229,8 @@ to inject it.
 > [snippets.webaware.com.au/../](https://snippets.webaware.com.au/howto/stop-turning-off-curlopt_ssl_verifypeer-and-fix-your-php-config/)
 >
 > If it does not help try: `$deepLy->getHttpClient()->setSslVerifyPeer(false)`
+
+> 💡 You can set up a proxy with: `$deepLy->getHttpClient()->setProxy('ip:port', 'user:password')`
 
 ## Differences to V1
 

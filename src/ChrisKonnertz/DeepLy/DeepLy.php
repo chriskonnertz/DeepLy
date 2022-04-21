@@ -770,4 +770,25 @@ class DeepLy
         return str_ends_with($this->apiKey, ':fx');
     }
 
+    /**
+     * Getter for the HTTP client object
+     *
+     * @return HttpClientInterface
+     */
+    public function getHttpClient() : HttpClientInterface
+    {
+        return $this->httpClient;
+    }
+
+    /**
+     * Setter for the HTTP client object. This allows you to use another HTTP client
+     * than the default cURL based HTTP client.
+     *
+     * @param HttpClientInterface $httpClient
+     */
+    public function setHttpClient(HttpClientInterface $httpClient)
+    {
+        $this->httpClient = $httpClient;
+    }
+
 }
