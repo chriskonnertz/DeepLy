@@ -415,7 +415,6 @@ class DeepLy
      * Tries to detect the language of a text and returns its language code.
      * The language of the text has to be one of the supported languages or the result will be incorrect.
      * This method might throw an exception, so you should wrap it in a try-catch-block.
-     * Especially it will throw an exception if the API was not able to auto-detect the language.
      * ATTENTION: This request increases the usage statistics of your account!
      *
      * @param string       $text The text you want to analyze

@@ -8,7 +8,7 @@ if (!class_exists('\PHPUnit\Framework\TestCase')) {
 
 /**
  * Class MainClassTest for tests with PHPUnit.
- * The focus is here on the main class of this library, ChrisKonnertz\DeePly.
+ * The focus is here on the main class of this library, the DeepLy class.
  */
 class MainClassTest extends \PHPUnit\Framework\TestCase
 {
@@ -51,30 +51,20 @@ class MainClassTest extends \PHPUnit\Framework\TestCase
         // We assume that the ping will be successful.
         // If the API is not reachable this will not be the case, of course,
         // and the test will fail.
-        $deepLy->ping();
+        $duration = $deepLy->ping();
+
+        $this->assertIsFloat($duration);
     }
 
     public function testDetectLanguage()
     {
         $deepLy = $this->getInstance();
 
-        $languageCode = $deepLy->detectLanguage('Hello world!');
+        $languageCode = $deepLy->detectLanguage('Hello world! Where do you want to go today?');
         $this->assertEquals('EN', $languageCode);
 
-        $languageCode = $deepLy->detectLanguage('Hallo Welt!');
+        $languageCode = $deepLy->detectLanguage('Hallo Welt! Wohin möchtest du heute gehen?');
         $this->assertEquals('DE', $languageCode);
-    }
-
-    /**
-     * @expectedException     \ChrisKonnertz\DeepLy\ResponseBag\BagException
-     * @expectedExceptionCode 130
-     */
-    public function testExceptionDetectionFailed()
-    {
-        $deepLy = $this->getInstance();
-
-        // DeepL cannot detected the language for this "text" so an exception has to be thrown
-        $deepLy->detectLanguage('a');
     }
 
     public function testTranslation()
@@ -93,17 +83,6 @@ class MainClassTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals('hello', $translatedText);
     }
 
-    public function testTranslateSentences()
-    {
-        $deepLy = $this->getInstance();
-
-        $sentences = ['Hello world!', 'What a wonderful world.'];
-        $sentences = $deepLy->translateSentences($sentences, 'DE', 'EN');
-
-        $expectedSentences = ['Hallo Welt!', 'Was für eine wunderbare Welt.'];
-        $this->assertEquals($expectedSentences, $sentences);
-    }
-
     public function testTranslationWithLineBreaks()
     {
         $deepLy = $this->getInstance();
@@ -112,8 +91,8 @@ class MainClassTest extends \PHPUnit\Framework\TestCase
             'Ich habe viel Spaß beim Programmieren.';
         $translated = $deepLy->translate($text, 'EN', 'DE');
 
-        $expectedTranslated = 'Hello world. How are you, man?'.PHP_EOL.PHP_EOL.
-            'I have a lot of fun programming.';
+        $expectedTranslated = 'Hello world. How are you?'.PHP_EOL.PHP_EOL.
+            'I\'m having a lot of fun programming.';
         $this->assertEquals($expectedTranslated, $translated);
     }
 
