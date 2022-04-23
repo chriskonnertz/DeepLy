@@ -1,5 +1,6 @@
 <?php
 
+// This script reads a file and send it to the client (browser) to be downloaded.
 // Inspired by: https://linuxhint.com/download_file_php/
 
 $filename = 'test_document_translated.pdf';

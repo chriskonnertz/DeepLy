@@ -20,7 +20,9 @@ class MainClassTest extends \PHPUnit\Framework\TestCase
      */
     protected function getInstance()
     {
-        return new ChrisKonnertz\DeepLy\DeepLy();
+        $apiKey = getenv('DEEPL_API_KEY');
+
+        return new ChrisKonnertz\DeepLy\DeepLy($apiKey);
     }
 
     public function testInstancing()
@@ -28,18 +30,6 @@ class MainClassTest extends \PHPUnit\Framework\TestCase
         $deepLy = $this->getInstance();
 
         $this->assertInstanceOf(ChrisKonnertz\DeepLy\DeepLy::class, $deepLy);
-    }
-
-    public function testGetAndSetProtocol()
-    {
-        $deepLy = $this->getInstance();
-
-        $protocolOne = $deepLy->getProtocol();
-        $this->assertInstanceOf(ChrisKonnertz\DeepLy\Protocol\ProtocolInterface::class, $protocolOne);
-
-        $deepLy->setProtocol($protocolOne);
-        $protocolTwo = $deepLy->getProtocol();
-        $this->assertEquals($protocolOne, $protocolTwo);
     }
 
     public function testGetAndSetHttpClient()
@@ -62,21 +52,6 @@ class MainClassTest extends \PHPUnit\Framework\TestCase
         // If the API is not reachable this will not be the case, of course,
         // and the test will fail.
         $deepLy->ping();
-    }
-
-    public function testSplitText()
-    {
-        $deepLy = $this->getInstance();
-
-        $sentencesBag = $deepLy->requestSplitText('Hello world! What a wonderful world.', 'EN');
-
-        $lang = $sentencesBag->getLanguage();
-        $this->assertEquals('EN', $lang);
-
-        $sentences = $sentencesBag->getAllSentences();
-
-        $expectedSentences = ['Hello world!', 'What a wonderful world.'];
-        $this->assertEquals($expectedSentences, $sentences);
     }
 
     public function testDetectLanguage()
@@ -108,15 +83,6 @@ class MainClassTest extends \PHPUnit\Framework\TestCase
 
         $translatedText = $deepLy->translate('Hello world!', 'DE', 'EN');
         $this->assertEquals('Hallo Welt!', $translatedText);
-
-        $translationBag = $deepLy->getTranslationBag();
-        $this->assertInstanceOf(ChrisKonnertz\DeepLy\ResponseBag\TranslationBag::class, $translationBag);
-
-        $translatedSentences = $translationBag->getTranslatedSentences();
-        $this->assertNotNull($translatedSentences);
-
-        $translationAlternatives = $translationBag->getTranslationAlternatives();
-        $this->assertNotNull($translationAlternatives);
     }
 
     public function testItalianTranslation()
@@ -125,40 +91,6 @@ class MainClassTest extends \PHPUnit\Framework\TestCase
 
         $translatedText = $deepLy->translate('ciao', 'EN', 'IT');
         $this->assertEquals('hello', $translatedText);
-    }
-
-    public function testProposeTranslations()
-    {
-        $deepLy = $this->getInstance();
-
-        // Sometimes - for an unknown reason - the API does not return the expected proposals.
-        // We simply repeat the request until we get the expected result or until a specific limit
-        for ($i = 0; $i < 5; $i++) {
-            $proposals = $deepLy->proposeTranslations('The old man an the sea', 'DE', 'EN');
-
-            if (sizeof($proposals) == 4) {
-                break;
-            }
-        }
-
-        // Sometimes - for an unknown reason - the API does not return the expected proposals.
-        // We will just ignore this rare case.
-        if ($proposals == ['Der alte Mann am Meer']) {
-            return;
-        }
-
-        // We assume that the result will look like this.
-        // If the result will change for some reason,
-        // of course the test will fail.
-        // Unfortunately the result tends to alter.
-        $expectedProposals = [           
-            'Der alte Mann am Meer',
-            'Der alte Mann auf dem Meer',
-            'Der alte Mann an der See',
-            'Der Alte am Meer',
-        ];
-
-        $this->assertEquals($expectedProposals, $proposals);
     }
 
     public function testTranslateSentences()
@@ -183,14 +115,6 @@ class MainClassTest extends \PHPUnit\Framework\TestCase
         $expectedTranslated = 'Hello world. How are you, man?'.PHP_EOL.PHP_EOL.
             'I have a lot of fun programming.';
         $this->assertEquals($expectedTranslated, $translated);
-    }
-
-    public function testGetTranslationBag()
-    {
-        $deepLy = $this->getInstance();
-
-        $translationBag = $deepLy->getTranslationBag();
-        $this->assertNull($translationBag);
     }
 
     public function testGetLangCodes()
@@ -235,34 +159,6 @@ class MainClassTest extends \PHPUnit\Framework\TestCase
         $this->assertSame('EN', $langCode);
         $langCode = $deepLy->getLangCodeByName('German');
         $this->assertSame('DE', $langCode);
-    }
-
-    public function testGuzzle()
-    {
-        $deepLy = $this->getInstance();
-
-        $protocol = $deepLy->getProtocol();
-        $guzzleHttpClient = new \ChrisKonnertz\DeepLy\HttpClient\GuzzleHttpClient($protocol);
-        $deepLy->setHttpClient($guzzleHttpClient);
-
-        $httpClient = $deepLy->getHttpClient();
-        $this->assertEquals($guzzleHttpClient, $httpClient);
-
-        $guzzleOne = $guzzleHttpClient->getGuzzle();
-        $this->assertInstanceOf(\GuzzleHttp\Client::class, $guzzleOne);
-
-        $guzzleHttpClient->setGuzzle($guzzleOne);
-        $guzzleTwo = $guzzleHttpClient->getGuzzle();
-        $this->assertEquals($guzzleOne, $guzzleTwo);
-
-        // We assume that the ping will be successful.
-        // If the API is not reachable this will not be the case, of course,
-        // and the test will fail.
-        $deepLy->ping();
-
-        $translatedText = $deepLy->translate('Hello world!', 'DE', 'EN');
-
-        $this->assertEquals('Hallo Welt!', $translatedText);
     }
 
 }

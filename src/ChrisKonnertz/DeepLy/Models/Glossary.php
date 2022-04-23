@@ -7,7 +7,7 @@ use DateTime;
 class Glossary extends Model
 {
 
-    const KEY_MAPPINGS = ['source_lang' => 'from', 'target_lang' => 'to', 'creation_time' => 'creationTimeIso'];
+    const PROPERTY_MAPPINGS = ['source_lang' => 'from', 'target_lang' => 'to', 'creation_time' => 'creationTimeIso'];
 
     /**
      * The unique identifier of the glossary
@@ -23,9 +23,9 @@ class Glossary extends Model
 
     /**
      * The state of the glossary
-     * @var int
+     * @var bool
      */
-    public int $ready = 0;
+    public bool $ready = false;
 
     /**
      * The source language

@@ -7,8 +7,11 @@ namespace ChrisKonnertz\DeepLy\HttpClient;
  */
 class CurlHttpClient implements HttpClientInterface
 {
-
-    const LOGFILE_NAME = 'curl_log.txt';
+    /**
+     * Default logfile name, will be placed in the dir where this class lives.
+     * You can specify a different path though.
+     */
+    const DEFAULT_LOGFILE_NAME = 'curl_log.txt';
 
     /**
      * Set this to false if you do not want cURL to
@@ -21,6 +24,20 @@ class CurlHttpClient implements HttpClientInterface
     protected bool $sslVerifyPeer = true;
 
     /**
+     * Proxy IP (and port): "123.123.123.133:8888"
+     *
+     * @var string|null
+     */
+    private string|null $proxyIp = null;
+
+    /**
+     * Proxy credentials: "user:password"
+     *
+     * @var string|null
+     */
+    private string|null $proxyCredentials;
+
+    /**
      * If true, log cURL request to a logfile (self:: LOGFILE_NAME).
      * To get even more info about the actual request, send it to requestcatcher.com!
      *
@@ -29,18 +46,11 @@ class CurlHttpClient implements HttpClientInterface
     private bool $logging;
 
     /**
-     * Proxy IP (and port): '123.123.123.133:8888'
+     * Specifies the filename of the logfile
      *
      * @var string|null
      */
-    private string|null $proxyIp = null;
-
-    /**
-     * Proxy credentials: 'user:password'
-     *
-     * @var string|null
-     */
-    private string|null $proxyCredentials;
+    protected string|null $logFilename = null;
 
     /**
      * CurlHttpClient constructor.
@@ -80,6 +90,7 @@ class CurlHttpClient implements HttpClientInterface
 
         $headers = ['Authorization: DeepL-Auth-Key '.$apiKey];
 
+        // If a filename is provided, send the file
         if ($filename) {
             $payload['file'] = curl_file_create($filename);
             curl_setopt($curl, CURLOPT_POST, true);
@@ -92,6 +103,7 @@ class CurlHttpClient implements HttpClientInterface
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, $this->sslVerifyPeer);
 
+        // Set up proxy
         if ($this->proxyIp) {
             curl_setopt($curl, CURLOPT_PROXY, $this->proxyIp);
             if ($this->proxyCredentials) {
@@ -104,7 +116,8 @@ class CurlHttpClient implements HttpClientInterface
 
         // Log cURL request to a logfile
         if ($this->logging) {
-            $logfile = fopen(__DIR__.'/'.self::LOGFILE_NAME, 'w');
+            $logfileName = $this->logFilename ?? __DIR__.'/'.self::DEFAULT_LOGFILE_NAME;
+            $logfile = fopen($logfileName, 'w');
             curl_setopt($curl, CURLOPT_VERBOSE, 1);
             curl_setopt($curl, CURLOPT_STDERR, $logfile);
         }
@@ -112,7 +125,8 @@ class CurlHttpClient implements HttpClientInterface
         $rawResponseData = curl_exec($curl);
 
         $this->handleError($curl, $rawResponseData);
-        
+
+        // Close files
         curl_close($curl);
         if ($this->logging) {
             fclose($logfile);
@@ -210,12 +224,13 @@ class CurlHttpClient implements HttpClientInterface
     }
 
     /**
-     * Set up a proxy to be used by cURL in all requests
+     * Set up a proxy to be used by cURL in all requests.
+     * To reset the proxy settings to their defaults, simply call this method without any arguments.
      *
-     * @param string $ip          Proxy IP (and port): '123.123.123.133:8888'
-     * @param string $credentials Proxy credentials: 'user:password'
+     * @param string|null $ip          Proxy IP (and port): "123.123.123.133:8888"
+     * @param string|null $credentials Proxy credentials: "user:password"
      */
-    public function setProxy(string $ip, string $credentials = '')
+    public function setProxy(string $ip = null, string $credentials = null)
     {
         $this->proxyIp = $ip;
         $this->proxyCredentials = $credentials;
@@ -234,12 +249,14 @@ class CurlHttpClient implements HttpClientInterface
     /**
      * Enable or disable logging to a logfile (self::LOGFILE_NAME)
      *
-     * @param bool $enable
+     * @param bool        $enabled  Enable or disable logging?
+     * @param string|null $filename Set the filename of the logfile
      * @return void
      */
-    public function setLogging(bool $enable)
+    public function setLogging(bool $enabled, string $filename = null)
     {
-        $this->logging = $enable;
+        $this->logging = $enabled;
+        $this->logFilename = $filename;
     }
 
 }

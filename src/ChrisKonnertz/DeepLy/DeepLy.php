@@ -655,6 +655,20 @@ class DeepLy
     }
 
     /**
+     * Decides if a language (code) is supported by DeepL(y).
+     * Note that 'auto' is not a valid value in this context
+     * except you explicitly set the $allowAuto param to true
+     *
+     * @param string $langCode  The language code, for example 'EN'
+     * @param bool   $allowAuto Optional: If false, 'auto' is not a valid language
+     * @return bool
+     */
+    public function supportsLangCode(string $langCode, bool $allowAuto = false) : bool
+    {
+        return in_array($langCode, $this->getLangCodes($allowAuto));
+    }
+
+    /**
      * Getter for the array with all supported language codes
      *
      * @param bool $withAuto Optional: If true, the 'auto' code will be in the returned array

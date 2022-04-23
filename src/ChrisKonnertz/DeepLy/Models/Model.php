@@ -9,7 +9,11 @@ namespace ChrisKonnertz\DeepLy\Models;
 abstract class Model
 {
 
-    const KEY_MAPPINGS = [];
+    /**
+     * Maps property names from the original API result to something else.
+     * Override this in the inheriting class.
+     */
+    const PROPERTY_MAPPINGS = [];
 
     /**
      * @param \stdClass $data Data values that should be stored in the class properties
@@ -29,8 +33,8 @@ abstract class Model
     {
         foreach ($data as $key => $value) {
             // Rename keys
-            if (isset(static::KEY_MAPPINGS[$key])) {
-                $key = static::KEY_MAPPINGS[$key];
+            if (isset(static::PROPERTY_MAPPINGS[$key])) {
+                $key = static::PROPERTY_MAPPINGS[$key];
             }
 
             // Convert to camel case
