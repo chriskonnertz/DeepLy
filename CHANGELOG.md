@@ -1,4 +1,4 @@
-Version 2.0-beta
+Version 2.0
 ===
 
 Differences to DeepLy version 1.x are:

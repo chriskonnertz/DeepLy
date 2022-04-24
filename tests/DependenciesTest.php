@@ -24,6 +24,10 @@ class DependenciesTest extends \PHPUnit\Framework\TestCase
     {
         $apiKey = getenv('DEEPL_API_KEY');
 
+        if (! $apiKey) {
+            die("No API key set. Please set it via environment var: DEEPL_API_KEY\n");
+        }
+
         return new ChrisKonnertz\DeepLy\DeepLy($apiKey);
     }
 
