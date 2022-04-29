@@ -74,7 +74,7 @@ only return the code of _one_ language. It will throw an exception if it is unab
 This will rarely happen, it is more likely that the API will return a "false positive": It will rather detect the wrong
 language than no language at all.
 
-> 💡 An interactive PHP demo script is included. It is located at [demos/demo_glossaries.demo_detect](demos/demo_detect.php).
+> 💡 An interactive PHP demo script is included. It is located at [demos/demo_detect](demos/demo_detect.php).
 
 ## Supported Languages
 
@@ -228,6 +228,8 @@ $contents = $deepLy->downloadDocument($documentId, $documentKey);
 ```
 
 > ⚡ A document can be downloaded only once!
+
+> 💡 An interactive PHP demo script is included. It is located at [demos/demo_documents.php](demos/demo_documents.php).
 
 ## Usage Statistic
 
