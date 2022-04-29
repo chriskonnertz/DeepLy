@@ -675,9 +675,6 @@ class DeepLy
      */
     public function getLangCodes(bool $withAuto = true): array
     {
-        if (! is_bool($withAuto)) {
-            throw new \InvalidArgumentException('The $withAuto argument has to be boolean');
-        }
 
         if ($withAuto) {
             return self::LANG_CODES;
