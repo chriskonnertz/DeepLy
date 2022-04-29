@@ -96,7 +96,7 @@ DeepL(y) supports these languages:
 | PT   | French        |     | SV    | Swedish       |
 | HU   | Hungarian     |     | ZH    | Chinese       |
 
-> 💡 Note that auto-detection is only possible for the source language.
+> 💡 Note that only the source language can be auto-detected.
 
 ## Glossaries
 
