@@ -217,6 +217,7 @@ In this case the document has been processed.
 This is indicated by "status" being "done" and "seconds_remaining" being *null*.
 
 > 💡 The document life cycle is: *queued* ➜ *translating* ➜ *done* (or *error*)
+> 
 > There are constants that you can use to check these values: `DocumentState\STATUS_DONE` etc.
 
 The third step is to download the document:
