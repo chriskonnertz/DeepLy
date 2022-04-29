@@ -177,7 +177,7 @@ $deepLy->deleteGlossary('your-glossary-id');
 
 ## Documents
 
-Translating documents consists of three steps. The first step is to upload a document.
+Translating documents consists of three steps. The first step is to upload a document:
 ```php
 $filename = __DIR__.'/test_document_original.pdf';
 $result = $deepLy->uploadDocument($filename, 'DE');
@@ -220,7 +220,6 @@ This is indicated by "status" being "done" and "seconds_remaining" being *null*.
 
 The third step is to download the document:
 ```php
-$filename = __DIR__.'/test_document_translated.pdf';
 $deepLy->downloadDocument($documentId, $documentKey, 'test_document_translated.pdf');
 ```
 If you do not want to store the file, do:
