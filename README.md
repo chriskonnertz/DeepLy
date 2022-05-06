@@ -273,6 +273,18 @@ to inject it.
 
 > 💡 You can set up a proxy with: `$deepLy->getHttpClient()->setProxy('ip:port', 'user:password')`
 
+
+## Tests
+
+Export your API key:
+```
+export DEEPL_API_KEY=xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
+```
+Run `composer install` from the DeepLy directory, then run the tests:
+```
+./vendor/phpunit/phpunit/phpunit
+```
+
 ## Differences to V1
 
 To upgrade from v1 to v2, make sure you specify the API key when instantiating the DeepLy object.

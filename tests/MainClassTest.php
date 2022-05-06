@@ -36,16 +36,69 @@ class MainClassTest extends \PHPUnit\Framework\TestCase
         $this->assertInstanceOf(ChrisKonnertz\DeepLy\DeepLy::class, $deepLy);
     }
 
-    public function testGetAndSetHttpClient()
+    public function testGlossaries()
     {
         $deepLy = $this->getInstance();
 
-        $httpClientOne = $deepLy->getHttpClient();
-        $this->assertInstanceOf(ChrisKonnertz\DeepLy\HttpClient\HttpClientInterface::class, $httpClientOne);
+        $glossaries = $deepLy->getGlossaries();
+        $oldCount = count($glossaries);
 
-        $deepLy->setHttpClient($httpClientOne);
-        $httpClientTwo = $deepLy->getHttpClient();
-        $this->assertEquals($httpClientOne, $httpClientTwo);
+        $glossary = $deepLy->createGlossary('Test', 'en', 'de', ['Test DE' => 'test EN']);
+
+        $glossaries = $deepLy->getGlossaries();
+        $this->assertCount($oldCount + 1, $glossaries);
+
+        $glossaryData = $deepLy->getGlossary($glossary->glossaryId);
+        $this->assertEquals($glossary->glossaryId, $glossaryData->glossaryId);
+
+        $entries = $deepLy->getGlossaryEntries($glossary->glossaryId);
+        $this->assertCount(1, $entries);
+
+        $deepLy->deleteGlossary($glossary->glossaryId);
+    }
+
+    public function testDocuments()
+    {
+        $deepLy = $this->getInstance();
+
+        $sourceFilename = __DIR__.'/../demos/test_document_original.pdf';
+        $docHandle = $deepLy->uploadDocument($sourceFilename, 'de', 'en', \ChrisKonnertz\DeepLy\DeepLy::FORMALITY_MORE);
+
+        $docState = $deepLy->getDocumentState($docHandle->documentId, $docHandle->documentKey);
+        $this->assertEquals($docHandle->documentId, $docState->documentId);
+
+        $startedAt = time();
+        while (true) {
+            $docState = $deepLy->getDocumentState($docHandle->documentId, $docHandle->documentKey);
+            if ($docState->status === \ChrisKonnertz\DeepLy\Models\DocumentState::STATUS_DONE ||
+                $docState->status === \ChrisKonnertz\DeepLy\Models\DocumentState::STATUS_ERROR) {
+                break;
+            }
+
+            if (time() - $startedAt > 30000) {
+                break;
+            } else {
+                usleep(3000);
+                echo '•';
+            }
+        }
+
+        $this->assertEquals(\ChrisKonnertz\DeepLy\Models\DocumentState::STATUS_DONE, $docState->status);
+
+        $targetFilename = sys_get_temp_dir().'/deeply_test_download_'.time();
+        $deepLy->downloadDocument($docHandle->documentId, $docHandle->documentKey, $targetFilename);
+        $this->assertFileExists($targetFilename);
+
+        unlink($targetFilename);
+    }
+
+    public function testUsage()
+    {
+        $deepLy = $this->getInstance();
+
+        $usage = $deepLy->usage();
+
+        $this->assertNotNull($usage);
     }
 
     public function testPing()
@@ -143,5 +196,62 @@ class MainClassTest extends \PHPUnit\Framework\TestCase
         $langCode = $deepLy->getLangCodeByName('German');
         $this->assertSame('DE', $langCode);
     }
+
+    public function testSetSettings()
+    {
+        $deepLy = $this->getInstance();
+
+        $instance = $deepLy->setSettings();
+
+        $this->assertTrue($instance instanceof \ChrisKonnertz\DeepLy\DeepLy);
+
+        $deepLy->setSettings(
+            1,
+            \ChrisKonnertz\DeepLy\DeepLy::TAG_HANDLING_HTML,
+            ['noSplittingTag'],
+            false,
+            ['splittingTag'],
+            ['ignoreTag']
+        );
+    }
+
+    public function testGetApiKeyType()
+    {
+        $deepLy = $this->getInstance();
+
+        $type = $deepLy->getApiKeyType();
+
+        // Not doing a real check here but in the setApiKey() test
+        $this->assertIsBool($type);
+    }
+
+    public function testSetApiKeyType()
+    {
+        $deepLy = $this->getInstance();
+
+        $deepLy->setApiKey('test');
+        $type = $deepLy->getApiKeyType();
+
+        $this->assertFalse($type);
+    }
+
+    public function testGetHttpClient()
+    {
+        $deepLy = $this->getInstance();
+
+        $client = $deepLy->getHttpClient();
+        $this->assertInstanceOf(ChrisKonnertz\DeepLy\HttpClient\HttpClientInterface::class, $client);
+    }
+
+    public function testSetHttpClient()
+    {
+        $deepLy = $this->getInstance();
+        $client = new \ChrisKonnertz\DeepLy\HttpClient\CurlHttpClient();
+
+        $deepLy->setHttpClient($client);
+
+        $this->assertEquals($client, $deepLy->getHttpClient());
+    }
+
 
 }
