@@ -9,7 +9,6 @@ use ChrisKonnertz\DeepLy\Models\DocumentHandle;
 use ChrisKonnertz\DeepLy\Models\DocumentState;
 use ChrisKonnertz\DeepLy\Models\Glossary;
 use ChrisKonnertz\DeepLy\Models\Usage;
-use JetBrains\PhpStorm\Pure;
 
 /**
  * This is the main class. Call its translate() method to translate text.
