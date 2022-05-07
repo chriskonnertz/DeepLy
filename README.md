@@ -1,3 +1,5 @@
+![alt text](https://i.imgur.com/8MSiY1F.png "DeepLy Logo")
+
 # DeepLy 2
 
 [![Build Status](https://img.shields.io/github/workflow/status/chriskonnertz/DeepLy/PHP%20Composer?style=flat-square)](https://github.com/chriskonnertz/DeepLy/actions)
