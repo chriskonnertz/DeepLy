@@ -143,7 +143,7 @@ class DeepLy
     /**
      * Current version number
      */
-    const VERSION = '2.0.0';
+    const VERSION = '2.0.1';
 
     /**
      * The DeepL.com API key.
