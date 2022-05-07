@@ -1,4 +1,4 @@
-![alt text](https://i.imgur.com/S5vFmm4.png "DeepLy Logo")
+![alt text](https://i.imgur.com/nWPtAKg.png "DeepLy Logo")
 
 # DeepLy 2
 
