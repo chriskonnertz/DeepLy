@@ -231,7 +231,7 @@ If you do not want to store the file, do:
 $contents = $deepLy->downloadDocument($documentId, $documentKey);
 ```
 
-> ⚡ A document can be downloaded only once!
+> ⚡ A document can only be downloaded once!
 
 > 💡 An interactive PHP demo script is included. It is located at [demos/demo_documents.php](demos/demo_documents.php).
 
