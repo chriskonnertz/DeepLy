@@ -112,8 +112,9 @@
                         $glossaries = $deepLy->getGlossaries();
 
                         if (count($glossaries) > 0) {
-                            $entries = $deepLy->getGlossaryEntries($glossaries[count($glossaries) - 1]->glossaryId);
-                            echo '<div class="success">Glossary Entries: <pre>';
+                            $id = $glossaries[count($glossaries) - 1]->glossaryId;
+                            $entries = $deepLy->getGlossaryEntries($id);
+                            echo '<div class="success">Glossary Entries of glossary ' . $id . ': <pre>';
                             print_r($entries);
                             echo '</pre></div>';
                         } else {
