@@ -13,6 +13,7 @@ Differences to DeepLy version 1.x are:
 - API key has been introduced
 - Updated API error handling, `CallException` now contains API HTTP error code
 - Glossary support has been introduced
+- Document support had been introduced
 - Usage method has been introduced
 - Support for new languages added
 - The `translateFile()` method is now deprecated, please use `translateTextFile()` instead!
