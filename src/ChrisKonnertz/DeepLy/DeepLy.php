@@ -44,6 +44,7 @@ class DeepLy
     const LANG_SK = 'SK'; // Slovak
     const LANG_SL = 'SL'; // Slovenian
     const LANG_SV = 'SV'; // Swedish
+    const LANG_UK = 'UK'; // Ukrainian
     const LANG_ZH = 'ZH'; // Chinese
 
     /**
@@ -74,7 +75,8 @@ class DeepLy
         self::LANG_RU,
         self::LANG_SK,
         self::LANG_SL,
-        self::LANG_SV,
+        self::LANG_SV,        
+        self::LANG_UK,
         self::LANG_ZH,
     ];
 
@@ -106,7 +108,8 @@ class DeepLy
         self::LANG_RU => 'Russian',
         self::LANG_SK => 'Slovak',
         self::LANG_SL => 'Slovenian',
-        self::LANG_SV => 'Swedish',
+        self::LANG_SV => 'Swedish',        
+        self::LANG_UK => 'Ukrainian',
         self::LANG_ZH => 'Chinese'
     ];
 
@@ -143,7 +146,7 @@ class DeepLy
     /**
      * Current version number
      */
-    const VERSION = '2.0.1';
+    const VERSION = '2.0.2';
 
     /**
      * The DeepL.com API key.
