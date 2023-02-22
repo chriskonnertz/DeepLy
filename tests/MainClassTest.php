@@ -223,7 +223,7 @@ class MainClassTest extends \PHPUnit\Framework\TestCase
             1
         );
 
-        $this->assertTrue($instance instanceof \ChrisKonnertz\DeepLy\DeepLy);
+        $this->assertTrue($deepLy instanceof \ChrisKonnertz\DeepLy\DeepLy);
 
         $deepLy->resetSettings();
     }
