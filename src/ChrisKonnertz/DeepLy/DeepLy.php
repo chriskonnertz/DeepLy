@@ -34,8 +34,10 @@ class DeepLy
     const LANG_HU = 'HU'; // Hungarian
     const LANG_IT = 'IT'; // Italian
     const LANG_JA = 'JA'; // Japanese
+    const LANG_LT = 'KO'; // Korean
     const LANG_LT = 'LT'; // Lithuanian
     const LANG_LV = 'LV'; // Latvian
+    const LANG_NB = 'NB'; // Norwegian (Bokmål)
     const LANG_NL = 'NL'; // Dutch
     const LANG_PL = 'PL'; // Polish
     const LANG_PT = 'PT'; // Portuguese
@@ -66,8 +68,10 @@ class DeepLy
         self::LANG_HU,
         self::LANG_IT,
         self::LANG_JA,
+        self::LANG_KO,
         self::LANG_LT,
         self::LANG_LV,
+        self::LANG_NB,
         self::LANG_NL,
         self::LANG_PL,
         self::LANG_PT,
@@ -99,8 +103,10 @@ class DeepLy
         self::LANG_HU => 'Hungarian',
         self::LANG_IT => 'Italian',
         self::LANG_JA => 'Japanese',
+        self::LANG_KO => 'Korean',
         self::LANG_LT => 'Lithuanian',
         self::LANG_LV => 'Latvian',
+        self::LANG_NB => 'Norwegian', // (Bokmål)  
         self::LANG_NL => 'Dutch',
         self::LANG_PL => 'Polish',
         self::LANG_PT => 'Portuguese',
@@ -146,7 +152,7 @@ class DeepLy
     /**
      * Current version number
      */
-    const VERSION = '2.0.2';
+    const VERSION = '2.1.0';
 
     /**
      * The DeepL.com API key.
@@ -371,24 +377,12 @@ class DeepLy
     }
 
     /**
-     * Translates a file that contains plain text (not a .docx or .pdf document!). The $from argument is optional.
-     * ATTENTION: The target language parameter is followed by the source language parameter!
-     * This method will throw an exception if reading the file or translating fails,
-     * so you should wrap it in a try-catch-block.
-     *
-     * @deprecated ⚠️ Deprecated method for compatibility to version 1. Will be removed in the future!
+     * @deprecated ⚠️ Method has been replaced!
      *             Please replace with:
      *                 $text = file_get_contents($filename);
      *                 $this->translate($text);
      *
-     * @param string      $filename         The name of the file you want to translate
-     * @param string      $to               Optional: The target language, a self::LANG_<code> constant
-     * @param string|null $from             Optional: The source language, a self::LANG_<code> constant
-     * @param int         $splitSentences   How should the translation engine split the text into sentences?
-     * @param string      $formality        Set whether the translated text should lean towards formal/informal language
-     * @param bool        $keepFormatting   How should the translation engine should respect the original formatting?
-     * @return string                       Returns the translated text or null if there is no translation
-     * @throws \Exception|CallException
+     * @throws \Exception
      */
     public function translateFile(
         string $filename,
@@ -399,19 +393,7 @@ class DeepLy
         bool $keepFormatting = false
     ): string
     {
-        if (! is_readable($filename)) {
-            throw new \InvalidArgumentException('Could not read file with the given filename');
-        }
-
-        $text = file_get_contents($filename);
-
-        if ($text === false) {
-            throw new \RuntimeException(
-                'Could not read file with the given filename. Does this file exist and do we have read permission?'
-            );
-        }
-
-        return $this->translate($text, $to, $from, $splitSentences, $formality, $keepFormatting);
+         throw new \Exception('This method is no longer supported.');
     }
 
     /**

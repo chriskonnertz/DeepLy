@@ -84,19 +84,20 @@ DeepL(y) supports these languages:
 
 | Code | Language      |     | Code  | Language      |
 |------|---------------|-----|-------|---------------|
-| auto | _Auto detect_ |     |       |               |
+| auto | _Auto detect_ |     | KO    | Korean        |
 | IT   | Italian       |     | JA    | Japanese      |
 | BG   | Bulgarian     |     | LT    | Lithuanian    |
 | CS   | Czech         |     | LV    | Latvian       |
-| DA   | Danish        |     | NL    | Dutch         |
-| DE   | German        |     | PL    | Polish        |
-| EL   | Greek         |     | PT    | Portuguese    |
-| EN   | English       |     | RO    | Romanian      |
-| ES   | Spanish       |     | RU    | Russian       |
-| ET   | Estonian      |     | SK    | Slovak        |
-| FI   | Finnish       |     | SL    | Slovenian     |
-| PT   | French        |     | SV    | Swedish       |
-| HU   | Hungarian     |     | ZH    | Chinese       |
+| DA   | Danish        |     | NB    | Norwegian     |
+| DE   | German        |     | NL    | Dutch         |
+| EL   | Greek         |     | PL    | Polish        |
+| EN   | English       |     | PT    | Portuguese    |
+| ES   | Spanish       |     | RO    | Romanian      |
+| ET   | Estonian      |     | RU    | Russian       |
+| FI   | Finnish       |     | SK    | Slovak        |
+| PT   | French        |     | SL    | Slovenian     |
+| HU   | Hungarian     |     | SV    | Swedish       |
+| JA   | Japanese      |     | ZH    | Chinese       |
 
 > 💡 Note that only the source language can be auto-detected.
 
