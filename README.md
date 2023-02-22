@@ -2,7 +2,7 @@
 
 # DeepLy 2
 
-[![Build Status](https://img.shields.io/github/workflow/status/chriskonnertz/DeepLy/PHP%20Composer?style=flat-square)](https://github.com/chriskonnertz/DeepLy/actions)
+[![Build Status](https://img.shields.io/github/actions/workflow/status/chriskonnertz/DeepLy/PHP%20Composer?style=flat-square)](https://github.com/chriskonnertz/DeepLy/actions)
 [![Version](https://img.shields.io/packagist/v/chriskonnertz/DeepLy.svg?style=flat-square)](https://packagist.org/packages/chriskonnertz/deeply)
 [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg?style=flat-square)](https://raw.githubusercontent.com/chriskonnertz/deeply/master/LICENSE)
 [![Version](https://img.shields.io/packagist/dt/chriskonnertz/deeply?style=flat-square)](https://packagist.org/packages/chriskonnertz/deeply)
