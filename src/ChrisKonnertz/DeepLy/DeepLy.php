@@ -34,7 +34,7 @@ class DeepLy
     const LANG_HU = 'HU'; // Hungarian
     const LANG_IT = 'IT'; // Italian
     const LANG_JA = 'JA'; // Japanese
-    const LANG_LT = 'KO'; // Korean
+    const LANG_KO = 'KO'; // Korean
     const LANG_LT = 'LT'; // Lithuanian
     const LANG_LV = 'LV'; // Latvian
     const LANG_NB = 'NB'; // Norwegian (Bokmål)
