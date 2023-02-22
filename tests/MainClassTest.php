@@ -215,6 +215,19 @@ class MainClassTest extends \PHPUnit\Framework\TestCase
         );
     }
 
+    public function testResetSettings()
+    {
+        $deepLy = $this->getInstance();
+
+        $deepLy->setSettings(
+            1
+        );
+
+        $this->assertTrue($instance instanceof \ChrisKonnertz\DeepLy\DeepLy);
+
+        $deepLy->resetSettings();
+    }
+
     public function testGetApiKeyType()
     {
         $deepLy = $this->getInstance();
