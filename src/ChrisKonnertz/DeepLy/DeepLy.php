@@ -700,11 +700,19 @@ class DeepLy
 
         return array_search($langName, self::LANG_NAMES);
     }
+    
+    /**
+     * Reset all translation settings to their default values.
+     */
+    public function resetSettings()
+    {
+        return $this->setSettings();
+    }
 
     /**
      * Change translation settings.
      * Note that these settings will be applied to EVERY request, this is not a one time thing!
-     * To reset all settings to their defaults, simply call this method without any arguments.
+     * To reset all settings to their defaults, simply call the resetSettings() method.
      *
      * @param string|null $glossaryId Unique identifier of an existing glossary, or null
      * @param string|null $tagHandling Sets which kind of tags should be handled: "xml"/"xhtml"
