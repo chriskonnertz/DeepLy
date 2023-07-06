@@ -80,12 +80,13 @@ language than no language at all.
 
 ## Supported Languages
 
-DeepL(y) supports these languages:
+DeepL(y) supports these languages:Added new languages: Indonesian and Turkish
 
 | Code | Language      |     | Code  | Language      |
 |------|---------------|-----|-------|---------------|
 | auto | _Auto detect_ |     | KO    | Korean        |
-| IT   | Italian       |     | JA    | Japanese      |
+| ID   | Indonesian    |     | TR    | Turkish       |
+| IT   | Italian       |     | ZH    | Chinese       |
 | BG   | Bulgarian     |     | LT    | Lithuanian    |
 | CS   | Czech         |     | LV    | Latvian       |
 | DA   | Danish        |     | NB    | Norwegian     |
@@ -97,7 +98,7 @@ DeepL(y) supports these languages:
 | FI   | Finnish       |     | SK    | Slovak        |
 | PT   | French        |     | SL    | Slovenian     |
 | HU   | Hungarian     |     | SV    | Swedish       |
-| JA   | Japanese      |     | ZH    | Chinese       |
+| JA   | Japanese      |     |       |               |
 
 > 💡 Note that only the source language can be auto-detected.
 
