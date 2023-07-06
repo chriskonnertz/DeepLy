@@ -32,6 +32,7 @@ class DeepLy
     const LANG_FI = 'FI'; // Finnish
     const LANG_FR = 'FR'; // French
     const LANG_HU = 'HU'; // Hungarian
+    const LANG_ID = 'ID'; // Indonesian
     const LANG_IT = 'IT'; // Italian
     const LANG_JA = 'JA'; // Japanese
     const LANG_KO = 'KO'; // Korean
@@ -46,6 +47,7 @@ class DeepLy
     const LANG_SK = 'SK'; // Slovak
     const LANG_SL = 'SL'; // Slovenian
     const LANG_SV = 'SV'; // Swedish
+    const LANG_TR = 'TR'; // Turkish
     const LANG_UK = 'UK'; // Ukrainian
     const LANG_ZH = 'ZH'; // Chinese
 
@@ -66,6 +68,7 @@ class DeepLy
         self::LANG_FI,
         self::LANG_FR,
         self::LANG_HU,
+        self::LANG_ID,
         self::LANG_IT,
         self::LANG_JA,
         self::LANG_KO,
@@ -79,7 +82,8 @@ class DeepLy
         self::LANG_RU,
         self::LANG_SK,
         self::LANG_SL,
-        self::LANG_SV,        
+        self::LANG_SV,
+        self::LANG_TR,
         self::LANG_UK,
         self::LANG_ZH,
     ];
@@ -101,6 +105,7 @@ class DeepLy
         self::LANG_FI => 'Finnish',
         self::LANG_FR => 'French',
         self::LANG_HU => 'Hungarian',
+        self::LANG_ID => 'Indonesian',
         self::LANG_IT => 'Italian',
         self::LANG_JA => 'Japanese',
         self::LANG_KO => 'Korean',
@@ -114,7 +119,8 @@ class DeepLy
         self::LANG_RU => 'Russian',
         self::LANG_SK => 'Slovak',
         self::LANG_SL => 'Slovenian',
-        self::LANG_SV => 'Swedish',        
+        self::LANG_SV => 'Swedish',  
+        self::LANG_TR => 'Turkish',          
         self::LANG_UK => 'Ukrainian',
         self::LANG_ZH => 'Chinese'
     ];
@@ -152,7 +158,7 @@ class DeepLy
     /**
      * Current version number
      */
-    const VERSION = '2.1.0';
+    const VERSION = '2.2.0';
 
     /**
      * The DeepL.com API key.
