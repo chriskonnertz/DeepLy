@@ -80,7 +80,7 @@ language than no language at all.
 
 ## Supported Languages
 
-DeepL(y) supports these languages:Added new languages: Indonesian and Turkish
+DeepL(y) supports these languages:
 
 | Code | Language      |     | Code  | Language      |
 |------|---------------|-----|-------|---------------|
