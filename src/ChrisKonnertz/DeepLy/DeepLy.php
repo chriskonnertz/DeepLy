@@ -199,7 +199,7 @@ class DeepLy
     protected string|null $tagHandling = null;
 
     /**
-     * Comma-seperated list of XML tags which never split sentences
+     * Comma-separated list of XML tags which never split sentences
      *
      * @var string
      */
@@ -213,14 +213,14 @@ class DeepLy
     protected bool $outlineDetection = true;
 
     /**
-     * Comma-seperated list of XML tags which always cause splits
+     * Comma-separated list of XML tags which always cause splits
      *
      * @var string
      */
     protected string $splittingTags = '';
 
     /**
-     * Comma-seperated list of XML tags that indicate text not to be translated
+     * Comma-separated list of XML tags that indicate text not to be translated
      *
      * @var string
      */
@@ -442,7 +442,7 @@ class DeepLy
     /**
      * Get information about a specific glossary
      *
-     * @param string $glossaryId The unique identifier of an exising glossary (not to be confused with the name!)
+     * @param string $glossaryId The unique identifier of an existing glossary (not to be confused with the name!)
      * @return Glossary          Information about the glossary
      * @throws CallException     Especially thrown if no glossary with the given glossary exists
      */
@@ -466,7 +466,7 @@ class DeepLy
      */
     public function createGlossary(string $name, string $to, string $from, array $entries) : Glossary
     {
-        // The API expects the entries in a "tab seperated" string format, so lets build that string
+        // The API expects the entries in a "tab separated" string format, so lets build that string
         $entriesEncoded = '';
         array_walk($entries, function($item, $key) use (&$entriesEncoded) {
             if ($entriesEncoded) {
@@ -493,7 +493,7 @@ class DeepLy
     /**
      * Deletes an existing glossary
      *
-     * @param string $glossaryId The unique identifier of an exising glossary (not to be confused with the name!)
+     * @param string $glossaryId The unique identifier of an existing glossary (not to be confused with the name!)
      * @throws CallException
      */
     public function deleteGlossary(string $glossaryId)
@@ -505,7 +505,7 @@ class DeepLy
      * Get the translation entries of a specific glossary.
      * The result is an array of items, with the original text as item key and the translation as item value.
      *
-     * @param string $glossaryId The unique identifier of an exising glossary (not to be confused with the name!)
+     * @param string $glossaryId The unique identifier of an existing glossary (not to be confused with the name!)
      * @return string[]
      * @throws CallException     Especially thrown if no glossary with the given glossary exists
      */
@@ -515,9 +515,9 @@ class DeepLy
             'glossaries/'.$glossaryId.'/entries', [], HttpClientInterface::METHOD_GET, null, false
         );
 
-        // The API provides the entries in a "tab seperated" string format, so lets parse that string
+        // The API provides the entries in a "tab separated" string format, so lets parse that string
         $entries = [];
-        $rawEntries = explode("\n", $rawEntries); // Entries are seperated by a new line character
+        $rawEntries = explode("\n", $rawEntries); // Entries are separated by a new line character
         foreach ($rawEntries as $rawEntry) {
             $parts = explode("\t", $rawEntry); // Tabs are used to separate the translations.
             $entries[$parts[0]] = $parts[1];
