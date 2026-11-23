@@ -7,7 +7,7 @@
 [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg?style=flat-square)](https://raw.githubusercontent.com/chriskonnertz/deeply/master/LICENSE)
 [![Version](https://img.shields.io/packagist/dt/chriskonnertz/deeply?style=flat-square)](https://packagist.org/packages/chriskonnertz/deeply)
 
-[DeepL Translator](https://www.deepl.com/en/products/translator is a next-generation translation service.) 
+[DeepL Translator](https://www.deepl.com/en/products/translator) is a next-generation translation service. 
 DeepLy is a dependency-free PHP library that implements a client to interact with the 
 [DeepL API](https://www.deepl.com/docs-api) using an API key. 
 You can get an API key for free on their [website](https://www.deepl.com/). 
