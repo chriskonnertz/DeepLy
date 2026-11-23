@@ -7,7 +7,7 @@
 [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg?style=flat-square)](https://raw.githubusercontent.com/chriskonnertz/deeply/master/LICENSE)
 [![Version](https://img.shields.io/packagist/dt/chriskonnertz/deeply?style=flat-square)](https://packagist.org/packages/chriskonnertz/deeply)
 
-[DeepL](https://www.deepl.com/) is a next-generation translation service. 
+[DeepL Translator](https://www.deepl.com/en/products/translator is a next-generation translation service.) 
 DeepLy is a dependency-free PHP library that implements a client to interact with the 
 [DeepL API](https://www.deepl.com/docs-api) using an API key. 
 You can get an API key for free on their [website](https://www.deepl.com/). 
@@ -249,7 +249,7 @@ echo $usage->characterCount.'/'.$usage->characterLimit
 ```
 
 Depending on the user account type, some usage types will be null.
-Learn more: https://www.deepl.com/de/docs-api/other-functions/monitoring-usage/
+Learn more: [https://www.deepl.com/de/docs-api/other-functions/monitoring-usage/](https://developers.deepl.com/docs/resources/usage-limits#usage-and-limits)
 
 ## Framework Integration
 
@@ -302,5 +302,5 @@ DeepL is a product of DeepL GmbH. More info: [deepl.com/publisher.html](https://
 * The code of this library is formatted according to the code style defined by the  
 [PSR-2](https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-2-coding-style-guide.md) standard.
 
-* Status of this repository: _Maintained_. Please an [issue](https://github.com/chriskonnertz/DeepLy/issues)
+* Status of this repository: _Maintained_. Please create an [issue](https://github.com/chriskonnertz/DeepLy/issues)
 if you want to talk.
