@@ -289,13 +289,6 @@ Run `composer install` from the DeepLy directory, then run the tests:
 ./vendor/phpunit/phpunit/phpunit
 ```
 
-## Differences to V1
-
-To upgrade from v1 to v2, make sure you specify the API key when instantiating the DeepLy object.
-Apart from the changes mentioned above your v1 code should still work with v2 as long 
-as you did not write your own HTTP client or extended the DeepLy class with a custom class.
-To learn more about the changes, please take a look at the [changelog](CHANGELOG.md).
-
 ## Disclaimer
 
 This is not an official package. It is 100% open source and non-commercial.
@@ -306,10 +299,8 @@ DeepL is a product of DeepL GmbH. More info: [deepl.com/publisher.html](https://
 
 * Texts have to be UTF8-encoded.
 
-* If you are looking for a real-world example application that uses DeepLy, you may take a look at [Translation Factory](https://github.com/chriskonnertz/translation-factory).
-
 * The code of this library is formatted according to the code style defined by the  
 [PSR-2](https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-2-coding-style-guide.md) standard.
 
-* Status of this repository: _Maintained_. Create an [issue](https://github.com/chriskonnertz/DeepLy/issues)
-and you will get a response, usually within 48 hours.
+* Status of this repository: _Maintained_. Please an [issue](https://github.com/chriskonnertz/DeepLy/issues)
+if you want to talk.
